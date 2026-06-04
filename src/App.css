@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+
+
+.marquee-container{
+  overflow: hidden;
+  width: 100%;
+  background: #111;
+  padding: 1rem 0;
+}
+
+.marquee {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  animation: scrollRight 20s linear infinite;
+}
+
+.sponsor {
+  margin: 0 3rem;
+  color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+@keyframes scrollRight {
+  0% {
+    transform: translateX(-50%);
+  }
+
+  100% {
+    transform: translateX(0%);
+  }
+}
