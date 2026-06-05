@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { User, ShoppingBag, Menu, X, Eye, EyeOff, ArrowRight, Mail, Lock } from 'lucide-react'
-import { useCart } from '../context/CartContext'
+import { useCart } from '../Context/CartContext'
 
 // ── Sign-in Modal ─────────────────────────────────────────────────────────────
 const AuthModal = ({ isOpen, onClose }) => {

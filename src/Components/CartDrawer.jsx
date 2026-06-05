@@ -1,4 +1,4 @@
-import { useCart } from '../context/CartContext'
+import { useCart } from '../Context/CartContext'
 import { X, Minus, Plus, Trash2, ShoppingBag } from 'lucide-react'
 
 const CartDrawer = () => {
