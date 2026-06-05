@@ -53,7 +53,7 @@ const AuthModal = ({ isOpen, onClose }) => {
           }`}
         >
           {/* Top accent bar */}
-          <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+          <div className="h-0.5 w-full bg-linear-to-r from-transparent via-white/40 to-transparent" />
 
           {/* Close button */}
           <button

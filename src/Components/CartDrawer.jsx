@@ -67,7 +67,7 @@ const CartDrawer = () => {
                 className="flex gap-4 bg-white/5 rounded-xl p-3 border border-white/5 hover:border-white/10 transition-colors"
               >
                 {/* Product image */}
-                <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-white/10">
+                <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-white/10">
                   <img
                     src={item.image}
                     alt={item.name}
@@ -81,7 +81,7 @@ const CartDrawer = () => {
                     <p className="text-white text-sm font-semibold truncate">{item.name}</p>
                     <button
                       onClick={() => removeFromCart(item.id)}
-                      className="text-white/30 hover:text-red-400 transition-colors flex-shrink-0"
+                      className="text-white/30 hover:text-red-400 transition-colors shrink-0"
                     >
                       <Trash2 size={14} />
                     </button>
