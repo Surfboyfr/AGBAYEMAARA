@@ -1,10 +1,8 @@
 import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
-
 import LandingPage from './Pages/LandingPage'
 import ShopHome from './Pages/ShopHome'
-import Cart from './Pages/Cart'
 import ShopLayout from './Layouts/ShopLayout'
 
 function App() {
