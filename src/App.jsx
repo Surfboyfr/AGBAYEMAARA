@@ -22,8 +22,6 @@ function App() {
             {/* Homepage inside shop */}
         <Route path="" element={<ShopHome />} />
         
-          {/* Cart route */}
-        <Route path="/shop/cart" element={<Cart />} />
         
       </Route>
       
