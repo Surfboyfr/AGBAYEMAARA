@@ -3,6 +3,7 @@ import Hero from '../Components/Hero'
 import Marquee from '../Components/Marquee'
 import Footer from '../Components/Footer'
 import About from '../Components/About'
+import Contact from '../Components/Contact'
 
 const LandingPage = () => {
   return (
@@ -10,7 +11,8 @@ const LandingPage = () => {
       < NavBar />
       <Hero />
         <Marquee />
-        <About />
+      <About />
+      <Contact />
       <Footer />
    </section>
    )
