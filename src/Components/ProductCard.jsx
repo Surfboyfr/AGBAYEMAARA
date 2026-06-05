@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useCart } from '../context/CartContext'
+import { useCart } from '../Context/CartContext'
 import { ShoppingBag, Check } from 'lucide-react'
 
 const ProductCard = ({ id, productName, productPrice, productImage, brand }) => {
