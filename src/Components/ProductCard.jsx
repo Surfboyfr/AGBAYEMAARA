@@ -40,7 +40,7 @@ const ProductCard = ({ id, productName, productPrice, productImage, brand }) => 
           className={`w-full mt-5 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 ${
             added
               ? 'bg-green-600 text-white'
-              : 'bg-[#0A0B0F] text-white hover:bg-gray-800'
+              : 'bg-[#0A0B0F] text-white hover:bg-[#f28500]'
           }`}
         >
           {added ? (

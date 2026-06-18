@@ -18,7 +18,7 @@ const Marquee = () => {
    ];
    
   return (
-      <div className="w-full overflow-hidden bg-red-900 py-4 ">
+      <div className="w-full overflow-hidden bg-[#ec5800] py-4 mt-16 ">
       <div className="marquee flex whitespace-nowrap">
         {[...sponsors, ...sponsors].map((sponsor, index) => (
           <span

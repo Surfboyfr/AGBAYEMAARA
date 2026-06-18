@@ -8,17 +8,17 @@ const Contact = () => {
         <p className='text-gray-300 text-center mt-5'>For inquiries, support, or feedback, please reach out to us at:</p>
         <div className='flex flex-col items-center gap-3 mt-5'>
            <p className='text-gray-300'>Email:
-              <a href="mailto:info@agbayemaara.com" className='text-blue-500 hover:underline'>
+              <a href="mailto:info@agbayemaara.com" className='text-[#988558] hover:underline'>
                 info@agbayemaara.com
               </a>
            </p>
            <p className='text-gray-300'>Phone:
-              <a href="tel:+1234567890" className='text-blue-500 hover:underline'>
+              <a href="tel:+1234567890" className='text-[#988558] hover:underline'>
                  +1 (234) 567-890
               </a>
            </p>
            <p className='text-gray-300'>Address:
-              <a href="https://www.google.com/maps/place/123+Fashion+St,+Cityville" target="_blank" rel="noopener noreferrer" className='text-blue-500 hover:underline'>
+              <a href="https://www.google.com/maps/place/123+Fashion+St,+Cityville" target="_blank" rel="noopener noreferrer" className='text-[#988558] hover:underline'>
                  123 Fashion St, Cityville
               </a>
            </p>
@@ -32,7 +32,7 @@ const Contact = () => {
               <input type="email" placeholder='Your Email' className='border border-white rounded-md py-2 px-3 w-full lg:w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder:text-gray-500 ' />
 
               <textarea placeholder='Your Message' className='border border-white rounded-md py-2 px-3 w-full lg:w-full h-32 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder:text-gray-500 ' />
-              <button type='submit' className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'>Send Message</button>
+              <button type='submit' className='bg-[#ec5800] text-white px-4 py-2 rounded hover:bg-blue-600'>Send Message</button>
              </form>
         </div>
       </div>

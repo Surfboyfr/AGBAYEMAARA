@@ -4,6 +4,7 @@ import './App.css'
 import LandingPage from './Pages/LandingPage'
 import ShopHome from './Pages/ShopHome'
 import ShopLayout from './Layouts/ShopLayout'
+import Brands from './Pages/Brands'
 
 function App() {
 
@@ -21,10 +22,11 @@ function App() {
       <Route path="/shop" element={<ShopLayout />}>
             {/* Homepage inside shop */}
         <Route path="" element={<ShopHome />} />
+      
         
         
       </Route>
-      
+        <Route path="/brands" element={<Brands />} />
       </Routes>
   
   )
