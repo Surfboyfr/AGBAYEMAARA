@@ -98,7 +98,7 @@ const Hero = () => {
    
   return (
      <>
-        <section className='w-full flex flex-col p-6 px-8 items-center justify-center gap-10 lg:py-10 lg:px-12 lg:h-screen lg:flex-col'>
+        <section className='w-full flex flex-col p-6 px-8 items-center justify-center gap-10 lg:py-10 lg:px-12 lg:h-150vh lg:flex-col'>
            <div className='flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-20 mt-15'>
            <div className=' w-full   lg:w-1/2 lg:px-8'>
               <h3 className=" text-4xl leading-17 mb-7 font-bold text-white gap-7 tracking-normal lg:text-5xl "> Discover The Best African Talent</h3>
@@ -112,11 +112,11 @@ const Hero = () => {
               <img src={HeroImg} alt="Hero Image" className='w-full h-80 rounded-xl' />
            </div>
            </div>
-           <div className={`w-full lg:block   transition-opacity duration-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`} style={{
+           <div className={`w-full lg:block lg:mx-11  transition-opacity duration-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`} style={{
               backgroundImage: `url(${slides[currentSlide].productImage})`,
-              backgroundSize: 'cover',
+              backgroundSize: 'contain',
               backgroundPosition: 'center',
-              height: '300px',
+              height: '400px',
               borderRadius: '10px',
               transition: `opacity ${TRANSITION_DELAY}ms`
            }}>

@@ -216,7 +216,7 @@ const ShopNavbar = () => {
   const navLinks = [
     { label: 'Shop', to: '/shop' },
     { label: 'Home', to: '/' },
-    { label: 'Brands', to: '/' },
+    { label: 'Brands', to: '/brands' },
 
   ]
 

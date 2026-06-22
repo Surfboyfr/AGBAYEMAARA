@@ -1,12 +1,21 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useCart } from '../Context/CartContext'
 import { ShoppingBag, Check } from 'lucide-react'
 
-const ProductCard = ({ id, productName, productPrice, productImage, brand }) => {
+const ProductCard = ({ product }) => {
+  const navigate = useNavigate()
   const { addToCart, setIsCartOpen } = useCart()
   const [added, setAdded] = useState(false)
 
-  const handleAddToCart = () => {
+  const { id, productName, productPrice, productImage, brand } = product
+
+  const openDetailsPage = () => {
+    navigate(`/shop/product/${id}`)
+  }
+
+    const handleAddToCart = (e) => {
+    e.stopPropagation()
     addToCart({
       id: id || productName,
       name: productName,
@@ -19,13 +28,15 @@ const ProductCard = ({ id, productName, productPrice, productImage, brand }) => 
   }
 
   return (
-    <div className="group relative border border-gray-100 rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow duration-300">
+    <div className="group relative border border-gray-100 rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow duration-300 h-120  "
+      onClick={openDetailsPage}
+    >
       {/* Image */}
       <div className="relative overflow-hidden">
         <img
           src={productImage}
           alt={productName}
-          className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-82 object-cover group-hover:scale-105 transition-transform duration-500"
         />
       </div>
 
