@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Sparkles, Store, Grid2X2 } from 'lucide-react'
 import { brands } from '../data/brands'
 import ShopNavbar from '../Components/ShopNavbar'
+import Footer from '../Components/Footer'
 
 const BrandsPage = () => {
   return (
@@ -91,6 +92,7 @@ const BrandsPage = () => {
           ))}
         </div>
       </div>
+      <Footer />
     </section>
   )
 }

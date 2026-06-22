@@ -8,7 +8,7 @@ function MainLayout() {
     <main>
       {/* <ShopNavbar /> */}
       <Outlet />
-      <Footer />
+      {/* <Footer /> */}
     </main>
   );
 }
