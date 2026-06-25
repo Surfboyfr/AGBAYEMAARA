@@ -23,6 +23,25 @@
   font-size: 1.1rem;
 }
 
+.hero-marquee-container {
+  overflow: hidden;
+}
+
+.hero-marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 1rem;
+  animation: heroScroll 24s linear infinite;
+}
+
+.hero-marquee-card {
+  flex: 0 0 auto;
+}
+
+.hero-marquee-container:hover .hero-marquee-track {
+  animation-play-state: paused;
+}
+
 @keyframes scrollRight {
   0% {
     transform: translateX(-50%);
@@ -30,5 +49,15 @@
 
   100% {
     transform: translateX(0%);
+  }
+}
+
+@keyframes heroScroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
   }
 }

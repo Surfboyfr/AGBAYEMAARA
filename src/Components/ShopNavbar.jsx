@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { User, ShoppingBag, Menu, X, Eye, EyeOff, ArrowRight, Mail, Lock } from 'lucide-react'
+import { User, ShoppingBag, Menu, X, Eye, EyeOff, ArrowRight, Mail, Lock, ChevronDown } from 'lucide-react'
 import { useCart } from '../Context/CartContext'
+import { useLanguage } from '../Context/LanguageContext'
 
 // ── Sign-in Modal ─────────────────────────────────────────────────────────────
 const AuthModal = ({ isOpen, onClose }) => {
@@ -11,6 +12,7 @@ const AuthModal = ({ isOpen, onClose }) => {
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const overlayRef = useRef(null)
+  const {t}= useLanguage()
 
   // Close on Escape
   useEffect(() => {
@@ -66,14 +68,14 @@ const AuthModal = ({ isOpen, onClose }) => {
           <div className="px-8 pt-8 pb-10">
             {/* Brand mark */}
             <div className="mb-8">
-              <p className="text-white/30 text-xs tracking-[0.25em] uppercase mb-2">Agbayemaara</p>
+              <p className="text-white/30 text-xs tracking-[0.25em] uppercase mb-2">{t('auth', 'brand')}</p>
               <h2 className="text-white text-2xl font-bold tracking-tight leading-tight">
-                {mode === 'signin' ? 'Welcome back' : 'Create account'}
+                {mode === 'signin' ? t('auth', 'welcomeBack') : t('auth', 'createAccount')}
               </h2>
               <p className="text-white/40 text-sm mt-1.5">
                 {mode === 'signin'
-                  ? 'Sign in to access your orders and wishlist.'
-                  : 'Join and discover the best of African fashion.'}
+                  ? t('auth', 'signInSubtitle')
+                  : t('auth', 'signUpSubtitle')}
               </p>
             </div>
 
@@ -89,7 +91,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                       : 'text-white/40 hover:text-white/70'
                   }`}
                 >
-                  {m === 'signin' ? 'Sign In' : 'Sign Up'}
+                  {m === 'signin' ? t('auth', 'signIn') : t('auth', 'signUp')}
                 </button>
               ))}
             </div>
@@ -99,7 +101,7 @@ const AuthModal = ({ isOpen, onClose }) => {
               {mode === 'signup' && (
                 <div className="group">
                   <label className="block text-white/50 text-xs font-semibold uppercase tracking-wider mb-2">
-                    Full Name
+                    {t('auth', 'fullName')}
                   </label>
                   <div className="relative">
                     <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-white/60 transition-colors" />
@@ -107,7 +109,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="Your full name"
+                      placeholder={t('auth', 'fullNamePlaceholder')}
                       required={mode === 'signup'}
                       className="w-full bg-white/5 border border-white/10 text-white placeholder-white/20 rounded-lg py-3 pl-10 pr-4 text-sm focus:outline-none focus:border-white/30 transition-all duration-200"
                     />
@@ -117,7 +119,7 @@ const AuthModal = ({ isOpen, onClose }) => {
 
               <div className="group">
                 <label className="block text-white/50 text-xs font-semibold uppercase tracking-wider mb-2">
-                  Email
+                  {t('auth', 'email')}
                 </label>
                 <div className="relative">
                   <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-white/60 transition-colors" />
@@ -125,7 +127,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
+                    placeholder={t('auth', 'emailPlaceholder')}
                     required
                     className="w-full bg-white/5 border border-white/10 text-white placeholder-white/20 rounded-lg py-3 pl-10 pr-4 text-sm focus:outline-none focus:border-white/30 transition-all duration-200"
                   />
@@ -134,7 +136,7 @@ const AuthModal = ({ isOpen, onClose }) => {
 
               <div className="group">
                 <label className="block text-white/50 text-xs font-semibold uppercase tracking-wider mb-2">
-                  Password
+                  {t('auth', 'password')}
                 </label>
                 <div className="relative">
                   <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-white/60 transition-colors" />
@@ -142,7 +144,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder={mode === 'signup' ? 'Min. 8 characters' : '••••••••'}
+                    placeholder={mode === 'signup' ? t('auth', 'passwordPlaceholderSignup') : t('auth', 'passwordPlaceholderSignin')}
                     required
                     className="w-full bg-white/5 border border-white/10 text-white placeholder-white/20 rounded-lg py-3 pl-10 pr-11 text-sm focus:outline-none focus:border-white/30 transition-all duration-200"
                   />
@@ -159,7 +161,7 @@ const AuthModal = ({ isOpen, onClose }) => {
               {mode === 'signin' && (
                 <div className="text-right">
                   <button type="button" className="text-white/40 text-xs hover:text-white/70 transition-colors">
-                    Forgot password?
+                    {t('auth', 'forgotPassword')}
                   </button>
                 </div>
               )}
@@ -168,7 +170,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                 type="submit"
                 className="w-full mt-2 bg-white text-black font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 hover:bg-white/90 active:scale-[0.98] transition-all duration-200 text-sm tracking-wide group"
               >
-                {mode === 'signin' ? 'Sign In' : 'Create Account'}
+                {mode === 'signin' ? t('auth', 'signInButton') : t('auth', 'createAccountButton')}
                 <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform duration-200" />
               </button>
             </form>
@@ -176,7 +178,7 @@ const AuthModal = ({ isOpen, onClose }) => {
             {/* Divider */}
             <div className="flex items-center gap-3 my-6">
               <div className="flex-1 h-px bg-white/10" />
-              <span className="text-white/25 text-xs">or continue with</span>
+              <span className="text-white/25 text-xs">{t('auth', 'continueWithGoogle')}</span>
               <div className="flex-1 h-px bg-white/10" />
             </div>
 
@@ -191,7 +193,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
               </svg>
-              Continue with Google
+              {t('auth', 'continueWithGoogle')}
             </button>
           </div>
         </div>
@@ -203,8 +205,11 @@ const AuthModal = ({ isOpen, onClose }) => {
 // ── ShopNavbar ─────────────────────────────────────────────────────────────────
 const ShopNavbar = () => {
   const { cartCount, setIsCartOpen } = useCart()
+  const { t, language, setLanguage, languages } = useLanguage()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [authModalOpen, setAuthModalOpen] = useState(false)
+  const [languageMenuOpen, setLanguageMenuOpen] = useState(false)
+  const languageMenuRef = useRef(null)
 
   // Close mobile menu on resize to desktop
   useEffect(() => {
@@ -213,11 +218,21 @@ const ShopNavbar = () => {
     return () => window.removeEventListener('resize', handler)
   }, [])
 
-  const navLinks = [
-    { label: 'Shop', to: '/shop' },
-    { label: 'Home', to: '/' },
-    { label: 'Brands', to: '/brands' },
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (languageMenuRef.current && !languageMenuRef.current.contains(event.target)) {
+        setLanguageMenuOpen(false)
+      }
+    }
 
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const navLinks = [
+    { label: t('nav', 'shop'), to: '/shop' },
+    { label: t('nav', 'home'), to: '/' },
+    { label: t('nav', 'brands'), to: '/brands' },
   ]
 
   return (
@@ -245,11 +260,37 @@ const ShopNavbar = () => {
 
           {/* Right icons */}
           <div className="flex items-center gap-1">
+            <div className="relative" ref={languageMenuRef}>
+              <button
+                onClick={() => setLanguageMenuOpen((prev) => !prev)}
+                className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2.5 py-2 text-sm text-white/70 hover:text-white"
+              >
+                <span>{languages.find((item) => item.code === language)?.label ?? 'English'}</span>
+                <ChevronDown size={16} />
+              </button>
+              {languageMenuOpen && (
+                <div className="absolute right-0 mt-2 w-32 rounded-xl border border-white/10 bg-[#12141A] p-2 shadow-xl">
+                  {languages.map((item) => (
+                    <button
+                      key={item.code}
+                      onClick={() => {
+                        setLanguage(item.code)
+                        setLanguageMenuOpen(false)
+                      }}
+                      className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition ${language === item.code ? 'bg-white/10 text-white' : 'text-white/70 hover:bg-white/10 hover:text-white'}`}
+                    >
+                      <span>{item.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Cart */}
             <button
               onClick={() => setIsCartOpen(true)}
               className="relative p-2.5 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
-              aria-label="Open cart"
+              aria-label={t('auth', 'openCart')}
             >
               <ShoppingBag size={20} />
               {cartCount > 0 && (
@@ -263,7 +304,7 @@ const ShopNavbar = () => {
             <button
               onClick={() => setAuthModalOpen(true)}
               className="p-2.5 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
-              aria-label="Sign in"
+              aria-label={t('auth', 'signInAction')}
             >
               <User size={20} />
             </button>
@@ -272,7 +313,7 @@ const ShopNavbar = () => {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden p-2.5 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 ml-1"
-              aria-label="Toggle menu"
+              aria-label={t('auth', 'toggleMenu')}
             >
               {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -296,12 +337,29 @@ const ShopNavbar = () => {
                 {label}
               </Link>
             ))}
+            <div className="px-3 py-2">
+              <p className="text-[11px] uppercase tracking-[0.25em] text-white/40 mb-2">{t('nav', 'language')}</p>
+              <div className="flex flex-wrap gap-2">
+                {languages.map((item) => (
+                  <button
+                    key={item.code}
+                    onClick={() => {
+                      setLanguage(item.code)
+                      setMobileMenuOpen(false)
+                    }}
+                    className={`rounded-full px-3 py-1.5 text-sm transition ${language === item.code ? 'bg-white text-black' : 'bg-white/10 text-white/70 hover:bg-white/20 hover:text-white'}`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
             <button
               onClick={() => { setAuthModalOpen(true); setMobileMenuOpen(false) }}
               className="text-white/60 hover:text-white text-sm font-medium py-2.5 px-3 rounded-lg hover:bg-white/5 transition-all duration-200 text-left flex items-center gap-2"
             >
               <User size={15} />
-              Sign In / Register
+              {t('nav', 'signIn')}
             </button>
           </div>
         </div>

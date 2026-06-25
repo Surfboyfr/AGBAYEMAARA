@@ -1,5 +1,6 @@
 import { useCart } from '../Context/CartContext'
 import { X, Minus, Plus, Trash2, ShoppingBag } from 'lucide-react'
+import { useLanguage } from '../Context/LanguageContext'
 
 const CartDrawer = () => {
   const {
@@ -11,6 +12,7 @@ const CartDrawer = () => {
     cartTotal,
     clearCart,
   } = useCart()
+  const { t } = useLanguage()
 
   return (
     <>
@@ -32,7 +34,7 @@ const CartDrawer = () => {
         <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
           <div className="flex items-center gap-3">
             <ShoppingBag size={20} className="text-white" />
-            <h2 className="text-white text-lg font-bold tracking-wide">Your Cart</h2>
+            <h2 className="text-white text-lg font-bold tracking-wide">{t('cart', 'title')}</h2>
             {cartItems.length > 0 && (
               <span className="bg-red-900 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
                 {cartItems.reduce((sum, i) => sum + i.quantity, 0)}
@@ -52,12 +54,12 @@ const CartDrawer = () => {
           {cartItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full gap-4 text-center">
               <ShoppingBag size={48} className="text-white/20" />
-              <p className="text-white/40 text-sm">Your cart is empty</p>
+              <p className="text-white/40 text-sm">{t('cart', 'empty')}</p>
               <button
                 onClick={() => setIsCartOpen(false)}
                 className="text-white text-sm underline underline-offset-4 hover:text-white/70 transition-colors"
               >
-                Continue shopping
+                {t('cart', 'continueShopping')}
               </button>
             </div>
           ) : (
@@ -86,7 +88,7 @@ const CartDrawer = () => {
                       <Trash2 size={14} />
                     </button>
                   </div>
-                  <p className="text-white/50 text-xs mt-0.5">{item.brand || 'Agbayemaara'}</p>
+                  <p className="text-white/50 text-xs mt-0.5">{item.brand || t('cart', 'brandFallback')}</p>
 
                   <div className="flex items-center justify-between mt-2">
                     {/* Quantity controls */}
@@ -122,20 +124,20 @@ const CartDrawer = () => {
         {cartItems.length > 0 && (
           <div className="border-t border-white/10 px-6 py-5 space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-white/60 text-sm">Subtotal</span>
+              <span className="text-white/60 text-sm">{t('cart', 'subtotal')}</span>
               <span className="text-white font-bold text-lg">${cartTotal.toFixed(2)}</span>
             </div>
-            <p className="text-white/30 text-xs">Shipping and taxes calculated at checkout</p>
+            <p className="text-white/30 text-xs">{t('cart', 'shipping')}</p>
 
             <button className="w-full bg-white text-black font-bold py-3.5 rounded-xl hover:bg-white/90 transition-colors duration-200 text-sm tracking-wide">
-              Checkout
+              {t('cart', 'checkout')}
             </button>
 
             <button
               onClick={clearCart}
               className="w-full text-white/40 text-xs hover:text-white/70 transition-colors py-1"
             >
-              Clear cart
+              {t('cart', 'clearCart')}
             </button>
           </div>
         )}

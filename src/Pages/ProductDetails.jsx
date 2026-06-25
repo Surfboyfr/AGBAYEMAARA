@@ -2,18 +2,20 @@ import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft, CheckCircle2, Truck, ShieldCheck, Star } from 'lucide-react'
 import { getProductById } from '../data/products'
 import { useCart } from '../Context/CartContext'
+import { useLanguage } from '../Context/LanguageContext'
 
 const ProductDetails = () => {
   const { productId } = useParams()
   const product = getProductById(productId)
   const { addToCart, setIsCartOpen } = useCart()
+  const { t } = useLanguage()
 
   if (!product) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center gap-4 px-6 text-center">
-        <p className="text-2xl font-bold text-black">Product not found</p>
-        <Link to="/shop" className="text-sm font-medium text-[#f28500] hover:underline">
-          Return to shop
+        <p className='text-2xl font-bold text-black'>{t('productDetails', 'notFound')}</p>
+        <Link to='/shop' className='text-sm font-medium text-[#f28500] hover:underline'>
+          {t('productDetails', 'return')}
         </Link>
       </div>
     )
@@ -35,7 +37,7 @@ const ProductDetails = () => {
       <div className="max-w-7xl mx-auto">
         <Link to="/shop" className="inline-flex items-center gap-2 text-sm font-medium text-black/70 hover:text-black mb-6">
           <ArrowLeft size={16} />
-          Back to products
+          {t('productDetails', 'back')}
         </Link>
 
         <div className="grid lg:grid-cols-2 gap-10 items-start">
@@ -68,7 +70,7 @@ const ProductDetails = () => {
             <p className="text-base leading-7 text-black/70 max-w-2xl">{product.description}</p>
 
             <div className="rounded-2xl bg-white border border-gray-200  shadow-md text-white p-6 space-y-4 mt-5">
-              <h2 className="text-lg font-semibold text-black">Overview</h2>
+              <h2 className='text-lg font-semibold text-black'>{t('productDetails', 'overview')}</h2>
               <p className="text-black/70 leading-7">{product.overview}</p>
             </div>
 
@@ -85,21 +87,21 @@ const ProductDetails = () => {
               <div className="rounded-2xl border border-gray-200 p-4 flex items-start gap-3">
                 <Truck size={18} className="mt-0.5 text-black/70 shrink-0" />
                 <div>
-                  <p className="font-semibold text-black">Fast delivery</p>
-                  <p className="text-sm text-black/60 mt-1">Estimated delivery shown at checkout.</p>
+                  <p className='font-semibold text-black'>{t('productDetails', 'fastDelivery')}</p>
+                  <p className='text-sm text-black/60 mt-1'>{t('productDetails', 'fastDeliveryText')}</p>
                 </div>
               </div>
               <div className="rounded-2xl border border-gray-200 p-4 flex items-start gap-3">
                 <ShieldCheck size={18} className="mt-0.5 text-black/70 shrink-0" />
                 <div>
-                  <p className="font-semibold text-black">Quality guarantee</p>
-                  <p className="text-sm text-black/60 mt-1">Carefully selected fabric and finish.</p>
+                  <p className='font-semibold text-black'>{t('productDetails', 'qualityGuarantee')}</p>
+                  <p className='text-sm text-black/60 mt-1'>{t('productDetails', 'qualityGuaranteeText')}</p>
                 </div>
               </div>
             </div>
 
             <div className="rounded-2xl border border-gray-200 p-5 space-y-3">
-              <h2 className="text-lg font-semibold text-black">Care instructions</h2>
+              <h2 className='text-lg font-semibold text-black'>{t('productDetails', 'care')}</h2>
               <p className="text-sm leading-6 text-black/70">{product.care}</p>
             </div>
 
@@ -108,13 +110,13 @@ const ProductDetails = () => {
                 onClick={handleAddToCart}
                 className="inline-flex items-center justify-center rounded-xl bg-[#0A0B0F] px-6 py-3.5 text-sm font-semibold text-white hover:bg-black/90 transition-colors"
               >
-                Add to Cart
+                {t('productDetails', 'addToCart')}
               </button>
               <Link
                 to="/shop"
                 className="inline-flex items-center justify-center rounded-xl border border-gray-300 px-6 py-3.5 text-sm font-semibold text-black hover:bg-gray-50 transition-colors"
               >
-                Continue Shopping
+                {t('productDetails', 'continueShopping')}
               </Link>
             </div>
           </div>

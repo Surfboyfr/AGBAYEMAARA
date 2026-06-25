@@ -2,10 +2,12 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '../Context/CartContext'
 import { ShoppingBag, Check } from 'lucide-react'
+import { useLanguage } from '../Context/LanguageContext'
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate()
   const { addToCart, setIsCartOpen } = useCart()
+  const { t } = useLanguage()
   const [added, setAdded] = useState(false)
 
   const { id, productName, productPrice, productImage, brand } = product
@@ -57,12 +59,12 @@ const ProductCard = ({ product }) => {
           {added ? (
             <>
               <Check size={15} />
-              Added
+              {t('productCard', 'added')}
             </>
           ) : (
             <>
               <ShoppingBag size={15} />
-              Add to Cart
+              {t('productCard', 'addToCart')}
             </>
           )}
         </button>
