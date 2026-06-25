@@ -81,7 +81,7 @@ const ShopHome = () => {
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  {category.value}
+                  {category.label}
                 </button>
               )
             })}
@@ -100,7 +100,7 @@ const ShopHome = () => {
                       : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
                   }`}
                 >
-                  {filter.value}
+                  {filter.label}
                 </button>
               )
             })}

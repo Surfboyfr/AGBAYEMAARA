@@ -446,10 +446,29 @@ const translations = {
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState('en')
 
+  const getTranslationValue = (section, key) => {
+    const parts = key.split('.')
+    const fallbackLanguage = 'en'
+
+    const resolve = (lang) => {
+      let value = translations[lang]?.[section]
+      for (const part of parts) {
+        if (value && typeof value === 'object') {
+          value = value[part]
+        } else {
+          return undefined
+        }
+      }
+      return value
+    }
+
+    return resolve(language) ?? resolve(fallbackLanguage) ?? key
+  }
+
   const value = useMemo(() => ({
     language,
     setLanguage,
-    t: (section, key) => translations[language]?.[section]?.[key] ?? translations.en?.[section]?.[key] ?? key,
+    t: (section, key) => getTranslationValue(section, key),
     languages: [
       { code: 'en', label: 'English' },
       { code: 'es', label: 'Español' },
