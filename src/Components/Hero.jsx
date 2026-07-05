@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import hero from '../assets/phone-ui.jfif'
 import image1 from '../assets/brand1.jfif'
@@ -28,17 +27,20 @@ const Hero = () => {
 
   return (
     <section className='w-full flex flex-col p-6 px-8 items-center justify-center gap-10 lg:py-10 lg:px-16 lg:h-150vh lg:flex-col'>
-      <div className='flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-20 mt-30'>
+      <div className='flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-10 lg:mt-30'>
         <div className='w-full lg:w-1/2 lg:px-8'>
-          <h3 className='text-4xl leading-17 mb-7 font-bold text-white gap-7 tracking-normal lg:text-5xl'>
+          <h3 className='text-4xl leading-17 mb-3 font-bold text-white gap-3 tracking-normal lg:text-5xl mt-5'>
             {t('hero', 'heading')}
           </h3>
           <p className='text-white'>{t('hero', 'blurb')}</p>
-          <div className='m-3 mt-9 flex justify-evenly lg:justify-start lg:flex lg:gap-4 lg:mt-6'>
-            <button className='bg-white text-black lg:px-4 lg:py-2 rounded-3xl px-5 py-3 hover:bg-[#ec5800] hover:text-white' onClick={() => navigate('/shop')}>
+          <div className='flex flex-wrap items-center gap-3 mt-9 m-3 lg:justify-start lg:gap-4 lg:mt-6'>
+            <button className='bg-white text-black rounded-3xl px-5 py-3 text-sm font-semibold hover:bg-[#ec5800] hover:text-white transition-all duration-200 active:scale-95 lg:px-6 lg:py-3' onClick={() => navigate('/shop')}>
               {t('hero', 'shopNow')}
             </button>
-            <button className='bg-[#988558] text-white lg:px-4 lg:py-2 rounded-3xl px-5 py-3'>
+            <button className='bg-[#ec5800] text-white rounded-3xl px-5 py-3 text-sm font-semibold hover:bg-[#d04f00] transition-all duration-200 active:scale-95 lg:px-6 lg:py-3'>
+              {t('hero', 'joinWaitlist')}
+            </button>
+            <button className='border border-[#988558] text-[#988558] rounded-3xl px-5 py-3 text-sm font-semibold hover:bg-[#988558] hover:text-white transition-all duration-200 active:scale-95 lg:px-6 lg:py-3'>
               {t('hero', 'downloadApp')}
             </button>
           </div>
@@ -50,7 +52,21 @@ const Hero = () => {
       <div className='w-full lg:mx-11'>
         <div className='mb-4 flex items-center justify-between px-1'>
           <h4 className='text-lg font-semibold text-white sm:text-xl'>{t('hero', 'featuredBrands')}</h4>
-          <Link to='/brands' className='text-sm font-medium text-[#ec5800] transition hover:text-[#ff7f2a]'>{t('hero', 'viewAllBrands')}</Link>
+          <div className='relative inline-flex overflow-hidden rounded-full shrink-0'>
+            {/* Rotating orange border glow */}
+            <div
+              className='absolute inset-0 animate-border-spin rounded-full'
+              style={{
+                background: 'conic-gradient(from 0deg, transparent 30%, #ec5800 50%, transparent 70%)',
+              }}
+            />
+            {/* Inner pill content */}
+            <div className='relative m-[2px] rounded-full bg-[#0A0B0F] px-5 py-2 lg:px-6 lg:py-2.5'>
+              <Link to='/brands' className='text-sm font-bold text-[#ec5800] transition hover:text-[#ff7f2a] whitespace-nowrap lg:text-base'>
+                {t('hero', 'viewAllBrands')}
+              </Link>
+            </div>
+          </div>
         </div>
 
         <div className='hero-marquee-container rounded-[20px] border border-white/10 bg-black/20 p-3 shadow-2xl shadow-black/20'>

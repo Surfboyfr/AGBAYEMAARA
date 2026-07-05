@@ -1,4 +1,3 @@
-import React from 'react'
 import Image from '../assets/About-img.jfif'
 import { useLanguage } from '../Context/LanguageContext'
 

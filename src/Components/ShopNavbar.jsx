@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { User, ShoppingBag, Menu, X, Eye, EyeOff, ArrowRight, Mail, Lock, ChevronDown } from 'lucide-react'
+import { User, ShoppingBag, Menu, X, Eye, EyeOff, ArrowRight, Mail, Lock } from 'lucide-react'
 import { useCart } from '../Context/CartContext'
 import { useLanguage } from '../Context/LanguageContext'
+import LanguageSwitcher from './LanguageSwitcher'
 
 // ── Sign-in Modal ─────────────────────────────────────────────────────────────
 const AuthModal = ({ isOpen, onClose }) => {
@@ -208,25 +209,12 @@ const ShopNavbar = () => {
   const { t, language, setLanguage, languages } = useLanguage()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [authModalOpen, setAuthModalOpen] = useState(false)
-  const [languageMenuOpen, setLanguageMenuOpen] = useState(false)
-  const languageMenuRef = useRef(null)
 
   // Close mobile menu on resize to desktop
   useEffect(() => {
     const handler = () => { if (window.innerWidth >= 768) setMobileMenuOpen(false) }
     window.addEventListener('resize', handler)
     return () => window.removeEventListener('resize', handler)
-  }, [])
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (languageMenuRef.current && !languageMenuRef.current.contains(event.target)) {
-        setLanguageMenuOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
   const navLinks = [
@@ -241,8 +229,8 @@ const ShopNavbar = () => {
         <div className="max-w-7xl mx-auto px-5 flex items-center justify-between h-16">
 
           {/* Logo */}
-          <Link to="/shop" className="text-white text-xl font-bold tracking-tight hover:text-white/80 transition-colors">
-            Agbayemaara
+          <Link to="/shop" className="text-white text-xl font-bold tracking-wide hover:text-white/80 transition-colors">
+            Àgbáyémáarà
           </Link>
 
           {/* Desktop nav links */}
@@ -251,7 +239,7 @@ const ShopNavbar = () => {
               <Link
                 key={label}
                 to={to}
-                className="text-white/60 hover:text-white text-sm font-medium transition-colors duration-200"
+                className="relative text-white/60 hover:text-white text-sm font-medium transition-colors duration-200 after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-[#ec5800] after:transition-all after:duration-300 hover:after:w-full"
               >
                 {label}
               </Link>
@@ -260,31 +248,10 @@ const ShopNavbar = () => {
 
           {/* Right icons */}
           <div className="flex items-center gap-1">
-            <div className="relative" ref={languageMenuRef}>
-              <button
-                onClick={() => setLanguageMenuOpen((prev) => !prev)}
-                className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2.5 py-2 text-sm text-white/70 hover:text-white"
-              >
-                <span>{languages.find((item) => item.code === language)?.label ?? 'English'}</span>
-                <ChevronDown size={16} />
-              </button>
-              {languageMenuOpen && (
-                <div className="absolute right-0 mt-2 w-32 rounded-xl border border-white/10 bg-[#12141A] p-2 shadow-xl">
-                  {languages.map((item) => (
-                    <button
-                      key={item.code}
-                      onClick={() => {
-                        setLanguage(item.code)
-                        setLanguageMenuOpen(false)
-                      }}
-                      className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition ${language === item.code ? 'bg-white/10 text-white' : 'text-white/70 hover:bg-white/10 hover:text-white'}`}
-                    >
-                      <span>{item.label}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            <LanguageSwitcher
+              buttonClassName="flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2.5 py-2 text-sm text-white/70 hover:text-white"
+              dropdownWidth="w-32"
+            />
 
             {/* Cart */}
             <button
@@ -332,7 +299,7 @@ const ShopNavbar = () => {
                 key={label}
                 to={to}
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-white/60 hover:text-white text-sm font-medium py-2.5 px-3 rounded-lg hover:bg-white/5 transition-all duration-200"
+                className="relative text-white/60 hover:text-white text-sm font-medium py-2.5 px-3 rounded-lg hover:bg-white/5 transition-all duration-200 after:absolute after:bottom-0 after:left-3 after:h-[2px] after:w-0 after:bg-[#ec5800] after:transition-all after:duration-300 hover:after:w-[calc(100%-24px)]"
               >
                 {label}
               </Link>

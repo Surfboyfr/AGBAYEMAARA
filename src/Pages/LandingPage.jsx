@@ -7,15 +7,15 @@ import Contact from '../Components/Contact'
 
 const LandingPage = () => {
   return (
-   <section className='bg-radial from-black via-zinc-900 to-zinc-900] w-full'>   
+    <section className='bg-radial from-black via-zinc-900 to-zinc-900] w-full'>
       <NavBar />
       <Hero />
-        <Marquee />
+      <Marquee />
       <About />
       <Contact />
       <Footer />
-   </section>
-   )
+    </section>
+  )
 }
 
 export default LandingPage

@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Package, ShoppingBag, Star } from 'lucide-react'
+import { ArrowLeft, ShoppingBag, Star } from 'lucide-react'
 import { getBrandBySlug, getProductsByBrandSlug } from '../data/brands'
 import ProductCard from '../Components/ProductCard'
 import { useLanguage } from '../Context/LanguageContext'
@@ -47,24 +47,27 @@ const BrandDetails = () => {
               </div>
             </div>
 
-            <div className="rounded-3xl bg-black/20 border border-white/15 p-6 backdrop-blur-md shadow-2xl">
-              <p className='text-sm text-white/70 mb-4'>{t('brandDetails', 'quickOverview')}</p>
-              <div className="space-y-4 text-white">
-                <div className="flex items-start gap-3">
-                  <Package size={18} className="mt-0.5 text-white/80" />
-                  <div>
-                    <p className='font-semibold'>{t('brandDetails', 'selectedProducts')}</p>
-                    <p className='text-sm text-white/70'>{brand.productCount} {t('brandDetails', 'selectedProductsText')}</p>
+            <div className="relative overflow-hidden rounded-3xl border border-white/15 bg-black/20 shadow-2xl">
+              {brand.featuredProduct ? (
+                <>
+                  <img
+                    src={brand.featuredProduct.productImage}
+                    alt={brand.name}
+                    className="h-64 w-full object-cover transition duration-500 hover:scale-105 lg:h-72"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-4 backdrop-blur-sm">
+                    <p className='text-sm font-semibold text-white/90'>{t('brandDetails', 'featuredProduct')}</p>
+                    <p className='text-xs text-white/70 mt-1'>{brand.featuredProduct.productName}</p>
                   </div>
+                </>
+              ) : (
+                <div className="flex h-64 items-center justify-center lg:h-72">
+                  <span className="text-6xl font-black tracking-tight text-white/30">
+                    {brand.name.charAt(0)}
+                  </span>
                 </div>
-                <div className="flex items-start gap-3">
-                  <ArrowRight size={18} className="mt-0.5 text-white/80" />
-                  <div>
-                    <p className='font-semibold'>{t('brandDetails', 'browseByBrand')}</p>
-                    <p className='text-sm text-white/70'>{t('brandDetails', 'browseByBrandText')}</p>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

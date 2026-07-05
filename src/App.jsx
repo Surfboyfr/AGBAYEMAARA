@@ -9,35 +9,27 @@ import ProductDetails from './Pages/ProductDetails'
 import BrandDetails from './Pages/BrandDetails'
 
 function App() {
-
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
-            <Route
-              index
-              element={
-                <section className='bg-[#0A0B0F] w-full'>
-                    <LandingPage />
-                </section>
-              }
-            />
-            <Route path="brands" element={<Brands />} />
-            <Route path="brands/:brandSlug" element={<BrandDetails />} />
+        <Route
+          index
+          element={
+            <section className='bg-[#0A0B0F] w-full'>
+              <LandingPage />
+            </section>
+          }
+        />
+        <Route path="brands" element={<Brands />} />
+        <Route path="brands/:brandSlug" element={<BrandDetails />} />
       </Route>
-      
-
-
       <Route path="/shop" element={<ShopLayout />}>
-            {/* Homepage inside shop */}
-              <Route index element={<ShopHome />} />
-              <Route path="product/:productId" element={<ProductDetails />} />
+        <Route index element={<ShopHome />} />
+        <Route path="product/:productId" element={<ProductDetails />} />
       </Route>
-        
-      </Routes>
-  
+    </Routes>
   )
 }
- 
+
 export default App
 
-     

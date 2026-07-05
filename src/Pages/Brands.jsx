@@ -61,13 +61,23 @@ const BrandsPage = () => {
             <Link
               key={brand.slug}
               to={`/brands/${brand.slug}`}
-              className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/10"
+              className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/10 border-b-2 border-b-transparent hover:border-b-[#ec5800]"
             >
               <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${brand.accent}`} />
-              <div className={`mb-5 flex h-28 items-center justify-center rounded-2xl bg-gradient-to-br ${brand.accent} shadow-lg`}>
-                <span className="text-4xl font-black tracking-tight text-white drop-shadow-lg">
-                  {brand.name.charAt(0)}
-                </span>
+              <div className="mb-5 h-28 overflow-hidden rounded-2xl shadow-lg">
+                {brand.featuredProduct ? (
+                  <img
+                    src={brand.featuredProduct.productImage}
+                    alt={brand.name}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+                  />
+                ) : (
+                  <div className={`flex h-full items-center justify-center bg-gradient-to-br ${brand.accent}`}>
+                    <span className="text-4xl font-black tracking-tight text-white drop-shadow-lg">
+                      {brand.name.charAt(0)}
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-3">

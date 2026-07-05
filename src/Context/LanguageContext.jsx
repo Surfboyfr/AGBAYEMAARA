@@ -24,11 +24,12 @@ const translations = {
       featuredBrands: 'Featured Brands',
       viewAllBrands: 'View all brands',
       exploreBrand: 'Explore brand',
+      joinWaitlist: 'Join the Waitlist',
     },
     about: {
       heading: 'About Us',
-      body1: 'Agbayemaara is a fashion e-commerce platform that celebrates African talent and culture. We are dedicated to showcasing the best of African fashion, connecting customers with unique and stylish pieces from across the continent. Our mission is to empower African designers and artisans while providing our customers with an exceptional shopping experience.',
-      body2: 'At Agbayemaara, we believe in the power of fashion to tell stories and express individuality. We curate a diverse collection of clothing, accessories, and footwear that reflects the rich tapestry of African culture and creativity. Whether you are looking for traditional prints, contemporary designs, or statement pieces, you will find it all here.',
+      body1: 'Àgbáyémáarà is a fashion e-commerce platform that celebrates African talent and culture. We are dedicated to showcasing the best of African fashion, connecting customers with unique and stylish pieces from across the continent. Our mission is to empower African designers and artisans while providing our customers with an exceptional shopping experience.',
+      body2: 'At Àgbáyémáarà, we believe in the power of fashion to tell stories and express individuality. We curate a diverse collection of clothing, accessories, and footwear that reflects the rich tapestry of African culture and creativity. Whether you are looking for traditional prints, contemporary designs, or statement pieces, you will find it all here.',
     },
     contact: {
       heading: 'Contact Us',
@@ -42,7 +43,7 @@ const translations = {
       send: 'Send Message',
     },
     footer: {
-      rights: '© 2026 Agbayemaara. All rights reserved.',
+      rights: '© 2026 Àgbáyémáarà. All rights reserved.',
       privacy: 'Privacy Policy',
       terms: 'Terms of Service',
       follow: 'Follow us on social media',
@@ -114,6 +115,13 @@ const translations = {
       noProducts: 'No products are currently listed for this brand.',
       productsLabel: 'Products',
       collectionLabel: 'collection',
+      featuredProduct: 'Featured product',
+    },
+    discountPopup: {
+      heading: 'Flash Sale!',
+      subheading: 'Get 25% off selected items — today only',
+      limitedOffer: 'Limited time offer',
+      cta: 'Start Shopping',
     },
     cart: {
       title: 'Your Cart',
@@ -170,6 +178,7 @@ const translations = {
       featuredBrands: 'Marcas destacadas',
       viewAllBrands: 'Ver todas las marcas',
       exploreBrand: 'Explorar marca',
+      joinWaitlist: 'Únete a la lista de espera',
     },
     about: {
       heading: 'Sobre nosotros',
@@ -260,6 +269,13 @@ const translations = {
       noProducts: 'Actualmente no hay productos listados para esta marca.',
       productsLabel: 'Productos',
       collectionLabel: 'colección',
+      featuredProduct: 'Producto destacado',
+    },
+    discountPopup: {
+      heading: '¡Venta Flash!',
+      subheading: 'Obtén 25% de descuento en artículos seleccionados — solo hoy',
+      limitedOffer: 'Oferta por tiempo limitado',
+      cta: 'Empezar a comprar',
     },
     cart: {
       title: 'Tu carrito',
@@ -269,10 +285,10 @@ const translations = {
       shipping: 'Envío e impuestos calculados al finalizar la compra',
       checkout: 'Pagar',
       clearCart: 'Vaciar carrito',
-      brandFallback: 'Agbayemaara',
+      brandFallback: 'Àgbáyémáarà',
     },
     auth: {
-      brand: 'Agbayemaara',
+      brand: 'Àgbáyémáarà',
       welcomeBack: 'Bienvenido de nuevo',
       createAccount: 'Crear cuenta',
       signInSubtitle: 'Inicia sesión para ver tus pedidos y tu lista de deseos.',
@@ -316,11 +332,12 @@ const translations = {
       featuredBrands: 'Marques en vedette',
       viewAllBrands: 'Voir toutes les marques',
       exploreBrand: 'Explorer la marque',
+      joinWaitlist: 'Rejoindre la liste d\u2019attente',
     },
     about: {
       heading: 'À propos de nous',
-      body1: 'Agbayemaara est une plateforme e-commerce de mode qui célèbre le talent et la culture africains. Nous nous consacrons à mettre en valeur le meilleur de la mode africaine, en connectant les clients à des pièces uniques et élégantes de tout le continent. Notre mission est de donner de la voix aux créateurs et artisans africains tout en offrant à nos clients une expérience d’achat exceptionnelle.',
-      body2: 'Chez Agbayemaara, nous croyons au pouvoir de la mode pour raconter des histoires et exprimer l’individualité. Nous sélectionnons une collection variée de vêtements, accessoires et chaussures qui reflète la richesse de la culture et de la créativité africaines. Que vous recherchiez des imprimés traditionnels, des designs contemporains ou des pièces marquantes, vous trouverez tout ici.',
+      body1: 'Àgbáyémáarà est une plateforme e-commerce de mode qui célèbre le talent et la culture africains. Nous nous consacrons à mettre en valeur le meilleur de la mode africaine, en connectant les clients à des pièces uniques et élégantes de tout le continent. Notre mission est de donner de la voix aux créateurs et artisans africains tout en offrant à nos clients une expérience d’achat exceptionnelle.',
+      body2: 'Chez Àgbáyémáarà, nous croyons au pouvoir de la mode pour raconter des histoires et exprimer l’individualité. Nous sélectionnons une collection variée de vêtements, accessoires et chaussures qui reflète la richesse de la culture et de la créativité africaines. Que vous recherchiez des imprimés traditionnels, des designs contemporains ou des pièces marquantes, vous trouverez tout ici.',
     },
     contact: {
       heading: 'Contactez-nous',
@@ -334,7 +351,7 @@ const translations = {
       send: 'Envoyer le message',
     },
     footer: {
-      rights: '© 2026 Agbayemaara. Tous droits réservés.',
+      rights: '© 2026 Àgbáyémáarà. Tous droits réservés.',
       privacy: 'Politique de confidentialité',
       terms: 'Conditions d’utilisation',
       follow: 'Suivez-nous sur les réseaux sociaux',
@@ -406,6 +423,13 @@ const translations = {
       noProducts: 'Aucun produit n’est actuellement listé pour cette marque.',
       productsLabel: 'Produits',
       collectionLabel: 'collection',
+      featuredProduct: 'Produit vedette',
+    },
+    discountPopup: {
+      heading: 'Vente Flash!',
+      subheading: 'Obtenez 25% de réduction sur des articles sélectionnés — aujourd\u2019hui seulement',
+      limitedOffer: 'Offre à durée limitée',
+      cta: 'Commencer les achats',
     },
     cart: {
       title: 'Votre panier',

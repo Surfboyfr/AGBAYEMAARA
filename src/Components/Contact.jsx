@@ -1,4 +1,3 @@
-import React from 'react'
 import { useLanguage } from '../Context/LanguageContext'
 
 const Contact = () => {
@@ -12,13 +11,13 @@ const Contact = () => {
         <div className='flex flex-col items-center gap-3 mt-5'>
           <p className='text-gray-300'>
             {t('contact', 'email')}{' '}
-            <a href='mailto:info@agbayemaara.com' className='text-[#988558] hover:underline'>
+            <a href='mailto:info@agbayemaara.com' className='text-[#ec5800] hover:underline'>
               info@agbayemaara.com
             </a>
           </p>
           <p className='text-gray-300'>
             {t('contact', 'phone')}{' '}
-            <a href='tel:+1234567890' className='text-[#988558] hover:underline'>
+            <a href='tel:+1234567890' className='text-[#ec5800] hover:underline'>
               +1 (234) 567-890
             </a>
           </p>
@@ -27,10 +26,10 @@ const Contact = () => {
       </div>
       <div className='shrink-0 w-full lg:w-1/2 mt-5 lg:mt-10 rounded-lg'>
         <form className='flex flex-col items-center gap-5 mt-10 px-5 lg:px-10'>
-          <input type='text' placeholder={t('contact', 'namePlaceholder')} className='border border-white rounded-md py-2 px-3 w-full lg:w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder:text-gray-500' />
-          <input type='email' placeholder={t('contact', 'emailPlaceholder')} className='border border-white rounded-md py-2 px-3 w-full lg:w-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder:text-gray-500' />
-          <textarea placeholder={t('contact', 'messagePlaceholder')} className='border border-white rounded-md py-2 px-3 w-full lg:w-full h-32 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder:text-gray-500' />
-          <button type='submit' className='bg-[#ec5800] text-white px-4 py-2 rounded hover:bg-blue-600'>
+          <input type='text' placeholder={t('contact', 'namePlaceholder')} className='border border-white rounded-md py-2 px-3 w-full lg:w-full focus:outline-none focus:ring-2 focus:ring-[#ec5800] text-white placeholder:text-gray-500' />
+          <input type='email' placeholder={t('contact', 'emailPlaceholder')} className='border border-white rounded-md py-2 px-3 w-full lg:w-full focus:outline-none focus:ring-2 focus:ring-[#ec5800] text-white placeholder:text-gray-500' />
+          <textarea placeholder={t('contact', 'messagePlaceholder')} className='border border-white rounded-md py-2 px-3 w-full lg:w-full h-32 focus:outline-none focus:ring-2 focus:ring-[#ec5800] text-white placeholder:text-gray-500' />
+          <button type='submit' className='bg-[#ec5800] text-white px-4 py-2 rounded hover:bg-[#d04f00]'>
             {t('contact', 'send')}
           </button>
         </form>
