@@ -267,10 +267,10 @@ const ShopNavbar = () => {
               )}
             </button>
 
-            {/* Profile */}
+            {/* Profile - hidden on mobile, shown in the mobile menu below */}
             <button
               onClick={() => setAuthModalOpen(true)}
-              className="p-2.5 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
+              className="hidden md:block p-2.5 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
               aria-label={t('auth', 'signInAction')}
             >
               <User size={20} />
@@ -290,7 +290,7 @@ const ShopNavbar = () => {
         {/* Mobile dropdown menu */}
         <div
           className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out border-t border-white/5 ${
-            mobileMenuOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
+            mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
           }`}
         >
           <div className="px-5 py-3 flex flex-col gap-1">
