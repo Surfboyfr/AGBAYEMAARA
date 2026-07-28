@@ -20,7 +20,9 @@ const Footer = () => {
         <p className='text-center text-white py-5'>{t('footer', 'follow')}</p>
         <div className='flex justify-center gap-8'>
           <FaFacebook className='text-white text-2xl transition-all duration-300 hover:text-[#1877F2] hover:scale-110' />
-          <FaXTwitter className='text-white text-2xl transition-all duration-300 hover:text-gray-300 hover:scale-110' />
+          <a href='https://x.com/agbayemaara?s=11' target='_blank' rel='noopener noreferrer'>
+            <FaXTwitter className='text-white text-2xl transition-all duration-300 hover:text-gray-300 hover:scale-110' />
+          </a>
           <FaInstagram className='text-white text-2xl transition-all duration-300 hover:text-[#E1306C] hover:scale-110' />
           <a href='https://www.tiktok.com/@agbayemaara?_r=1&_t=ZS-98PsTPNlDui' target='_blank' rel='noopener noreferrer'>
             <SiTiktok className='text-white text-2xl transition-all duration-300 hover:text-[#00F2EA] hover:scale-110' />
