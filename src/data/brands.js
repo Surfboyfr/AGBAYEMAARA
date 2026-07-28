@@ -45,12 +45,16 @@ const brandProfiles = [
 
 export const brands = brandProfiles.map((brand) => {
   const brandProducts = products.filter((product) => product.brand === brand.name)
+  const saleProducts = brandProducts.filter((p) => p.onSale)
 
   return {
     ...brand,
     slug: brand.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
     productCount: brandProducts.length,
     featuredProduct: brandProducts[0],
+    hasSale: saleProducts.length > 0,
+    saleProductCount: saleProducts.length,
+    saleProducts,
   }
 })
 

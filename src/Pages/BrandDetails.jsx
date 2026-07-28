@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft, ShoppingBag, Star } from 'lucide-react'
+import { ArrowLeft, ShoppingBag, Star, Tag } from 'lucide-react'
 import { getBrandBySlug, getProductsByBrandSlug } from '../data/brands'
 import ProductCard from '../Components/ProductCard'
 import { useLanguage } from '../Context/LanguageContext'
@@ -9,6 +9,9 @@ const BrandDetails = () => {
   const brand = getBrandBySlug(brandSlug)
   const brandProducts = getProductsByBrandSlug(brandSlug)
   const { t } = useLanguage()
+
+  const saleProducts = brandProducts.filter((p) => p.onSale)
+  const nonSaleProducts = brandProducts.filter((p) => !p.onSale)
 
   if (!brand) {
     return (
@@ -79,16 +82,47 @@ const BrandDetails = () => {
             <p className='text-xs uppercase tracking-[0.3em] text-white/40 mb-2'>{t('brandDetails', 'productsLabel')}</p>
             <h2 className='text-2xl sm:text-3xl font-bold'>{brand.name} {t('brandDetails', 'collectionLabel')}</h2>
           </div>
+          {brand.hasSale && (
+            <span className="rounded-full bg-[#ec5800]/10 text-[#ec5800] text-xs font-bold px-3 py-1.5 flex items-center gap-1.5">
+              <Tag size={13} />
+              {brand.saleProductCount} {t('brandDetails', 'onSaleProducts')}
+            </span>
+          )}
           <p className='text-sm text-white/50 hidden sm:block'>{brandProducts.length} {t('brandDetails', 'productsFound')}</p>
         </div>
 
-        {brandProducts.length === 0 ? (
+        {/* Sale products section */}
+        {saleProducts.length > 0 && (
+          <div className='mb-10'>
+            <div className='flex items-center gap-3 mb-6'>
+              <div className='h-6 w-1 bg-[#ec5800] rounded-full'></div>
+              <h3 className='text-lg font-bold flex items-center gap-2'>
+                <Tag size={16} className='text-[#ec5800]' />
+                {t('brandDetails', 'onSaleHeading')}
+              </h3>
+              <span className='bg-[#ec5800]/10 text-[#ec5800] text-xs font-semibold px-3 py-1 rounded-full'>{saleProducts.length}</span>
+            </div>
+            <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6'>
+              {saleProducts.map((product) => (
+                <div key={product.id} className='relative'>
+                  <div className='absolute top-3 left-3 z-10 bg-[#ec5800] text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1'>
+                    <Tag size={10} />
+                    -25%
+                  </div>
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {(nonSaleProducts.length === 0 && saleProducts.length === 0) ? (
           <div className="rounded-3xl border border-white/10 bg-white/5 p-8 text-center text-white/70">
             {t('brandDetails', 'noProducts')}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-            {brandProducts.map((product) => (
+            {nonSaleProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>

@@ -1,4 +1,4 @@
-import Image from '../assets/About-img.jfif'
+import Image from '../assets/image8.jfif'
 import { useLanguage } from '../Context/LanguageContext'
 
 const About = () => {

@@ -3,6 +3,7 @@ import DiscountPopup from '../Components/DiscountPopup'
 import { useState } from 'react'
 import { products } from '../data/products'
 import { useLanguage } from '../Context/LanguageContext'
+import { Tag } from 'lucide-react'
 
 const ShopHome = () => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -53,13 +54,18 @@ const ShopHome = () => {
     return matchesSearch && matchesCategory && matchesGender
   })
 
+  const [showOnSaleOnly, setShowOnSaleOnly] = useState(false)
+
+  const newInProducts = products.filter((product) => product.isNew)
+  const onSaleProducts = products.filter((product) => product.onSale)
+
   return (
     <>
       <DiscountPopup />
-      <section>
-      <div className='flex flex-col gap-5 lg:w-full mb-6 lg:mb-0 p-5'>
-        <h3 className='font-bold text-2xl text-black'>{t('shopHome', 'title')}</h3>
-        <div className='lg:w-full ml-2 p-3'>
+
+      {/* Search & Filters Section — always at top */}
+      <section className='flex flex-col gap-5 w-full p-5 pt-8'>
+        <div className='w-full ml-2 p-3'>
           <input
             type='search'
             value={searchTerm}
@@ -76,9 +82,9 @@ const ShopHome = () => {
             return (
               <button
                 key={category.value}
-                onClick={() => setActiveCategory(category.value)}
+                onClick={() => { setActiveCategory(category.value); setShowOnSaleOnly(false) }}
                 className={`rounded-full px-5 py-1.5 text-xs sm:text-sm font-medium transition whitespace-nowrap ${
-                  isActive
+                  isActive && !showOnSaleOnly
                     ? 'bg-[#0A0B0F] text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
@@ -93,9 +99,9 @@ const ShopHome = () => {
             return (
               <button
                 key={filter.value}
-                onClick={() => setActiveGender(filter.value)}
+                onClick={() => { setActiveGender(filter.value); setShowOnSaleOnly(false) }}
                 className={`rounded-full px-5 py-1.5 text-xs sm:text-sm font-medium transition whitespace-nowrap ${
-                  isActive
+                  isActive && !showOnSaleOnly
                     ? 'bg-[#0A0B0F] text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
@@ -104,10 +110,74 @@ const ShopHome = () => {
               </button>
             )
           })}
+          <span className='hidden sm:inline text-gray-300 text-sm'>|</span>
+          <button
+            onClick={() => setShowOnSaleOnly(!showOnSaleOnly)}
+            className={`rounded-full px-5 py-1.5 text-xs sm:text-sm font-medium transition whitespace-nowrap flex items-center gap-1.5 ${
+              showOnSaleOnly
+                ? 'bg-[#ec5800] text-white shadow-md'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            <Tag size={14} />
+            {t('shopHome', 'onSale')}
+          </button>
         </div>
-      </div>
+      </section>
 
-      <div id='product-grid' className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-5 m-5'>
+      {/* On Sale Section (when toggled) */}
+      {showOnSaleOnly && onSaleProducts.length > 0 && (
+        <section className='px-5 py-4'>
+          <div className='flex items-center gap-3 mb-6'>
+            <div className='h-8 w-1 bg-[#ec5800] rounded-full'></div>
+            <h2 className='font-bold text-2xl text-black tracking-tight'>{t('shopHome', 'onSale')}</h2>
+            <span className='bg-[#ec5800]/10 text-[#ec5800] text-xs font-semibold px-3 py-1 rounded-full'>{onSaleProducts.length}</span>
+          </div>
+          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
+            {onSaleProducts.map((product) => (
+              <div key={product.id} className='relative'>
+                <div className='absolute top-3 left-3 z-10 bg-[#ec5800] text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1'>
+                  <Tag size={10} />
+                  -25%
+                </div>
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* New In Section */}
+      {newInProducts.length > 0 && (
+        <section className='px-5 py-4'>
+          <div className='flex items-center gap-3 mb-6'>
+            <div className='h-8 w-1 bg-[#ec5800] rounded-full'></div>
+            <h2 className='font-bold text-2xl text-black tracking-tight'>{t('shopHome', 'newIn')}</h2>
+            <span className='bg-[#ec5800]/10 text-[#ec5800] text-xs font-semibold px-3 py-1 rounded-full'>{newInProducts.length}</span>
+          </div>
+          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
+            {newInProducts.map((product) => (
+              <div key={product.id} className='relative'>
+                <div className='absolute top-3 left-3 z-10 bg-[#ec5800] text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-md'>
+                  NEW
+                </div>
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Separator + All Products Grid */}
+      {!showOnSaleOnly && (
+        <>
+          <div className='px-5'>
+            <div className='flex items-center gap-3 py-4'>
+              <div className='h-8 w-1 bg-[#ec5800] rounded-full'></div>
+              <h2 className='font-bold text-2xl text-black tracking-tight'>{t('shopHome', 'title')}</h2>
+            </div>
+          </div>
+          <div id='product-grid' className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-5 m-5'>
         {filteredProducts.length > 0 ? (
           filteredProducts.map((product) => <ProductCard key={product.id} product={product} />)
         ) : (
@@ -116,7 +186,8 @@ const ShopHome = () => {
           </div>
         )}
       </div>
-    </section>
+        </>
+      )}
     </>
   )
 }

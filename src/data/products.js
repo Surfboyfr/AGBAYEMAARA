@@ -39,6 +39,7 @@ const femaleProducts = [
     gender: 'female',
     availability: 'In stock',
     rating: 4.8,
+    onSale: true,
     description:
       'A statement wrap dress cut from vibrant Ankara fabric with a flattering waist tie and flowing silhouette.',
     overview:
@@ -56,6 +57,7 @@ const femaleProducts = [
     gender: 'female',
     availability: 'Limited stock',
     rating: 4.7,
+    onSale: true,
     description:
       'A tailored blazer with rich Adire-inspired patterning and a sharp, modern cut.',
     overview:
@@ -73,6 +75,7 @@ const femaleProducts = [
     gender: 'female',
     availability: 'In stock',
     rating: 4.6,
+    onSale: true,
     description:
       'A high-rise maxi skirt featuring rich Kente-inspired pattern work and a flowing hem.',
     overview:
@@ -90,6 +93,7 @@ const femaleProducts = [
     gender: 'female',
     availability: 'Limited stock',
     rating: 4.8,
+    onSale: true,
     description:
       'A graceful kaftan decorated with bead accents and a fluid silhouette for formal styling.',
     overview:
@@ -107,6 +111,7 @@ const femaleProducts = [
     gender: 'female',
     availability: 'Pre-order',
     rating: 4.9,
+    onSale: true,
     description:
       'A formal gown with delicate lace overlay, structured fit, and refined evening appeal.',
     overview:
@@ -124,6 +129,7 @@ const femaleProducts = [
     gender: 'female',
     availability: 'Pre-order',
     rating: 4.9,
+    isNew: true,
     description:
       'A formal gown with delicate lace overlay, structured fit, and refined evening appeal.',
     overview:
@@ -141,6 +147,7 @@ const femaleProducts = [
     gender: 'female',
     availability: 'Pre-order',
     rating: 4.9,
+    isNew: true,
     description:
       'A formal gown with delicate lace overlay, structured fit, and refined evening appeal.',
     overview:
@@ -158,6 +165,7 @@ const femaleProducts = [
     gender: 'female',
     availability: 'Pre-order',
     rating: 4.9,
+    isNew: true,
     description:
       'A formal gown with delicate lace overlay, structured fit, and refined evening appeal.',
     overview:
@@ -175,6 +183,7 @@ const femaleProducts = [
     gender: 'female',
     availability: 'Pre-order',
     rating: 4.9,
+    isNew: true,
     description:
       'A formal gown with delicate lace overlay, structured fit, and refined evening appeal.',
     overview:
@@ -255,6 +264,7 @@ const maleProducts = [
     gender: 'male',
     availability: 'In stock',
     rating: 4.7,
+    onSale: true,
     description: 'A crisp tailored shirt inspired by Kente geometry and rich earthy tones.',
     overview: 'Styled for polished events, smart casual wear, and elevated everyday dressing.',
     details: ['Tailored fit', 'Button-down front', 'Premium cotton blend'],
@@ -345,6 +355,7 @@ const maleProducts = [
     gender: 'male',
     availability: 'Limited stock',
     rating: 4.7,
+    onSale: true,
     description: 'A bomber jacket with vibrant Ankara panels and a modern streetwear silhouette.',
     overview: 'Perfect for layering over tees or shirts for a bold statement in casual settings.',
     details: ['Bomber cut', 'Ankara paneling', 'Ribbed cuffs and hem'], 
@@ -405,6 +416,7 @@ const maleProducts = [
     gender: 'male',
     availability: 'In stock',
     rating: 4.7,
+    isNew: true,
     description: 'A stylish vest with heritage-inspired patterns and a tailored fit.',
     overview: 'Perfect for adding a touch of cultural flair to your casual or semi-formal outfits.',
     details: ['Tailored fit', 'Heritage pattern', 'Durable fabric'],
@@ -420,6 +432,7 @@ const maleProducts = [
     gender: 'male',
     availability: 'Limited stock',
     rating: 4.8,
+    isNew: true,
     description: 'A trendy bomber jacket with vibrant Ankara prints and a relaxed fit.',
     overview: 'Ideal for casual outings, layering, or adding a bold statement to your streetwear.',
     details: ['Relaxed fit', 'Ankara print', 'Durable fabric'],
@@ -435,6 +448,7 @@ const maleProducts = [
     gender: 'male',
     availability: 'In stock',
     rating: 4.9,
+    isNew: true,
     description: 'A sophisticated blazer with traditional Kente-inspired patterning and a tailored fit.',
     overview: 'Ideal for formal occasions, business meetings, or adding a touch of cultural elegance to your wardrobe.',
     details: ['Tailored fit', 'Structured shoulders', 'Premium lining'],
@@ -560,6 +574,8 @@ const unisexProducts = [
     gender: 'unisex',
     availability: 'In stock',
     rating: 4.9,
+    isNew: true,
+    onSale: true,
     description:
       'A bold one-piece jumpsuit with a relaxed fit, defined waist, and energetic wax-print finish.',
     overview:
@@ -577,6 +593,7 @@ const unisexProducts = [
     gender: 'unisex',
     availability: 'Made to order',
     rating: 5.0,
+    isNew: true,
     description:
       'A modern Agbada set with flowing layers, refined trim, and ceremonial presence.',
     overview:
@@ -594,6 +611,7 @@ const unisexProducts = [
     gender: 'unisex',
     availability: 'In stock',
     rating: 4.5,
+    isNew: true,
     description:
       'A casual Dashiki-inspired tee with clean tailoring and a relaxed everyday fit.',
     overview:
@@ -611,6 +629,7 @@ const unisexProducts = [
   gender: 'unisex',
   availability: 'In stock',
   rating: 4.7,
+  isNew: true,
   description: 'Comfortable sneakers with African-inspired print.',
   overview: 'Great for casual outfits and daily wear.',
   details: ['Cushioned sole', 'Breathable', 'Durable'],

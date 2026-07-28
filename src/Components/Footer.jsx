@@ -22,7 +22,9 @@ const Footer = () => {
           <FaFacebook className='text-white text-2xl transition-all duration-300 hover:text-[#1877F2] hover:scale-110' />
           <FaXTwitter className='text-white text-2xl transition-all duration-300 hover:text-gray-300 hover:scale-110' />
           <FaInstagram className='text-white text-2xl transition-all duration-300 hover:text-[#E1306C] hover:scale-110' />
-          <SiTiktok className='text-white text-2xl transition-all duration-300 hover:text-[#00F2EA] hover:scale-110' />
+          <a href='https://www.tiktok.com/@agbayemaara?_r=1&_t=ZS-98PsTPNlDui' target='_blank' rel='noopener noreferrer'>
+            <SiTiktok className='text-white text-2xl transition-all duration-300 hover:text-[#00F2EA] hover:scale-110' />
+          </a>
         </div>
 
         <div className='flex justify-center pt-6'>

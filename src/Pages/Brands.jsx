@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, Sparkles, Store, Grid2X2 } from 'lucide-react'
+import { ArrowRight, Sparkles, Store, Grid2X2, Tag } from 'lucide-react'
 import { brands } from '../data/brands'
 import ShopNavbar from '../Components/ShopNavbar'
 import Footer from '../Components/Footer'
@@ -7,6 +7,8 @@ import { useLanguage } from '../Context/LanguageContext'
 
 const BrandsPage = () => {
   const { t } = useLanguage()
+
+  const saleBrands = brands.filter((brand) => brand.hasSale)
 
   return (
     <section className="min-h-screen bg-[#0A0B0F] text-white">
@@ -43,6 +45,69 @@ const BrandsPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Brands on Sale Section */}
+      {saleBrands.length > 0 && (
+        <div className="max-w-7xl mx-auto px-5 pt-10 lg:pt-14">
+          <div className='flex items-center gap-3 mb-6'>
+            <div className='h-8 w-1 bg-[#ec5800] rounded-full'></div>
+            <h2 className='text-2xl sm:text-3xl font-bold'>{t('brandsPage', 'saleBrands')}</h2>
+            <span className='bg-[#ec5800]/10 text-[#ec5800] text-xs font-semibold px-3 py-1 rounded-full'>{saleBrands.length}</span>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+            {saleBrands.map((brand) => (
+              <Link
+                key={brand.slug}
+                to={`/brands/${brand.slug}`}
+                className="group relative overflow-hidden rounded-3xl border border-[#ec5800]/20 bg-[#ec5800]/5 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#ec5800]/40 hover:bg-[#ec5800]/10 border-b-2 border-b-transparent hover:border-b-[#ec5800]"
+              >
+                <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${brand.accent}`} />
+                <div className="absolute top-3 right-3 z-10 bg-[#ec5800] text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
+                  <Tag size={10} />
+                  {t('brandsPage', 'onSaleBadge')}
+                </div>
+                <div className="mb-5 h-28 overflow-hidden rounded-2xl shadow-lg">
+                  {brand.featuredProduct ? (
+                    <img
+                      src={brand.featuredProduct.productImage}
+                      alt={brand.name}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+                    />
+                  ) : (
+                    <div className={`flex h-full items-center justify-center bg-gradient-to-br ${brand.accent}`}>
+                      <span className="text-4xl font-black tracking-tight text-white drop-shadow-lg">
+                        {brand.name.charAt(0)}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className="text-xl font-semibold tracking-tight text-white">{brand.name}</h3>
+                      <p className="mt-1 text-sm text-white/55 leading-6">{brand.tagline}</p>
+                    </div>
+                    <span className="rounded-full border border-[#ec5800]/20 bg-[#ec5800]/10 px-3 py-1 text-xs font-medium text-[#ec5800]">
+                      -25%
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-3 text-sm text-white/55">
+                    <span className="inline-flex items-center gap-2">
+                      <Tag size={15} />
+                      {brand.saleProductCount} {t('brandsPage', 'collection')}
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-white group-hover:text-[#f28500] transition-colors">
+                      {t('brandsPage', 'viewBrand')} <ArrowRight size={15} />
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-5 py-10 lg:py-14">
         <div className="flex items-center justify-between gap-4 mb-8">
@@ -86,9 +151,16 @@ const BrandsPage = () => {
                     <h3 className="text-xl font-semibold tracking-tight text-white">{brand.name}</h3>
                     <p className="mt-1 text-sm text-white/55 leading-6">{brand.tagline}</p>
                   </div>
-                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-white/70">
-                    {brand.productCount}
-                  </span>
+                  {brand.hasSale ? (
+                    <span className="rounded-full bg-[#ec5800]/10 text-[#ec5800] px-3 py-1 text-xs font-bold flex items-center gap-1">
+                      <Tag size={10} />
+                      {t('brandsPage', 'onSaleBadge')}
+                    </span>
+                  ) : (
+                    <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-white/70">
+                      {brand.productCount}
+                    </span>
+                  )}
                 </div>
 
                 <div className="flex items-center justify-between pt-3 text-sm text-white/55">
