@@ -4,15 +4,18 @@ import './index.css'
 import App from './App.jsx'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { CartProvider } from './Context/CartContext'
+import { FollowProvider } from './Context/FollowContext'
 import { LanguageProvider } from './Context/LanguageContext'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Router>
       <CartProvider>
-        <LanguageProvider>
-          <App />
-        </LanguageProvider>
+        <FollowProvider>
+          <LanguageProvider>
+            <App />
+          </LanguageProvider>
+        </FollowProvider>
       </CartProvider>
     </Router>
   </StrictMode>,

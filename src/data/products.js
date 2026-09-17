@@ -37,7 +37,7 @@ const femaleProducts = [
     brand: 'Lisa Folawiyo',
     category: 'Women',
     gender: 'female',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.8,
     onSale: true,
     description:
@@ -55,7 +55,7 @@ const femaleProducts = [
     brand: 'ATAFO',
     category: 'Women',
     gender: 'female',
-    availability: 'Limited stock',
+    availability: { status: 'inStock' },
     rating: 4.7,
     onSale: true,
     description:
@@ -73,7 +73,7 @@ const femaleProducts = [
     brand: 'Andrea Iyamah',
     category: 'Women',
     gender: 'female',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.6,
     onSale: true,
     description:
@@ -91,7 +91,7 @@ const femaleProducts = [
     brand: 'Deola Sagoe',
     category: 'Women',
     gender: 'female',
-    availability: 'Limited stock',
+    availability: { status: 'inStock' },
     rating: 4.8,
     onSale: true,
     description:
@@ -109,7 +109,7 @@ const femaleProducts = [
     brand: 'Wanni Fuga',
     category: 'Women',
     gender: 'female',
-    availability: 'Pre-order',
+    availability: { status: 'madeToOrder', leadTime: '3–4 weeks' },
     rating: 4.9,
     onSale: true,
     description:
@@ -127,7 +127,7 @@ const femaleProducts = [
     brand: 'Orange Culture',
     category: 'Women',
     gender: 'female',
-    availability: 'Pre-order',
+    availability: { status: 'madeToOrder', leadTime: '3–4 weeks' },
     rating: 4.9,
     isNew: true,
     description:
@@ -145,7 +145,7 @@ const femaleProducts = [
     brand: 'Andrea Iyamah',
     category: 'Women',
     gender: 'female',
-    availability: 'Pre-order',
+    availability: { status: 'madeToOrder', leadTime: '3–4 weeks' },
     rating: 4.9,
     isNew: true,
     description:
@@ -163,7 +163,7 @@ const femaleProducts = [
     brand: 'Andrea Iyamah',
     category: 'Women',
     gender: 'female',
-    availability: 'Pre-order',
+    availability: { status: 'madeToOrder', leadTime: '3–4 weeks' },
     rating: 4.9,
     isNew: true,
     description:
@@ -181,7 +181,7 @@ const femaleProducts = [
     brand: 'Orange culture',
     category: 'Women',
     gender: 'female',
-    availability: 'Pre-order',
+    availability: { status: 'madeToOrder', leadTime: '3–4 weeks' },
     rating: 4.9,
     isNew: true,
     description:
@@ -199,7 +199,7 @@ const femaleProducts = [
     brand: 'Lagos Gold',
     category: 'Jewelries',
     gender: 'female',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.8,
     description: 'Elegant gold hoops with a polished finish for everyday luxury.',
     overview: 'Perfect for pairing with both casual looks and evening outfits.',
@@ -214,7 +214,7 @@ const femaleProducts = [
     brand: 'Aso Studio',
     category: 'Shoes',
     gender: 'female',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.7,
     description: 'Comfortable sneakers with bold Ankara-inspired detailing.',
     overview: 'A stylish everyday shoe that brings cultural flair to casual outfits.',
@@ -229,7 +229,7 @@ const femaleProducts = [
     brand: 'Aso Atelier',
     category: 'Hats',
     gender: 'female',
-    availability: 'Limited stock',
+    availability: { status: 'inStock' },
     rating: 4.6,
     description: 'A refined woven fedora designed to elevate your look.',
     overview: 'Ideal for sunny days, special events, and polished weekend outfits.',
@@ -244,7 +244,7 @@ const femaleProducts = [
     brand: 'Aso Carry',
     category: 'Bags',
     gender: 'female',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.7,
     description: 'A compact crossbody bag with polished detailing and everyday practicality.',
     overview: 'Perfect for errands, brunch, and evening plans.',
@@ -262,7 +262,7 @@ const maleProducts = [
     brand: 'M.A.D',
     category: 'Men',
     gender: 'male',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.7,
     onSale: true,
     description: 'A crisp tailored shirt inspired by Kente geometry and rich earthy tones.',
@@ -278,7 +278,7 @@ const maleProducts = [
     brand: 'Aso Oke Studio',
     category: 'Men',
     gender: 'male',
-    availability: 'Limited stock',
+    availability: { status: 'inStock' },
     rating: 4.8,
     description: 'Relaxed joggers with subtle traditional detailing and modern comfort.',
     overview: 'Great for casual wear, travel, and easy styling with a statement tee or shirt.',
@@ -293,7 +293,7 @@ const maleProducts = [
     brand: 'Ashluxe',
     category: 'Men',
     gender: 'male',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.6,
     description: 'A structured jacket with bold Dashiki-inspired embroidery and clean lines.',
     overview: 'Ideal for layering over shirts, tees, or festive outfits when you want extra presence.',
@@ -308,7 +308,7 @@ const maleProducts = [
     brand: 'Yomi Casual',
     category: 'Men',
     gender: 'male',
-    availability: 'Made to order',
+    availability: { status: 'madeToOrder', leadTime: '2–3 weeks' },
     rating: 4.9,
     description: 'A relaxed kaftan-inspired set that balances ceremonial style with modern comfort.',
     overview: 'Perfect for formal gatherings and cultural events with a refined silhouette.',
@@ -323,7 +323,7 @@ const maleProducts = [
     brand: 'Lagos House',
     category: 'Men',
     gender: 'male',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.5,
     description: 'A colorful short-sleeve shirt with bold printwork and a relaxed fit.',
     overview: 'Easy to style for warm days, casual outings, and weekend brunches.',
@@ -338,7 +338,7 @@ const maleProducts = [
     brand: 'Bantu Tailor',
     category: 'Men',
     gender: 'male',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.8,
     description: 'A tailored trouser with a sharp silhouette and understated heritage detailing.',
     overview: 'A reliable staple for workwear, events, and polished casual outfits.',
@@ -353,7 +353,7 @@ const maleProducts = [
     brand: 'ATAFO',
     category: 'Men',
     gender: 'male',
-    availability: 'Limited stock',
+    availability: { status: 'inStock' },
     rating: 4.7,
     onSale: true,
     description: 'A bomber jacket with vibrant Ankara panels and a modern streetwear silhouette.',
@@ -369,7 +369,7 @@ const maleProducts = [
     brand: 'M.A.D',
     category: 'Men',
     gender: 'male',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.9,  
   description: 'A sharp blazer with Kente-inspired patterning and a tailored fit for formal occasions.',
     overview: 'Ideal for weddings, cultural events, and occasions where a polished presence is key.',
@@ -384,7 +384,7 @@ const maleProducts = [
     brand: 'Ashluxe',
     category: 'Men',
     gender: 'male',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.6,
     description: 'A cozy hoodie with traditional Adire patterns and a relaxed fit.',
     overview: 'Perfect for casual outings, lounging, or layering during cooler weather.',
@@ -399,7 +399,7 @@ const maleProducts = [
     brand: 'Lagos House',
     category: 'Men',
     gender: 'male',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.5,
     description: 'A pair of stylish shorts with vibrant Nigerian print designs.',
     overview: 'Perfect for casual wear, beach days, or layering during warmer months.',
@@ -414,7 +414,7 @@ const maleProducts = [
     brand: 'Lagos House',
     category: 'Men',
     gender: 'male',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.7,
     isNew: true,
     description: 'A stylish vest with heritage-inspired patterns and a tailored fit.',
@@ -430,7 +430,7 @@ const maleProducts = [
     brand: 'ATAFO',
     category: 'Men',
     gender: 'male',
-    availability: 'Limited stock',
+    availability: { status: 'inStock' },
     rating: 4.8,
     isNew: true,
     description: 'A trendy bomber jacket with vibrant Ankara prints and a relaxed fit.',
@@ -446,7 +446,7 @@ const maleProducts = [
     brand: 'M.A.D',
     category: 'Men',
     gender: 'male',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.9,
     isNew: true,
     description: 'A sophisticated blazer with traditional Kente-inspired patterning and a tailored fit.',
@@ -462,7 +462,7 @@ const maleProducts = [
     brand: 'Ashluxe',
     category: 'Men',
     gender: 'male',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.6,
     description: 'A cozy hoodie with traditional Adire patterns and a relaxed fit.',
     overview: 'Perfect for casual outings, lounging, or layering during cooler weather.',
@@ -477,7 +477,7 @@ const maleProducts = [
     brand: 'Lagos House',
     category: 'Men',
     gender: 'male',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.5,
     description: 'Stylish shorts with vibrant Nigerian print designs and a comfortable fit.',
     overview: 'Perfect for casual wear, beach days, or adding a pop of color to your summer wardrobe.',
@@ -492,7 +492,7 @@ const maleProducts = [
     brand: 'Lagos House',
     category: 'Men',
     gender: 'male',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.5,
     description: 'Stylish shorts with vibrant Nigerian print designs and a comfortable fit.',
     overview: 'Perfect for casual wear, beach days, or adding a pop of color to your summer wardrobe.',
@@ -507,7 +507,7 @@ const maleProducts = [
     brand: 'Lagos House',
     category: 'Men',
     gender: 'male',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.5,
     description: 'Stylish shorts with vibrant Nigerian print designs and a comfortable fit.',
     overview: 'Perfect for casual wear, beach days, or adding a pop of color to your summer wardrobe.',
@@ -522,7 +522,7 @@ const maleProducts = [
     brand: 'Lagos House',
     category: 'Men',
     gender: 'male',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.5,
     description: 'Stylish shorts with vibrant Nigerian print designs and a comfortable fit.',
     overview: 'Perfect for casual wear, beach days, or adding a pop of color to your summer wardrobe.',
@@ -537,7 +537,7 @@ const maleProducts = [
     brand: 'Lagos House',
     category: 'Men',
     gender: 'male',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.5,
     description: 'Stylish shorts with vibrant Nigerian print designs and a comfortable fit.',
     overview: 'Perfect for casual wear, beach days, or adding a pop of color to your summer wardrobe.',
@@ -552,7 +552,7 @@ const maleProducts = [
     brand: 'Lagos House',
     category: 'Men',
     gender: 'male',
-    availability: 'In stock',
+    availability: { status: 'soldOut' },
     rating: 4.5,
     description: 'Stylish shorts with vibrant Nigerian print designs and a comfortable fit.',
     overview: 'Perfect for casual wear, beach days, or adding a pop of color to your summer wardrobe.',
@@ -572,7 +572,7 @@ const unisexProducts = [
     brand: 'Orange Culture',
     category: 'Unisex',
     gender: 'unisex',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.9,
     isNew: true,
     onSale: true,
@@ -591,7 +591,7 @@ const unisexProducts = [
     brand: 'Yomi Casual',
     category: 'Men',
     gender: 'unisex',
-    availability: 'Made to order',
+    availability: { status: 'madeToOrder', leadTime: '2–3 weeks' },
     rating: 5.0,
     isNew: true,
     description:
@@ -609,7 +609,7 @@ const unisexProducts = [
     brand: 'Ashluxe',
     category: 'Unisex',
     gender: 'unisex',
-    availability: 'In stock',
+    availability: { status: 'inStock' },
     rating: 4.5,
     isNew: true,
     description:
@@ -646,3 +646,25 @@ export const productsByGender = {
 
 export const getProductById = (productId) =>
   products.find((product) => String(product.id) === String(productId))
+
+// Availability is a structured flag the UI can branch on cleanly:
+//   { status: 'inStock' }
+//   { status: 'madeToOrder', leadTime: '2–3 weeks' }
+//   { status: 'soldOut' }
+export const AVAILABILITY_STATUS = {
+  IN_STOCK: 'inStock',
+  MADE_TO_ORDER: 'madeToOrder',
+  SOLD_OUT: 'soldOut',
+}
+
+export const getAvailability = (product) =>
+  product?.availability ?? { status: AVAILABILITY_STATUS.IN_STOCK }
+
+export const isInStock = (product) =>
+  getAvailability(product).status === AVAILABILITY_STATUS.IN_STOCK
+
+export const isMadeToOrder = (product) =>
+  getAvailability(product).status === AVAILABILITY_STATUS.MADE_TO_ORDER
+
+export const isSoldOut = (product) =>
+  getAvailability(product).status === AVAILABILITY_STATUS.SOLD_OUT

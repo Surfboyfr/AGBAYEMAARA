@@ -1,14 +1,47 @@
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft, CheckCircle2, Truck, ShieldCheck, Star } from 'lucide-react'
-import { getProductById } from '../data/products'
+import { ArrowLeft, CheckCircle2, Clock, Truck, ShieldCheck, Star, PackageX } from 'lucide-react'
+import { getProductById, getAvailability, AVAILABILITY_STATUS } from '../data/products'
 import { useCart } from '../Context/CartContext'
 import { useLanguage } from '../Context/LanguageContext'
+
+const AVAILABILITY_BADGES = {
+  [AVAILABILITY_STATUS.IN_STOCK]: {
+    label: 'In stock',
+    icon: CheckCircle2,
+    className: 'text-emerald-600',
+  },
+  [AVAILABILITY_STATUS.MADE_TO_ORDER]: {
+    label: 'Made to order',
+    icon: Clock,
+    className: 'text-[#f28500]',
+  },
+  [AVAILABILITY_STATUS.SOLD_OUT]: {
+    label: 'Sold out',
+    icon: PackageX,
+    className: 'text-red-500',
+  },
+}
+
+const AvailabilityBadge = ({ availability }) => {
+  const badge =
+    AVAILABILITY_BADGES[availability.status] ??
+    AVAILABILITY_BADGES[AVAILABILITY_STATUS.IN_STOCK]
+  const Icon = badge.icon
+
+  return (
+    <span className={`inline-flex items-center gap-1.5 font-medium ${badge.className}`}>
+      <Icon size={15} />
+      {badge.label}
+    </span>
+  )
+}
 
 const ProductDetails = () => {
   const { productId } = useParams()
   const product = getProductById(productId)
   const { addToCart, setIsCartOpen } = useCart()
   const { t } = useLanguage()
+  const availability = getAvailability(product)
 
   if (!product) {
     return (
@@ -61,7 +94,7 @@ const ProductDetails = () => {
                 <span>•</span>
                 <span>{product.category}</span>
                 <span>•</span>
-                <span>{product.availability}</span>
+                <AvailabilityBadge availability={getAvailability(product)} />
               </div>
             </div>
 
@@ -105,13 +138,53 @@ const ProductDetails = () => {
               <p className="text-sm leading-6 text-black/70">{product.care}</p>
             </div>
 
+            {/* Availability states: inStock / madeToOrder / soldOut */}
+            <div className="rounded-2xl border border-gray-200 p-5 space-y-3">
+              <h2 className='text-lg font-semibold text-black'>Availability</h2>
+              {availability.status === AVAILABILITY_STATUS.IN_STOCK && (
+                <p className="text-sm leading-6 text-black/70 flex items-center gap-2">
+                  <CheckCircle2 size={18} className="text-emerald-600 shrink-0" />
+                  In stock and ready to ship within 48 hours.
+                </p>
+              )}
+              {availability.status === AVAILABILITY_STATUS.MADE_TO_ORDER && (
+                <p className="text-sm leading-6 text-black/70 flex items-center gap-2">
+                  <Clock size={18} className="text-[#f28500] shrink-0" />
+                  Made to order for you by hand — allow {availability.leadTime} for production and delivery.
+                </p>
+              )}
+              {availability.status === AVAILABILITY_STATUS.SOLD_OUT && (
+                <p className="text-sm leading-6 text-black/70 flex items-center gap-2">
+                  <PackageX size={18} className="text-red-500 shrink-0" />
+                  Sold out. Join the waitlist and we’ll email you when it returns.
+                </p>
+              )}
+            </div>
+
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
-              <button
-                onClick={handleAddToCart}
-                className="inline-flex items-center justify-center rounded-xl bg-[#0A0B0F] px-6 py-3.5 text-sm font-semibold text-white hover:bg-black/90 transition-colors"
-              >
-                {t('productDetails', 'addToCart')}
-              </button>
+              {availability.status === AVAILABILITY_STATUS.SOLD_OUT ? (
+                <button
+                  disabled
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-black/20 px-6 py-3.5 text-sm font-semibold text-white cursor-not-allowed"
+                >
+                  <PackageX size={16} />
+                  Sold Out
+                </button>
+              ) : (
+                <button
+                  onClick={handleAddToCart}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0A0B0F] px-6 py-3.5 text-sm font-semibold text-white hover:bg-black/90 transition-colors"
+                >
+                  {availability.status === AVAILABILITY_STATUS.MADE_TO_ORDER ? (
+                    <>
+                      <Clock size={16} />
+                      Order — Made to Order
+                    </>
+                  ) : (
+                    t('productDetails', 'addToCart')
+                  )}
+                </button>
+              )}
               <Link
                 to="/shop"
                 className="inline-flex items-center justify-center rounded-xl border border-gray-300 px-6 py-3.5 text-sm font-semibold text-black hover:bg-gray-50 transition-colors"
