@@ -1,37 +1,46 @@
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft, CheckCircle2, Clock, Truck, ShieldCheck, Star, PackageX } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, Clock, Truck, ShieldCheck, Star, PackageX, MapPin } from 'lucide-react'
 import { getProductById, getAvailability, AVAILABILITY_STATUS } from '../data/products'
+import { brands } from '../data/brands'
 import { useCart } from '../Context/CartContext'
 import { useLanguage } from '../Context/LanguageContext'
 
+// Proper state badges: in stock / made to order (+ lead time) / sold out.
 const AVAILABILITY_BADGES = {
   [AVAILABILITY_STATUS.IN_STOCK]: {
-    label: 'In stock',
+    labelKey: 'inStock',
     icon: CheckCircle2,
-    className: 'text-emerald-600',
+    chipClass: 'bg-emerald-50 text-emerald-700 border-emerald-200',
   },
   [AVAILABILITY_STATUS.MADE_TO_ORDER]: {
-    label: 'Made to order',
+    labelKey: 'madeToOrder',
     icon: Clock,
-    className: 'text-[#f28500]',
+    chipClass: 'bg-[#f28500]/10 text-[#b35f00] border-[#f28500]/30',
   },
   [AVAILABILITY_STATUS.SOLD_OUT]: {
-    label: 'Sold out',
+    labelKey: 'soldOut',
     icon: PackageX,
-    className: 'text-red-500',
+    chipClass: 'bg-red-50 text-red-600 border-red-200',
   },
 }
 
 const AvailabilityBadge = ({ availability }) => {
+  const { t } = useLanguage()
   const badge =
     AVAILABILITY_BADGES[availability.status] ??
     AVAILABILITY_BADGES[AVAILABILITY_STATUS.IN_STOCK]
   const Icon = badge.icon
 
   return (
-    <span className={`inline-flex items-center gap-1.5 font-medium ${badge.className}`}>
-      <Icon size={15} />
-      {badge.label}
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${badge.chipClass}`}
+    >
+      <Icon size={13} />
+      {t('productDetails', badge.labelKey)}
+      {availability.status === AVAILABILITY_STATUS.MADE_TO_ORDER &&
+        availability.leadTime && (
+          <span className="font-medium opacity-80">— {availability.leadTime}</span>
+        )}
     </span>
   )
 }
@@ -42,6 +51,11 @@ const ProductDetails = () => {
   const { addToCart, setIsCartOpen } = useCart()
   const { t } = useLanguage()
   const availability = getAvailability(product)
+  // The brand name is tappable when the label has a Brand Profile; products
+  // from unlisted brands fall back to plain text.
+  const brandProfile = product?.brand
+    ? brands.find((brand) => brand.name === product.brand)
+    : null
 
   if (!product) {
     return (
@@ -84,7 +98,22 @@ const ProductDetails = () => {
 
           <div className="space-y-6">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-black/45 mb-3">{product.brand}</p>
+              {brandProfile ? (
+                <Link
+                  to={`/brands/${brandProfile.slug}`}
+                  className="group/brand inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.25em] text-black/45 mb-3 transition-colors hover:text-[#f28500]"
+                >
+                  {product.brand}
+                  <MapPin
+                    size={12}
+                    className="opacity-0 -translate-x-1 transition-all duration-200 group-hover/brand:opacity-100 group-hover/brand:translate-x-0"
+                  />
+                </Link>
+              ) : (
+                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-black/45 mb-3">
+                  {product.brand}
+                </p>
+              )}
               <h1 className="text-3xl lg:text-2xl font-bold tracking-tight text-black">{product.productName}</h1>
               <div className="flex flex-wrap items-center gap-3 mt-4 text-sm text-black/60">
                 <span className="inline-flex items-center gap-1.5">
@@ -94,7 +123,7 @@ const ProductDetails = () => {
                 <span>•</span>
                 <span>{product.category}</span>
                 <span>•</span>
-                <AvailabilityBadge availability={getAvailability(product)} />
+                <AvailabilityBadge availability={availability} />
               </div>
             </div>
 

@@ -40,6 +40,14 @@ const StylingCard = ({ card }) => {
               {card.brand.name}
             </Link>
           )}
+          {card.type === 'story' && card.brand && (
+            <Link
+              to={`/brands/${card.brand.slug}/story/${card.unitId}`}
+              className="text-xs font-semibold text-[#ec5800] hover:text-[#ff7f2a] transition-colors"
+            >
+              {t('discovery', 'readStory')}
+            </Link>
+          )}
           {card.product && (
             <Link
               to={`/shop/product/${card.product.id}`}

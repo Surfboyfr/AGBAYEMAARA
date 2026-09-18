@@ -154,10 +154,16 @@ export const buildFollowingFeed = (followedSlugs) => {
     const brand = findBrand(slug)
     if (!brand) continue
 
-    // Content units from followed brands
+    // Content units from followed brands. Story units render through
+    // StylingCard, which deep-links into the Brand Story page.
     for (const unit of contentByBrandSlug.get(slug) ?? []) {
       const kind = unit.type === 'story' ? 'styling' : unit.type
       feed.push(toContentCard(unit, kind, brand))
+    }
+
+    // Products from followed brands — the shop surface, scoped to follows.
+    for (const product of brand.saleProducts) {
+      feed.push({ kind: 'product', ...product })
     }
 
     // The brand card itself so follows surface even without content
@@ -184,6 +190,13 @@ export const buildFollowingFeed = (followedSlugs) => {
     (a, b) => new Date(b.publishDate ?? 0) - new Date(a.publishDate ?? 0)
   )
 }
+
+// ── Curated follow suggestions (zero-follow state) ───────────────────────────
+// Hand-picked marquee labels the empty state asks new users to follow.
+export const CURATED_FOLLOW_SLUGS = ['lisa-folawiyo', 'orange-culture', 'ashluxe']
+
+export const getCuratedFollowBrands = () =>
+  CURATED_FOLLOW_SLUGS.map((slug) => findBrand(slug)).filter(Boolean)
 
 export const buildNewBrandsFeed = () => [
   ...buildNewBrandCards(6),

@@ -22,6 +22,14 @@ const HeroEditorialCard = ({ card }) => {
       />
       <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-black/10" />
 
+      {card.brand && (
+        <Link
+          to={`/brands/${card.brand.slug}/story/${card.unitId}`}
+          className="absolute inset-0 z-10"
+          aria-label={card.title}
+        />
+      )}
+
       <div className="relative flex h-full flex-col justify-end p-6 sm:p-10 max-w-3xl">
         <div className="mb-4 flex flex-wrap items-center gap-3 text-xs">
           <span className="rounded-full bg-[#ec5800] px-3 py-1 font-bold tracking-wider text-white uppercase">
@@ -39,7 +47,7 @@ const HeroEditorialCard = ({ card }) => {
           {card.body}
         </p>
 
-        <div className="mt-5 flex flex-wrap items-center gap-4">
+        <div className="relative z-20 mt-5 flex flex-wrap items-center gap-4">
           {card.brand && (
             <Link
               to={`/brands/${card.brand.slug}`}

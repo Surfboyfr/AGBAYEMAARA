@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useCart } from '../Context/CartContext'
 import { X, Minus, Plus, Trash2, ShoppingBag } from 'lucide-react'
 import { useLanguage } from '../Context/LanguageContext'
@@ -13,6 +14,7 @@ const CartDrawer = () => {
     cartTotal,
     clearCart,
   } = useCart()
+  const navigate = useNavigate()
   const { t } = useLanguage()
 
   // Close on Escape key
@@ -145,7 +147,13 @@ const CartDrawer = () => {
               </div>
               <p className="text-white/30 text-xs">{t('cart', 'shipping')}</p>
 
-              <button className="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-white/90 transition-colors duration-200 text-sm tracking-wide">
+              <button
+                onClick={() => {
+                  setIsCartOpen(false)
+                  navigate('/checkout')
+                }}
+                className="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-white/90 transition-colors duration-200 text-sm tracking-wide"
+              >
                 {t('cart', 'checkout')}
               </button>
 

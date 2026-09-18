@@ -1,14 +1,18 @@
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft, ShoppingBag, Star, Tag } from 'lucide-react'
+import { ArrowLeft, ArrowUpRight, BookOpen, Check, Heart, ShoppingBag, Star, Tag } from 'lucide-react'
 import { getBrandBySlug, getProductsByBrandSlug } from '../data/brands'
+import { getStoriesByBrandSlug } from '../data/content'
 import ProductCard from '../Components/ProductCard'
+import { useFollow } from '../Context/FollowContext'
 import { useLanguage } from '../Context/LanguageContext'
 
 const BrandDetails = () => {
   const { brandSlug } = useParams()
   const brand = getBrandBySlug(brandSlug)
   const brandProducts = getProductsByBrandSlug(brandSlug)
+  const brandStories = getStoriesByBrandSlug(brandSlug)
   const { t } = useLanguage()
+  const { isFollowing, toggleFollowBrand } = useFollow()
 
   const saleProducts = brandProducts.filter((p) => p.onSale)
   const nonSaleProducts = brandProducts.filter((p) => !p.onSale)
@@ -47,6 +51,28 @@ const BrandDetails = () => {
                   <Star size={15} className="fill-white" />
                   {t('brandDetails', 'curatedCollection')}
                 </span>
+                {/* Follow button — same FollowContext state as the feed cards */}
+                <button
+                  onClick={() => toggleFollowBrand(brand.slug)}
+                  aria-pressed={isFollowing(brand.slug)}
+                  className={`inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold backdrop-blur-sm transition-all duration-200 active:scale-95 ${
+                    isFollowing(brand.slug)
+                      ? 'border border-white/40 bg-white text-black hover:bg-white/85'
+                      : 'border border-white/40 bg-black/25 text-white hover:bg-white hover:text-black'
+                  }`}
+                >
+                  {isFollowing(brand.slug) ? (
+                    <>
+                      <Check size={15} />
+                      {t('discovery', 'following')}
+                    </>
+                  ) : (
+                    <>
+                      <Heart size={15} />
+                      {t('discovery', 'follow')}
+                    </>
+                  )}
+                </button>
               </div>
             </div>
 
@@ -75,6 +101,50 @@ const BrandDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* Stories tab — long-form brand narratives, deep-linkable */}
+      {brandStories.length > 0 && (
+        <section className='mb-10'>
+          <div className='flex items-center gap-3 mb-6'>
+            <div className='h-6 w-1 bg-[#ec5800] rounded-full'></div>
+            <h3 className='text-lg font-bold flex items-center gap-2'>
+              <BookOpen size={16} className='text-[#ec5800]' />
+              {t('brandStory', 'tabHeading')}
+            </h3>
+            <span className='bg-[#ec5800]/10 text-[#ec5800] text-xs font-semibold px-3 py-1 rounded-full'>
+              {brandStories.length}
+            </span>
+          </div>
+          <div className='grid gap-5 sm:grid-cols-2'>
+            {brandStories.map((storyUnit) => (
+              <Link
+                key={storyUnit.id}
+                to={`/brands/${brand.slug}/story/${storyUnit.id}`}
+                className='group relative overflow-hidden rounded-2xl border border-white/10 bg-[#12141A] p-5 transition-colors hover:border-white/25'
+              >
+                <p className='text-xs font-semibold uppercase tracking-wider text-[#ec5800]'>
+                  {new Date(storyUnit.publishDate).toLocaleDateString(undefined, {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
+                </p>
+                <h4 className='mt-2 text-base font-bold leading-snug text-white group-hover:text-[#ec5800] transition-colors'>
+                  {storyUnit.title}
+                </h4>
+                <p className='mt-2 line-clamp-2 text-sm text-white/60'>
+                  {storyUnit.body}
+                </p>
+                <span className='mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-white/70 transition-colors group-hover:text-white'>
+                  <BookOpen size={13} />
+                  {t('brandStory', 'readStory')}
+                  <ArrowUpRight size={13} className='text-[#ec5800]' />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="max-w-7xl mx-auto px-5 py-10 lg:py-14">
         <div className="flex items-end justify-between gap-4 mb-8">

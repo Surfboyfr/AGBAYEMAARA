@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { User, ShoppingBag, Menu, X } from 'lucide-react'
+import { User, ShoppingBag, Menu, X, Package } from 'lucide-react'
 import { useCart } from '../Context/CartContext'
 import { useLanguage } from '../Context/LanguageContext'
 import LanguageSwitcher from './LanguageSwitcher'
@@ -54,6 +54,15 @@ const ShopNavbar = () => {
               buttonClassName="flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2.5 py-2 text-sm text-white/70 hover:text-white"
               dropdownWidth="w-32"
             />
+
+            {/* Orders */}
+            <Link
+              to="/orders"
+              className="hidden sm:block p-2.5 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
+              aria-label={t('orders', 'navAriaLabel')}
+            >
+              <Package size={20} />
+            </Link>
 
             {/* Cart */}
             <button
@@ -123,6 +132,14 @@ const ShopNavbar = () => {
                 ))}
               </div>
             </div>
+            <Link
+              to="/orders"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-white/60 hover:text-white text-sm font-medium py-2.5 px-3 rounded-lg hover:bg-white/5 transition-all duration-200 text-left flex items-center gap-2"
+            >
+              <Package size={15} />
+              {t('orders', 'navLink')}
+            </Link>
             <button
               onClick={() => { setAuthModalOpen(true); setMobileMenuOpen(false) }}
               className="text-white/60 hover:text-white text-sm font-medium py-2.5 px-3 rounded-lg hover:bg-white/5 transition-all duration-200 text-left flex items-center gap-2"
