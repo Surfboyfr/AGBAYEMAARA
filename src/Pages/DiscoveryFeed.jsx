@@ -207,6 +207,9 @@ const DiscoveryFeed = () => {
           <div className="space-y-5">
             {heroItem && <FeedCardRenderer item={heroItem} />}
 
+             {/* User journey — the loop from first scroll to delivery, deep-linked */}
+        <UserJourney />
+
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {gridItems.map((item) => (
                 <div
@@ -214,6 +217,8 @@ const DiscoveryFeed = () => {
                   {...(item.type === 'drop' ? { 'data-feed-card': 'drop' } : {})}
                   className="h-full rounded-2xl"
                 >
+
+                  
                   <FeedCardRenderer
                     item={item}
                   />
@@ -223,8 +228,7 @@ const DiscoveryFeed = () => {
           </div>
         )}
 
-        {/* User journey — the loop from first scroll to delivery, deep-linked */}
-        <UserJourney />
+       
 
       </main>
     </div>
