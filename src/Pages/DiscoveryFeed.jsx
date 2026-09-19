@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Compass } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { Compass, ShoppingBag } from 'lucide-react'
 import { useFollow } from '../Context/FollowContext'
 import { useLanguage } from '../Context/LanguageContext'
 import DiscoveryNavbar from '../Components/Discovery/DiscoveryNavbar'
@@ -15,6 +16,7 @@ import {
   buildFollowingFeed,
   buildNewBrandsFeed,
 } from '../data/discoveryFeed'
+import UserJourney from '../Components/UserJourney'
 
 // ── Discovery feed page ────────────────────────────────────────────────────────
 const FilterPills = ({ active, onChange }) => {
@@ -24,11 +26,28 @@ const FilterPills = ({ active, onChange }) => {
     { label: t('discovery', 'forYou'), value: FEED_FILTERS.FOR_YOU },
     { label: t('discovery', 'followingTab'), value: FEED_FILTERS.FOLLOWING },
     { label: t('discovery', 'newBrands'), value: FEED_FILTERS.NEW_BRANDS },
+    // Navigation pill, not a filter — routes straight to the shop surface.
+    { label: t('nav', 'shop'), to: '/shop' },
   ]
 
   return (
     <div className="flex flex-wrap items-center gap-2.5">
       {pills.map((pill) => {
+        // Shop pill: outlined + bag icon so it reads as "go shopping" rather
+        // than one of the feed filters, and fills orange on hover.
+        if (pill.to) {
+          return (
+            <Link
+              key={pill.to}
+              to={pill.to}
+              className="inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-raised px-5 py-2 text-sm font-semibold text-strong transition-all duration-200 hover:border-[#ec5800] hover:bg-[#ec5800] hover:text-white active:scale-95"
+            >
+              <ShoppingBag size={15} />
+              {pill.label}
+            </Link>
+          )
+        }
+
         const isActive = active === pill.value
         return (
           <button
@@ -53,6 +72,7 @@ const FilterPills = ({ active, onChange }) => {
 const DiscoveryFeed = () => {
   const { followedBrands } = useFollow()
   const { t } = useLanguage()
+  const location = useLocation()
   const [activeFilter, setActiveFilter] = useState(FEED_FILTERS.FOR_YOU)
   const [retryCount, setRetryCount] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
@@ -72,6 +92,32 @@ const DiscoveryFeed = () => {
     setIsLoading(true)
     setError(null)
   }
+
+  // "See a new drop" deep link: once the feed has rendered, scroll to and
+  // pulse the newest drop card. Guarded by location.key so each navigation
+  // carrying the flag triggers exactly one pulse — same-page navigations get
+  // a fresh key too. Refs are only touched inside the effect (never render).
+  const consumedFocusKey = useRef(null)
+
+  useEffect(() => {
+    if (location.state?.journeyFocus !== 'drop' || isLoading || error) return
+    if (consumedFocusKey.current === location.key) return
+    consumedFocusKey.current = location.key
+
+    const dropCard = document.querySelector('[data-feed-card="drop"]')
+    if (!dropCard) return
+
+    dropCard.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    dropCard.classList.add('journey-focus-pulse')
+    const pulseTimer = setTimeout(
+      () => dropCard.classList.remove('journey-focus-pulse'),
+      2200
+    )
+    return () => {
+      clearTimeout(pulseTimer)
+      dropCard.classList.remove('journey-focus-pulse')
+    }
+  }, [location, isLoading, error])
 
   // Simulated async feed fetch — swap for a real API call when the backend
   // exists. A bad data shape surfaces as the error state with retry.
@@ -160,16 +206,26 @@ const DiscoveryFeed = () => {
         {!isLoading && !error && feed.length > 0 && (
           <div className="space-y-5">
             {heroItem && <FeedCardRenderer item={heroItem} />}
+
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {gridItems.map((item) => (
-                <FeedCardRenderer
+                <div
                   key={item.id ?? item.unitId ?? item.slug ?? item.product?.id}
-                  item={item}
-                />
+                  {...(item.type === 'drop' ? { 'data-feed-card': 'drop' } : {})}
+                  className="h-full rounded-2xl"
+                >
+                  <FeedCardRenderer
+                    item={item}
+                  />
+                </div>
               ))}
             </div>
           </div>
         )}
+
+        {/* User journey — the loop from first scroll to delivery, deep-linked */}
+        <UserJourney />
+
       </main>
     </div>
   )

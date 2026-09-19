@@ -69,6 +69,11 @@ export const buildMilestoneCards = (limit = 2) =>
       }
     })
 
+export const buildDropCards = (limit = 2) =>
+  unitsByType('drop')
+    .slice(0, limit)
+    .map((unit) => toContentCard(unit, 'drop', findBrand(unit.brandSlug)))
+
 export const buildBrandCards = (limit = brands.length) =>
   brands.slice(0, limit).map((brand) => {
     const latestUnit = (contentByBrandSlug.get(brand.slug) ?? [])[0]
@@ -126,6 +131,7 @@ export const buildForYouFeed = () => {
   const heroes = buildHeroEditorialCards(2)
   const styling = buildStylingCards(4)
   const milestones = buildMilestoneCards(3)
+  const drops = buildDropCards(2)
   const brandCards = buildBrandCards()
   const newBrands = buildNewBrandCards(2)
 
@@ -136,9 +142,11 @@ export const buildForYouFeed = () => {
   brandCards.slice(0, 4).forEach((card) => feed.push(card))
   if (styling[1]) feed.push(styling[1])
   if (milestones[1]) feed.push(milestones[1])
+  if (drops[0]) feed.push(drops[0])
   brandCards.slice(4, 8).forEach((card) => feed.push(card))
   if (styling[2]) feed.push(styling[2])
   if (milestones[2]) feed.push(milestones[2])
+  if (drops[1]) feed.push(drops[1])
   newBrands.forEach((card) => feed.push(card))
   if (styling[3]) feed.push(styling[3])
 

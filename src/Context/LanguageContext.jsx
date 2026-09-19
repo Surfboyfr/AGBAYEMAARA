@@ -292,6 +292,51 @@ const translations = {
       emptyCta: 'Explore Discovery',
       brandsFollowed: 'brands followed',
     },
+    journey: {
+      eyebrow: 'The Journey',
+      title: 'How Àgbáyémáarà works',
+      subtitle: 'From the first scroll to the knock on your door — and back again. Every step below takes you straight to where it happens.',
+      ctaLabel: 'Take me there',
+      ariaLabel: 'The Àgbáyémáarà user journey, step by step',
+      steps: {
+        discover: {
+          title: 'Discover unknown brands',
+          description: 'Scroll the feed and meet labels you have never heard of — story first.',
+        },
+        story: {
+          title: 'Read the story',
+          description: 'Go deeper into the people and craft behind the piece before you shop it.',
+        },
+        explore: {
+          title: 'Explore the brand',
+          description: 'Open the brand page and browse everything in the collection.',
+        },
+        follow: {
+          title: 'Follow the brand',
+          description: 'One tap and new stories, drops, and milestones land in your Following feed.',
+        },
+        return: {
+          title: 'Return later',
+          description: 'Come back any time — your follows keep your feed alive.',
+        },
+        drop: {
+          title: 'See a new drop',
+          description: 'Catch the next limited release the moment it goes live.',
+        },
+        buy: {
+          title: 'You buy',
+          description: 'Add the piece to your cart and check out in a few taps.',
+        },
+        fulfilment: {
+          title: 'Àgbáyémáarà coordinates fulfilment',
+          description: 'We work directly with the brand to prepare, pack, and ship your order.',
+        },
+        receive: {
+          title: 'Receive it — then discover more',
+          description: 'Your piece arrives at your door, and the journey begins again.',
+        },
+      },
+    },
   },
   es: {
     nav: {
@@ -582,6 +627,51 @@ const translations = {
       emptyCta: 'Explorar Descubrir',
       brandsFollowed: 'marcas seguidas',
     },
+    journey: {
+      eyebrow: 'El recorrido',
+      title: 'Cómo funciona Àgbáyémáarà',
+      subtitle: 'Desde el primer scroll hasta el toque en tu puerta — y de vuelta. Cada paso te lleva directo al lugar donde ocurre.',
+      ctaLabel: 'Llévame allí',
+      ariaLabel: 'El recorrido del usuario en Àgbáyémáarà, paso a paso',
+      steps: {
+        discover: {
+          title: 'Descubre marcas desconocidas',
+          description: 'Desliza el feed y conoce etiquetas que nunca habías visto — historia primero.',
+        },
+        story: {
+          title: 'Lee la historia',
+          description: 'Profundiza en las personas y el oficio detrás de la pieza antes de comprarla.',
+        },
+        explore: {
+          title: 'Explora la marca',
+          description: 'Abre la página de la marca y recorre toda la colección.',
+        },
+        follow: {
+          title: 'Sigue a la marca',
+          description: 'Un toque y las nuevas historias, lanzamientos e hitos llegan a tu feed de Siguiendo.',
+        },
+        return: {
+          title: 'Vuelve más tarde',
+          description: 'Regresa cuando quieras — tus seguimientos mantienen tu feed vivo.',
+        },
+        drop: {
+          title: 'Ve un nuevo lanzamiento',
+          description: 'Entérate del próximo lanzamiento limitado en cuanto salga.',
+        },
+        buy: {
+          title: 'Tú compras',
+          description: 'Añade la pieza a tu carrito y paga en unos toques.',
+        },
+        fulfilment: {
+          title: 'Àgbáyémáarà coordina la entrega',
+          description: 'Trabajamos directamente con la marca para preparar, empacar y enviar tu pedido.',
+        },
+        receive: {
+          title: 'Recíbela — y descubre más',
+          description: 'Tu pieza llega a tu puerta, y el recorrido vuelve a empezar.',
+        },
+      },
+    },
   },
   fr: {
     nav: {
@@ -871,6 +961,51 @@ const translations = {
       emptyBody: 'Suivez les marques que vous aimez et leurs histoires, lancements, étapes et produits arriveront ici en premier. Commencez avec ces trois.',
       emptyCta: 'Explorer Découvrir',
       brandsFollowed: 'marques suivies',
+    },
+    journey: {
+      eyebrow: 'Le parcours',
+      title: 'Comment fonctionne Àgbáyémáarà',
+      subtitle: 'Du premier scroll jusqu’à la livraison — et retour. Chaque étape vous mène directement à l’endroit où elle se produit.',
+      ctaLabel: 'M’y emmener',
+      ariaLabel: 'Le parcours utilisateur d’Àgbáyémáarà, étape par étape',
+      steps: {
+        discover: {
+          title: 'Découvrez des marques inconnues',
+          description: 'Faites défiler le fil et rencontrez des labels que vous ne connaissez pas — l’histoire d’abord.',
+        },
+        story: {
+          title: 'Lisez l’histoire',
+          description: 'Plongez dans les personnes et le savoir-faire derrière la pièce avant de l’acheter.',
+        },
+        explore: {
+          title: 'Explorez la marque',
+          description: 'Ouvrez la page de la marque et parcourez toute la collection.',
+        },
+        follow: {
+          title: 'Suivez la marque',
+          description: 'Un geste et les nouvelles histoires, lancements et étapes arrivent dans votre fil Abonnements.',
+        },
+        return: {
+          title: 'Revenez plus tard',
+          description: 'Revenez quand vous voulez — vos abonnements gardent votre fil vivant.',
+        },
+        drop: {
+          title: 'Voyez un nouveau lancement',
+          description: 'Ne manquez pas la prochaine édition limitée dès sa mise en ligne.',
+        },
+        buy: {
+          title: 'Vous achetez',
+          description: 'Ajoutez la pièce à votre panier et payez en quelques gestes.',
+        },
+        fulfilment: {
+          title: 'Àgbáyémáarà coordonne la livraison',
+          description: 'Nous travaillons directement avec la marque pour préparer, emballer et expédier votre commande.',
+        },
+        receive: {
+          title: 'Recevez-la — puis découvrez encore',
+          description: 'Votre pièce arrive à votre porte, et le parcours recommence.',
+        },
+      },
     },
   },
 }
