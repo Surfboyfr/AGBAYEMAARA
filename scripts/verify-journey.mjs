@@ -3,6 +3,7 @@
 // and the deep links point at the right surfaces. Reduced motion is emulated so
 // the marquee holds still for interaction (the app supports prefers-reduced-motion).
 import { chromium } from 'playwright'
+import { passBootGate } from './boot-gate.mjs'
 
 const BASE_URL = process.argv[2] ?? 'http://localhost:5174'
 const results = []
@@ -18,10 +19,17 @@ const page = await browser.newPage({
 })
 page.setDefaultTimeout(15000)
 
+// The boot splash + role gate run on every load; pass through as a shopper.
+// (The gate's own behavior is covered by scripts/verify-boot.mjs.)
+const gotoWithBoot = async (path, wait = 'networkidle') => {
+  await page.goto(`${BASE_URL}${path}`, { waitUntil: wait })
+  await passBootGate(page)
+}
+
 const SECTION = 'section[aria-label="The Àgbáyémáarà user journey, step by step"]'
 
 try {
-  await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' })
+  await gotoWithBoot('/')
 
   // ── 1. Section renders below the discovery feed ───────────────────────────
   const section = page.locator(SECTION)
@@ -86,7 +94,7 @@ try {
   check('story deep-link navigates to the story page', true)
 
   // ── 4b. Shop pill in the feed header navigates to /shop ────────────────────
-  await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' })
+  await gotoWithBoot('/')
   const shopPill = page.locator('main header a[href="/shop"]')
   check('shop pill renders in the feed header', await shopPill.isVisible())
   await shopPill.click()
@@ -94,7 +102,7 @@ try {
   check('shop pill navigates to /shop', true)
 
   // ── 5. "See a new drop" scrolls to and pulses the newest drop card ─────────
-  await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' })
+  await gotoWithBoot('/')
   await section.locator('a').filter({ hasText: 'See a new drop' }).first().click()
   await page
     .locator('[data-feed-card="drop"].journey-focus-pulse')

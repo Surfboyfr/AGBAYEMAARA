@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import hero from '../assets/phone-ui.jfif'
+import hero from '../assets/HeroImg.jfif'
 import image1 from '../assets/brand1.jfif'
 import image2 from '../assets/brand2.jfif'
 import image3 from '../assets/brand3.jfif'
@@ -46,7 +46,12 @@ const Hero = () => {
           </div>
         </div>
         <div className='w-full lg:w-1/2 '>
-          <img src={hero} alt='Hero Image' className='w-full h-80 rounded-xl mr-5' />
+          <img
+            src={hero}
+            alt='Hero Image'
+            className='w-full h-80 rounded-xl mr-5 object-cover'
+            style={{ objectPosition: '50% 22%' }}
+          />
         </div>
       </div>
       <div className='w-full lg:mx-11'>

@@ -27,3 +27,41 @@ body {
 .animate-pop-in {
   animation: pop-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* Boot splash: black first-paint screen with the wordmark and spinner. */
+@keyframes splash-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.boot-splash {
+  animation: splash-fade 0.4s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boot-splash {
+    animation: none;
+  }
+
+  .animate-pop-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Route changes glide instead of jumping; splash/gate render as fixed
+   overlays so their own layout never scrolls. */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

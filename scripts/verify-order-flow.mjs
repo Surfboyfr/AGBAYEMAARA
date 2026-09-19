@@ -1,5 +1,6 @@
 // End-to-end walkthrough of the checkout → order status flow (run: node scripts/verify-order-flow.mjs [url])
 import { chromium } from 'playwright'
+import { passBootGate } from './boot-gate.mjs'
 
 const BASE_URL = process.argv[2] ?? 'http://localhost:5173'
 const results = []
@@ -13,9 +14,15 @@ const browser = await chromium.launch({ channel: 'chrome' })
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } })
 page.setDefaultTimeout(15000)
 
+// The boot splash + role gate run on every load; pass through as a shopper.
+const gotoWithBoot = async (path, wait = 'networkidle') => {
+  await page.goto(`${BASE_URL}${path}`, { waitUntil: wait })
+  await passBootGate(page)
+}
+
 try {
   // ── 1. Add a product to the cart from the shop home ───────────────────────
-  await page.goto(`${BASE_URL}/shop`, { waitUntil: 'networkidle' })
+  await gotoWithBoot('/shop')
 
   // The discount popup auto-opens ~800ms after mount — wait for it, then close.
   const popupClose = page.getByRole('button', { name: 'Close discount popup' })
@@ -138,19 +145,34 @@ try {
 
   // ── 6. Persistence: refresh keeps the state, /orders links to the page ────
   await page.reload({ waitUntil: 'networkidle' })
+  await passBootGate(page) // boot gate runs on every load, refresh included
   await page.getByRole('heading', { name: 'Fulfilment failed' }).waitFor()
   check('failure state survives a refresh (localStorage)', true)
 
-  await page.goto(`${BASE_URL}/orders`, { waitUntil: 'networkidle' })
+  await gotoWithBoot('/orders')
   const trackLink = page.locator(`a[href="/orders/${reference}"]`).first()
-  check('orders list has a track link for the order', (await trackLink.count()) > 0)
-  await trackLink.first().click()
+  await trackLink.waitFor({ state: 'visible' })
+  check('orders list has a track link for the order', true)
+
+  // Chip for the refunded order shows the right label. Asserted while still
+  // on the list page — the status page has no <article> card.
+  const chip = page.locator('article span.rounded-full', { hasText: 'Refunded' }).first()
+  await chip.waitFor({ state: 'visible' })
+  check('order card chip reads Refunded', true)
+
+  await trackLink.click()
   await page.waitForURL(`**/orders/${reference}`)
   check('track link opens the status page', true)
 
-  // Chip for the refunded order shows the right label
-  const chip = page.locator('article span.rounded-full', { hasText: 'Refunded' }).first()
-  check('order card chip reads Refunded', (await chip.count()) > 0)
+  // ── 7. Shopping promo shows once per session ──────────────────────────────
+  // Section 1 closed it on the first /shop visit; navigating back within the
+  // same session must not re-open it (sessionStorage flag).
+  await gotoWithBoot('/shop')
+  await page.waitForTimeout(1500) // past the 800ms auto-open delay
+  check(
+    'promo does not reappear on a return visit in the same session',
+    !(await popupClose.isVisible().catch(() => false)),
+  )
 } catch (err) {
   check('script completed without throwing', false, String(err).slice(0, 300))
 } finally {

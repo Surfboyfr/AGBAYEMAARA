@@ -2,6 +2,7 @@
 // Covers: tokens actually resolving, no opaque navbar outlines, glass bar,
 // toggle behavior in both directions, persistence, and theme-aware CTAs.
 import { chromium } from 'playwright'
+import { passBootGate } from './boot-gate.mjs'
 
 const BASE_URL = process.argv[2] ?? 'http://localhost:5173'
 let pass = 0
@@ -17,11 +18,21 @@ const css = (locator, prop) =>
 const browser = await chromium.launch({ channel: 'chrome' })
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 } })
 
+// The boot splash + role gate run on every load; pass through as a shopper.
+const gotoWithBoot = async (path, wait = 'networkidle') => {
+  await page.goto(`${BASE_URL}${path}`, { waitUntil: wait })
+  await passBootGate(page)
+}
+const reloadWithBoot = async (wait = 'networkidle') => {
+  await page.reload({ waitUntil: wait })
+  await passBootGate(page)
+}
+
 try {
   // Start from a known state: dark
-  await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' })
+  await gotoWithBoot('/')
   await page.evaluate(() => localStorage.setItem('agbayemaara.theme', 'dark'))
-  await page.reload({ waitUntil: 'networkidle' })
+  await reloadWithBoot()
 
   const nav = page.locator('nav').first()
   const body = page.locator('body')
@@ -62,7 +73,7 @@ try {
   check('sign-in pill inverts in light theme', pillBg === 'rgb(25, 28, 36)', pillBg)
 
   // ── 3. Persistence + back to dark ─────────────────────────────────────────
-  await page.reload({ waitUntil: 'networkidle' })
+  await reloadWithBoot()
   check('light persists across reload', await page.evaluate(() => document.documentElement.classList.contains('light')))
 
   await page.getByRole('button', { name: /dark/i }).first().click()
@@ -71,11 +82,11 @@ try {
   check('body returns to dark surface', (await css(body, 'backgroundColor')) === 'rgb(10, 11, 15)')
 
   // ── 4. Theme carries across surfaces ─────────────────────────────────────
-  await page.goto(`${BASE_URL}/orders`, { waitUntil: 'networkidle' })
+  await gotoWithBoot('/orders')
   check('orders page stays dark after toggle', await page.evaluate(() => document.documentElement.classList.contains('dark')))
 
   // ── 5. Discovery surface in light mode: pills + borderless cards ──────────
-  await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' })
+  await gotoWithBoot('/')
   await page.getByRole('button', { name: /light/i }).first().click()
   await page.waitForTimeout(450)
   check('discovery surface switched to light', await page.evaluate(() => document.documentElement.classList.contains('light')))
@@ -110,7 +121,7 @@ try {
   check('hover deepens the shadow', liftedShadow !== cardShadow, liftedShadow.slice(0, 50))
 
   // ── 7. AuthModal in light mode: active tab + submit visible ──────────────
-  await page.goto(`${BASE_URL}/following`, { waitUntil: 'networkidle' })
+  await gotoWithBoot('/following')
   await page.getByRole('button', { name: 'Sign in' }).first().click()
   const activeTab = page.locator('div.bg-raised.rounded-lg.p-1 button', { hasText: 'Sign in' }).first()
   const tabBg = await css(activeTab, 'backgroundColor')

@@ -5,6 +5,11 @@ import { useLanguage } from '../Context/LanguageContext'
 
 const DISCOUNT_PERCENT = 25
 
+// Session flag: the promo shows at most once per browser session. sessionStorage
+// lives until the tab is closed, so navigating around the shop (which remounts
+// this component) never re-triggers it.
+const SESSION_FLAG = 'agbayemaara.discountShown'
+
 // Pick a curated set of products for the discount popup
 const discountItems = products
   .filter((p) => p.id <= 5 || p.id === 14 || p.id === 20 || p.id === 38)
@@ -13,18 +18,20 @@ const discountItems = products
 const DiscountPopup = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [hasBeenShown, setHasBeenShown] = useState(false)
+  const [hasBeenShown, setHasBeenShown] = useState(
+    () => sessionStorage.getItem(SESSION_FLAG) === '1'
+  )
   const { t } = useLanguage()
 
   useEffect(() => {
-    // Show popup once when the component mounts, with a short delay
-    if (!hasBeenShown) {
-      const timer = setTimeout(() => {
-        setIsOpen(true)
-        setHasBeenShown(true)
-      }, 800)
-      return () => clearTimeout(timer)
-    }
+    // Show the promo once per session, with a short delay after mount
+    if (hasBeenShown) return undefined
+    const timer = setTimeout(() => {
+      setHasBeenShown(true)
+      sessionStorage.setItem(SESSION_FLAG, '1')
+      setIsOpen(true)
+    }, 800)
+    return () => clearTimeout(timer)
   }, [hasBeenShown])
 
   // Lock body scroll when open

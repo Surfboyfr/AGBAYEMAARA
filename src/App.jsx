@@ -1,6 +1,8 @@
 import { Routes, Route } from 'react-router-dom'
 import './App.css'
+import BootFlow from './Components/BootFlow'
 import CartDrawer from './Components/CartDrawer'
+import BrandOwner from './Pages/BrandOwner'
 import DiscoveryFeed from './Pages/DiscoveryFeed'
 import FollowingFeed from './Pages/FollowingFeed'
 import LandingPage from './Pages/LandingPage'
@@ -17,7 +19,7 @@ import BrandStory from './Pages/BrandStory'
 
 function App() {
   return (
-    <>
+    <BootFlow>
     <Routes>
       <Route path='/' element={<MainLayout />}>
         {/* Discovery feed is the home surface */}
@@ -35,6 +37,8 @@ function App() {
         <Route path='brands' element={<Brands />} />
         <Route path='brands/:brandSlug' element={<BrandDetails />} />
         <Route path='brands/:brandSlug/story/:storyId' element={<BrandStory />} />
+        {/* Brand-owner hub — boot gate routes brand owners here */}
+        <Route path='brand-owner' element={<BrandOwner />} />
       </Route>
       <Route path='/shop' element={<ShopLayout />}>
         <Route index element={<ShopHome />} />
@@ -47,7 +51,7 @@ function App() {
       {/* App-wide cart drawer — mounted once so the seven-surface IA puts Cart
           within reach from every navbar (shop, discovery, landing). */}
       <CartDrawer />
-    </>
+    </BootFlow>
   )
 }
 
