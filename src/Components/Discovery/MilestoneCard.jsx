@@ -14,7 +14,7 @@ const MilestoneCard = ({ card }) => {
   const { t } = useLanguage()
 
   return (
-    <article className="group relative flex h-full min-h-64 flex-col justify-between overflow-hidden rounded-2xl border border-[#ec5800]/25 bg-linear-to-br from-[#ec5800]/15 via-[#12141A] to-[#12141A] p-6">
+    <article className="card-lift group relative flex h-full min-h-64 flex-col justify-between overflow-hidden rounded-2xl bg-linear-to-br from-[#ec5800]/15 via-[#12141A] to-[#12141A] shadow-card p-6">
       <div>
         <div className="mb-4 flex items-center gap-2">
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#ec5800]/20 text-[#ec5800]">

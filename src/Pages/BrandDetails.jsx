@@ -20,7 +20,7 @@ const BrandDetails = () => {
   if (!brand) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center gap-4 px-6 text-center">
-        <p className='text-2xl font-bold text-black'>{t('brandDetails', 'notFound')}</p>
+        <p className='text-2xl font-bold text-strong'>{t('brandDetails', 'notFound')}</p>
         <Link to='/brands' className='text-sm font-medium text-[#f28500] hover:underline'>
           {t('brandDetails', 'backToBrands')}
         </Link>
@@ -29,7 +29,7 @@ const BrandDetails = () => {
   }
 
   return (
-    <section className="bg-[#0A0B0F] text-white min-h-screen">
+    <section className="bg-surface text-strong min-h-screen">
       <div className={`bg-linear-to-br ${brand.accent} px-5 py-14 lg:py-18`}>
         <div className="max-w-7xl mx-auto">
           <Link to="/brands" className="inline-flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white mb-8">
@@ -57,7 +57,7 @@ const BrandDetails = () => {
                   aria-pressed={isFollowing(brand.slug)}
                   className={`inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold backdrop-blur-sm transition-all duration-200 active:scale-95 ${
                     isFollowing(brand.slug)
-                      ? 'border border-white/40 bg-white text-black hover:bg-white/85'
+                      ? 'border border-white/40 bg-white text-black hover:bg-on-accent/85'
                       : 'border border-white/40 bg-black/25 text-white hover:bg-white hover:text-black'
                   }`}
                 >
@@ -76,7 +76,7 @@ const BrandDetails = () => {
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-3xl border border-white/15 bg-black/20 shadow-2xl">
+            <div className="relative overflow-hidden rounded-3xl border border-line bg-black/20 shadow-2xl">
               {brand.featuredProduct ? (
                 <>
                   <img
@@ -87,12 +87,12 @@ const BrandDetails = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4 backdrop-blur-sm">
                     <p className='text-sm font-semibold text-white/90'>{t('brandDetails', 'featuredProduct')}</p>
-                    <p className='text-xs text-white/70 mt-1'>{brand.featuredProduct.productName}</p>
+                    <p className='text-xs text-muted mt-1'>{brand.featuredProduct.productName}</p>
                   </div>
                 </>
               ) : (
                 <div className="flex h-64 items-center justify-center lg:h-72">
-                  <span className="text-6xl font-black tracking-tight text-white/30">
+                  <span className="text-6xl font-black tracking-tight text-faint">
                     {brand.name.charAt(0)}
                   </span>
                 </div>
@@ -120,7 +120,7 @@ const BrandDetails = () => {
               <Link
                 key={storyUnit.id}
                 to={`/brands/${brand.slug}/story/${storyUnit.id}`}
-                className='group relative overflow-hidden rounded-2xl border border-white/10 bg-[#12141A] p-5 transition-colors hover:border-white/25'
+                className='group relative overflow-hidden rounded-2xl border border-line bg-surface-alt p-5 transition-colors hover:border-line-strong'
               >
                 <p className='text-xs font-semibold uppercase tracking-wider text-[#ec5800]'>
                   {new Date(storyUnit.publishDate).toLocaleDateString(undefined, {
@@ -129,13 +129,13 @@ const BrandDetails = () => {
                     year: 'numeric',
                   })}
                 </p>
-                <h4 className='mt-2 text-base font-bold leading-snug text-white group-hover:text-[#ec5800] transition-colors'>
+                <h4 className='mt-2 text-base font-bold leading-snug text-strong group-hover:text-[#ec5800] transition-colors'>
                   {storyUnit.title}
                 </h4>
-                <p className='mt-2 line-clamp-2 text-sm text-white/60'>
+                <p className='mt-2 line-clamp-2 text-sm text-muted'>
                   {storyUnit.body}
                 </p>
-                <span className='mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-white/70 transition-colors group-hover:text-white'>
+                <span className='mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-muted transition-colors group-hover:text-strong'>
                   <BookOpen size={13} />
                   {t('brandStory', 'readStory')}
                   <ArrowUpRight size={13} className='text-[#ec5800]' />
@@ -149,7 +149,7 @@ const BrandDetails = () => {
       <div className="max-w-7xl mx-auto px-5 py-10 lg:py-14">
         <div className="flex items-end justify-between gap-4 mb-8">
           <div>
-            <p className='text-xs uppercase tracking-[0.3em] text-white/40 mb-2'>{t('brandDetails', 'productsLabel')}</p>
+            <p className='text-xs uppercase tracking-[0.3em] text-muted mb-2'>{t('brandDetails', 'productsLabel')}</p>
             <h2 className='text-2xl sm:text-3xl font-bold'>{brand.name} {t('brandDetails', 'collectionLabel')}</h2>
           </div>
           {brand.hasSale && (
@@ -158,7 +158,7 @@ const BrandDetails = () => {
               {brand.saleProductCount} {t('brandDetails', 'onSaleProducts')}
             </span>
           )}
-          <p className='text-sm text-white/50 hidden sm:block'>{brandProducts.length} {t('brandDetails', 'productsFound')}</p>
+          <p className='text-sm text-muted hidden sm:block'>{brandProducts.length} {t('brandDetails', 'productsFound')}</p>
         </div>
 
         {/* Sale products section */}
@@ -187,7 +187,7 @@ const BrandDetails = () => {
         )}
 
         {(nonSaleProducts.length === 0 && saleProducts.length === 0) ? (
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-8 text-center text-white/70">
+          <div className="rounded-3xl border border-line bg-raised p-8 text-center text-muted">
             {t('brandDetails', 'noProducts')}
           </div>
         ) : (

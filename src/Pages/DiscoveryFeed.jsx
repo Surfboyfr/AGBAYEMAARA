@@ -37,8 +37,8 @@ const FilterPills = ({ active, onChange }) => {
             aria-pressed={isActive}
             className={`rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 ${
               isActive
-                ? 'bg-white text-black shadow'
-                : 'border border-white/15 bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
+                ? 'bg-[#ec5800] text-white shadow-[0_6px_20px_-6px_rgba(236,88,0,0.55)]'
+                : 'bg-raised text-muted hover:bg-raised-strong hover:text-strong'
             }`}
           >
             {pill.label}
@@ -122,7 +122,7 @@ const DiscoveryFeed = () => {
   const isEmpty = !isLoading && !error && feed.length === 0
 
   return (
-    <div className="min-h-screen w-full bg-[#0A0B0F] text-white">
+    <div className="min-h-screen w-full bg-surface text-strong">
       <DiscoveryNavbar />
 
       <main className="mx-auto max-w-7xl px-5 pb-20 pt-10">
@@ -136,7 +136,7 @@ const DiscoveryFeed = () => {
             <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
               {t('discovery', 'title')}
             </h1>
-            <p className="mt-2 max-w-xl text-sm text-white/50">
+            <p className="mt-2 max-w-xl text-sm text-muted">
               {t('discovery', 'subtitle')}
             </p>
           </div>
@@ -151,7 +151,7 @@ const DiscoveryFeed = () => {
           (activeFilter === FEED_FILTERS.FOLLOWING ? (
             <DiscoveryEmptyState onBrowse={() => handleFilterChange(FEED_FILTERS.FOR_YOU)} />
           ) : (
-            <div className="rounded-3xl border border-dashed border-white/15 bg-white/[0.02] px-6 py-20 text-center text-sm text-white/50">
+            <div className="rounded-3xl bg-raised px-6 py-20 text-center text-sm text-muted">
               {t('discovery', 'emptyFeed')}
             </div>
           ))}

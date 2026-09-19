@@ -49,7 +49,7 @@ const StoryProductBridge = ({ product, brand }) => {
 
   return (
     <aside className='my-10 lg:my-14'>
-      <div className='overflow-hidden rounded-3xl border border-white/10 bg-[#12141A] shadow-2xl'>
+      <div className='overflow-hidden rounded-3xl border border-line bg-surface-alt shadow-2xl'>
         <div className={`h-1.5 w-full bg-linear-to-r ${brand.accent}`} />
 
         <div className='flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:gap-8'>
@@ -70,18 +70,18 @@ const StoryProductBridge = ({ product, brand }) => {
               <BookOpen size={13} />
               {t('brandStory', 'featuredInStory')}
             </p>
-            <h3 className='mt-2 text-xl font-bold text-white sm:text-2xl'>
+            <h3 className='mt-2 text-xl font-bold text-strong sm:text-2xl'>
               {product.productName}
             </h3>
-            <p className='mt-1 text-sm text-white/50'>{product.brand}</p>
-            <p className='mt-2 text-lg font-bold text-white'>
+            <p className='mt-1 text-sm text-muted'>{product.brand}</p>
+            <p className='mt-2 text-lg font-bold text-strong'>
               ${product.productPrice.toFixed(2)}
             </p>
 
             <div className='mt-5 flex flex-wrap items-center gap-3'>
               <Link
                 to={`/shop/product/${product.id}`}
-                className='inline-flex items-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-white/85 active:scale-95'
+                className='inline-flex items-center gap-1.5 rounded-full bg-on-accent px-5 py-2.5 text-sm font-semibold text-surface transition hover:bg-on-accent/85 active:scale-95'
               >
                 {t('brandStory', 'shopThisPiece')}
                 <ArrowUpRight size={15} />
@@ -91,7 +91,7 @@ const StoryProductBridge = ({ product, brand }) => {
                 className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-300 active:scale-95 ${
                   added
                     ? 'bg-green-600 text-white'
-                    : 'border border-white/20 bg-white/5 text-white hover:border-white/40 hover:bg-white/10'
+                    : 'border border-line bg-raised text-strong hover:border-line-strong hover:bg-raised-strong'
                 }`}
               >
                 {added ? (
@@ -113,8 +113,8 @@ const StoryProductBridge = ({ product, brand }) => {
                 aria-pressed={isFollowing(brand.slug)}
                 className={`ml-auto inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-semibold transition-all duration-200 active:scale-95 ${
                   isFollowing(brand.slug)
-                    ? 'border-white/30 bg-white/20 text-white'
-                    : 'border-white/25 bg-black/25 text-white/80 hover:border-white/50 hover:text-white'
+                    ? 'border-line-strong bg-raised-strong text-strong'
+                    : 'border-line-strong bg-raised text-strong hover:border-line-strong hover:text-strong'
                 }`}
               >
                 {isFollowing(brand.slug) ? (
@@ -146,7 +146,7 @@ const Column = ({ paragraphs, withDropCap = false }) => (
     {paragraphs.map((paragraph, index) => (
       <p
         key={index}
-        className={`mb-6 text-[15px] leading-8 text-white/70 ${
+        className={`mb-6 text-[15px] leading-8 text-muted ${
           withDropCap && index === 0
             ? 'first-letter:float-left first-letter:mr-3 first-letter:text-5xl first-letter:font-black first-letter:leading-[0.85] first-letter:text-[#ec5800]'
             : ''
@@ -172,7 +172,7 @@ const BrandStory = () => {
 
   if (!brand) {
     return (
-      <div className='min-h-[70vh] flex flex-col items-center justify-center gap-4 bg-[#0A0B0F] px-6 text-center text-white'>
+      <div className='min-h-[70vh] flex flex-col items-center justify-center gap-4 bg-surface px-6 text-center text-strong'>
         <p className='text-2xl font-bold'>{t('brandDetails', 'notFound')}</p>
         <Link
           to='/brands'
@@ -186,7 +186,7 @@ const BrandStory = () => {
 
   if (!story) {
     return (
-      <div className='min-h-[70vh] flex flex-col items-center justify-center gap-4 bg-[#0A0B0F] px-6 text-center text-white'>
+      <div className='min-h-[70vh] flex flex-col items-center justify-center gap-4 bg-surface px-6 text-center text-strong'>
         <p className='text-2xl font-bold'>{t('brandStory', 'notFound')}</p>
         <Link
           to={`/brands/${brand.slug}`}
@@ -213,7 +213,7 @@ const BrandStory = () => {
   )
 
   return (
-    <article className='min-h-screen w-full bg-[#0A0B0F] text-white'>
+    <article className='min-h-screen w-full bg-surface text-strong'>
       {/* Full-bleed hero */}
       <header className='relative flex min-h-[70vh] items-end overflow-hidden'>
         <img
@@ -241,7 +241,7 @@ const BrandStory = () => {
             {story.title}
           </h1>
 
-          <div className='mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-white/60'>
+          <div className='mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted'>
             <Link
               to={`/brands/${brand.slug}`}
               className='inline-flex items-center gap-1.5 font-semibold text-white transition-colors hover:text-[#ec5800]'
@@ -267,7 +267,7 @@ const BrandStory = () => {
 
         {/* Continue reading — other stories from the same brand */}
         {otherStories.length > 0 && (
-          <section className='mt-16 border-t border-white/10 pt-10'>
+          <section className='mt-16 border-t border-line pt-10'>
             <h2 className='mb-6 text-xl font-bold sm:text-2xl'>
               {t('brandStory', 'moreStories')}{' '}
               <span className='text-[#ec5800]'>{brand.name}</span>
@@ -277,7 +277,7 @@ const BrandStory = () => {
                 <Link
                   key={unit.id}
                   to={`/brands/${brand.slug}/story/${unit.id}`}
-                  className='group flex gap-4 overflow-hidden rounded-2xl border border-white/10 bg-[#12141A] p-4 transition-colors hover:border-white/25'
+                  className='group flex gap-4 overflow-hidden rounded-2xl border border-line bg-surface-alt p-4 transition-colors hover:border-line-strong'
                 >
                   <img
                     src={unit.media}
@@ -288,10 +288,10 @@ const BrandStory = () => {
                     <p className='text-xs font-semibold uppercase tracking-wider text-[#ec5800]'>
                       {formatDate(unit.publishDate)}
                     </p>
-                    <h3 className='mt-1 line-clamp-2 text-sm font-bold leading-snug text-white group-hover:text-[#ec5800]'>
+                    <h3 className='mt-1 line-clamp-2 text-sm font-bold leading-snug text-strong group-hover:text-[#ec5800]'>
                       {unit.title}
                     </h3>
-                    <span className='mt-2 inline-flex items-center gap-1 text-xs font-semibold text-white/60 transition-colors group-hover:text-white'>
+                    <span className='mt-2 inline-flex items-center gap-1 text-xs font-semibold text-muted transition-colors group-hover:text-strong'>
                       {t('brandStory', 'readStory')}
                       <ArrowUpRight size={12} />
                     </span>

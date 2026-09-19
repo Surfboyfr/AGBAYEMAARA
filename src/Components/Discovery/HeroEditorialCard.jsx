@@ -14,7 +14,7 @@ const HeroEditorialCard = ({ card }) => {
   const { t } = useLanguage()
 
   return (
-    <article className="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#12141A] h-130">
+    <article className="card-lift group relative overflow-hidden rounded-3xl bg-[#12141A] shadow-card h-130">
       <img
         src={card.media}
         alt={card.title}

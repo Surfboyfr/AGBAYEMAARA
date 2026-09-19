@@ -11,35 +11,35 @@ const BrandsPage = () => {
   const saleBrands = brands.filter((brand) => brand.hasSale)
 
   return (
-    <section className="min-h-screen bg-[#0A0B0F] text-white">
+    <section className="min-h-screen bg-surface text-strong">
       <ShopNavbar />
-      <div className="relative overflow-hidden border-b border-white/5">
+      <div className="relative overflow-hidden border-b border-line">
         <div className="absolute inset-0 " />
         <div className="relative max-w-7xl mx-auto px-5 py-14 lg:py-18">
           <div className="max-w-3xl space-y-5">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-white/70">
+            <span className="inline-flex items-center gap-2 rounded-full border border-line bg-raised px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-muted">
               <Sparkles size={14} />
               {t('brandsPage', 'badge')}
             </span>
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight leading-tight">
               {t('brandsPage', 'heading')}
             </h1>
-            <p className="text-base sm:text-lg text-white/70 max-w-2xl leading-8">
+            <p className="text-base sm:text-lg text-muted max-w-2xl leading-8">
               {t('brandsPage', 'blurb')}
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10 max-w-3xl">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <p className='text-sm text-white/50'>{t('brandsPage', 'brands')}</p>
+            <div className="rounded-2xl border border-line bg-raised p-4">
+              <p className='text-sm text-muted'>{t('brandsPage', 'brands')}</p>
               <p className="text-2xl font-bold mt-1">{brands.length}</p>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <p className='text-sm text-white/50'>{t('brandsPage', 'styleRange')}</p>
+            <div className="rounded-2xl border border-line bg-raised p-4">
+              <p className='text-sm text-muted'>{t('brandsPage', 'styleRange')}</p>
               <p className="text-2xl font-bold mt-1">Curated</p>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <p className='text-sm text-white/50'>{t('brandsPage', 'layout')}</p>
+            <div className="rounded-2xl border border-line bg-raised p-4">
+              <p className='text-sm text-muted'>{t('brandsPage', 'layout')}</p>
               <p className="text-2xl font-bold mt-1">Grid</p>
             </div>
           </div>
@@ -86,19 +86,19 @@ const BrandsPage = () => {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <h3 className="text-xl font-semibold tracking-tight text-white">{brand.name}</h3>
-                      <p className="mt-1 text-sm text-white/55 leading-6">{brand.tagline}</p>
+                      <p className="mt-1 text-sm text-muted leading-6">{brand.tagline}</p>
                     </div>
                     <span className="rounded-full border border-[#ec5800]/20 bg-[#ec5800]/10 px-3 py-1 text-xs font-medium text-[#ec5800]">
                       -25%
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between pt-3 text-sm text-white/55">
+                  <div className="flex items-center justify-between pt-3 text-sm text-muted">
                     <span className="inline-flex items-center gap-2">
                       <Tag size={15} />
                       {brand.saleProductCount} {t('brandsPage', 'collection')}
                     </span>
-                    <span className="inline-flex items-center gap-1 text-white group-hover:text-[#f28500] transition-colors">
+                    <span className="inline-flex items-center gap-1 text-strong group-hover:text-[#f28500] transition-colors">
                       {t('brandsPage', 'viewBrand')} <ArrowRight size={15} />
                     </span>
                   </div>
@@ -112,10 +112,10 @@ const BrandsPage = () => {
       <div className="max-w-7xl mx-auto px-5 py-10 lg:py-14">
         <div className="flex items-center justify-between gap-4 mb-8">
           <div>
-            <p className='text-xs uppercase tracking-[0.3em] text-white/40 mb-2'>{t('brandsPage', 'featured')}</p>
+            <p className='text-xs uppercase tracking-[0.3em] text-muted mb-2'>{t('brandsPage', 'featured')}</p>
             <h2 className='text-2xl sm:text-3xl font-bold'>{t('brandsPage', 'shopByBrand')}</h2>
           </div>
-          <div className="hidden md:flex items-center gap-2 text-white/50 text-sm">
+          <div className="hidden md:flex items-center gap-2 text-muted text-sm">
             <Grid2X2 size={16} />
             {t('brandsPage', 'gridView')}
           </div>
@@ -126,7 +126,7 @@ const BrandsPage = () => {
             <Link
               key={brand.slug}
               to={`/brands/${brand.slug}`}
-              className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/10 border-b-2 border-b-transparent hover:border-b-[#ec5800]"
+              className="group relative overflow-hidden rounded-3xl bg-raised p-5 shadow-card transition-all duration-300 hover:-translate-y-1 hover:bg-raised-strong border-b-2 border-b-transparent hover:border-b-[#ec5800]"
             >
               <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${brand.accent}`} />
               <div className="mb-5 h-28 overflow-hidden rounded-2xl shadow-lg">
@@ -148,8 +148,8 @@ const BrandsPage = () => {
               <div className="space-y-3">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h3 className="text-xl font-semibold tracking-tight text-white">{brand.name}</h3>
-                    <p className="mt-1 text-sm text-white/55 leading-6">{brand.tagline}</p>
+                    <h3 className="text-xl font-semibold tracking-tight text-strong">{brand.name}</h3>
+                    <p className="mt-1 text-sm text-muted leading-6">{brand.tagline}</p>
                   </div>
                   {brand.hasSale ? (
                     <span className="rounded-full bg-[#ec5800]/10 text-[#ec5800] px-3 py-1 text-xs font-bold flex items-center gap-1">
@@ -157,18 +157,18 @@ const BrandsPage = () => {
                       {t('brandsPage', 'onSaleBadge')}
                     </span>
                   ) : (
-                    <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-white/70">
+                    <span className="rounded-full border border-line bg-raised px-3 py-1 text-xs font-medium text-muted">
                       {brand.productCount}
                     </span>
                   )}
                 </div>
 
-                <div className="flex items-center justify-between pt-3 text-sm text-white/55">
+                <div className="flex items-center justify-between pt-3 text-sm text-muted">
                   <span className="inline-flex items-center gap-2">
                     <Store size={15} />
                     {t('brandsPage', 'collection')}
                   </span>
-                  <span className="inline-flex items-center gap-1 text-white group-hover:text-[#f28500] transition-colors">
+                  <span className="inline-flex items-center gap-1 text-strong group-hover:text-[#f28500] transition-colors">
                     {t('brandsPage', 'viewBrand')} <ArrowRight size={15} />
                   </span>
                 </div>

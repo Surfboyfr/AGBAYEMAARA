@@ -202,7 +202,7 @@ const ProductDetails = () => {
               ) : (
                 <button
                   onClick={handleAddToCart}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0A0B0F] px-6 py-3.5 text-sm font-semibold text-white hover:bg-black/90 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-surface px-6 py-3.5 text-sm font-semibold text-white hover:bg-black/90 transition-colors"
                 >
                   {availability.status === AVAILABILITY_STATUS.MADE_TO_ORDER ? (
                     <>

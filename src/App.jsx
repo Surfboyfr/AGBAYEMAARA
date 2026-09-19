@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import './App.css'
+import CartDrawer from './Components/CartDrawer'
 import DiscoveryFeed from './Pages/DiscoveryFeed'
 import FollowingFeed from './Pages/FollowingFeed'
 import LandingPage from './Pages/LandingPage'
@@ -7,6 +8,7 @@ import ShopHome from './Pages/ShopHome'
 import ShopLayout from './Layouts/ShopLayout'
 import Checkout from './Pages/Checkout'
 import Orders from './Pages/Orders'
+import OrderStatus from './Pages/OrderStatus'
 import Brands from './Pages/Brands'
 import MainLayout from './Layouts/MainLayout'
 import ProductDetails from './Pages/ProductDetails'
@@ -15,6 +17,7 @@ import BrandStory from './Pages/BrandStory'
 
 function App() {
   return (
+    <>
     <Routes>
       <Route path='/' element={<MainLayout />}>
         {/* Discovery feed is the home surface */}
@@ -39,7 +42,12 @@ function App() {
       </Route>
       <Route path='/checkout' element={<Checkout />} />
       <Route path='/orders' element={<Orders />} />
-    </Routes>
+      <Route path='/orders/:orderId' element={<OrderStatus />} />
+      </Routes>
+      {/* App-wide cart drawer — mounted once so the seven-surface IA puts Cart
+          within reach from every navbar (shop, discovery, landing). */}
+      <CartDrawer />
+    </>
   )
 }
 

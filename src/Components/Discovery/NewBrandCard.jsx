@@ -11,7 +11,7 @@ const NewBrandCard = ({ card }) => {
   const following = isFollowing(card.slug)
 
   return (
-    <article className="group relative flex h-full min-h-72 flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#12141A]">
+    <article className="card-lift group relative flex h-full min-h-72 flex-col overflow-hidden rounded-2xl bg-[#12141A] shadow-card">
       <div className="relative h-44 overflow-hidden">
         <img
           src={card.coverImage}
@@ -36,7 +36,7 @@ const NewBrandCard = ({ card }) => {
         {card.sampleProduct && (
           <Link
             to={`/shop/product/${card.sampleProduct.id}`}
-            className="mt-3 flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-2.5 transition hover:border-white/25"
+            className="mt-3 flex items-center gap-3 rounded-xl bg-raised p-2.5 transition hover:bg-raised-strong"
           >
             <img
               src={card.sampleProduct.productImage}

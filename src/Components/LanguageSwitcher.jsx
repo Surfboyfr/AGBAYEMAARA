@@ -21,7 +21,7 @@ const LanguageSwitcher = ({ buttonClassName, dropdownWidth = 'w-36' }) => {
         <ChevronDown size={16} />
       </button>
       {isOpen && (
-        <div className={`absolute right-0 mt-2 ${dropdownWidth} rounded-xl border border-white/10 bg-[#12141A] p-2 shadow-xl`}>
+        <div className={`absolute right-0 mt-2 ${dropdownWidth} rounded-xl border border-line bg-surface-alt p-2 shadow-card`}>
           {languages.map((item) => (
             <button
               key={item.code}
@@ -31,8 +31,8 @@ const LanguageSwitcher = ({ buttonClassName, dropdownWidth = 'w-36' }) => {
               }}
               className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition ${
                 language === item.code
-                  ? 'bg-white/10 text-white'
-                  : 'text-white/70 hover:bg-white/10 hover:text-white'
+                  ? 'bg-raised-strong text-strong'
+                  : 'text-muted hover:bg-raised hover:text-strong'
               }`}
             >
               <span>{item.label}</span>

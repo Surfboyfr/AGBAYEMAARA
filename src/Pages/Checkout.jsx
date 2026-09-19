@@ -29,15 +29,15 @@ const PAYMENT_METHODS = [
 // ── Field primitive ──────────────────────────────────────────────────────────
 const Field = ({ label, optional, ...inputProps }) => (
   <label className='block'>
-    <span className='mb-1.5 block text-xs font-semibold uppercase tracking-wider text-white/50'>
+    <span className='mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted'>
       {label}
       {optional && (
-        <span className='ml-1 font-normal normal-case text-white/30'>— optional</span>
+        <span className='ml-1 font-normal normal-case text-faint'>— optional</span>
       )}
     </span>
     <input
       {...inputProps}
-      className='w-full rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/25 outline-none transition-colors focus:border-[#ec5800] focus:bg-white/[0.07]'
+      className='w-full rounded-xl border border-line bg-raised px-4 py-2.5 text-sm text-strong placeholder-faint outline-none transition-colors focus:border-[#ec5800] focus:bg-raised-strong'
     />
   </label>
 )
@@ -47,7 +47,7 @@ const OrderSummary = ({ items, total }) => {
   const { t } = useLanguage()
 
   return (
-    <div className='rounded-3xl border border-white/10 bg-[#12141A] p-6 lg:sticky lg:top-8'>
+    <div className='rounded-3xl border border-line bg-surface-alt p-6 lg:sticky lg:top-8'>
       <h2 className='flex items-center gap-2 text-lg font-bold'>
         <Package size={18} className='text-[#ec5800]' />
         {t('checkout', 'summaryTitle')}
@@ -60,18 +60,18 @@ const OrderSummary = ({ items, total }) => {
               <img
                 src={item.image}
                 alt={item.name}
-                className='h-16 w-16 rounded-xl border border-white/10 object-cover'
+                className='h-16 w-16 rounded-xl border border-line object-cover'
               />
               <span className='absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#ec5800] px-1 text-[11px] font-bold'>
                 {item.quantity}
               </span>
             </div>
             <div className='min-w-0 flex-1'>
-              <p className='truncate text-sm font-semibold text-white'>{item.name}</p>
-              <p className='mt-0.5 text-xs text-white/45'>
+              <p className='truncate text-sm font-semibold text-strong'>{item.name}</p>
+              <p className='mt-0.5 text-xs text-muted'>
                 {item.brand || t('cart', 'brandFallback')}
               </p>
-              <p className='mt-0.5 text-sm font-bold text-white'>
+              <p className='mt-0.5 text-sm font-bold text-strong'>
                 ${(item.price * item.quantity).toFixed(2)}
               </p>
             </div>
@@ -79,19 +79,19 @@ const OrderSummary = ({ items, total }) => {
         ))}
       </div>
 
-      <div className='mt-6 space-y-2.5 border-t border-white/10 pt-5 text-sm'>
-        <div className='flex justify-between text-white/60'>
+      <div className='mt-6 space-y-2.5 border-t border-line pt-5 text-sm'>
+        <div className='flex justify-between text-muted'>
           <span>{t('cart', 'subtotal')}</span>
-          <span className='font-semibold text-white'>${total.toFixed(2)}</span>
+          <span className='font-semibold text-strong'>${total.toFixed(2)}</span>
         </div>
-        <div className='flex justify-between text-white/60'>
+        <div className='flex justify-between text-muted'>
           <span>{t('checkout', 'shippingLabel')}</span>
           <span className='font-semibold text-emerald-400'>
             {t('checkout', 'shippingFree')}
           </span>
         </div>
-        <div className='flex justify-between border-t border-white/10 pt-3 text-base'>
-          <span className='font-bold text-white'>{t('checkout', 'totalLabel')}</span>
+        <div className='flex justify-between border-t border-line pt-3 text-base'>
+          <span className='font-bold text-strong'>{t('checkout', 'totalLabel')}</span>
           <span className='font-black text-[#ec5800]'>${total.toFixed(2)}</span>
         </div>
       </div>
@@ -119,11 +119,11 @@ const CheckoutSuccess = ({ order }) => {
       <h1 className='mt-6 text-3xl font-black tracking-tight sm:text-4xl'>
         {t('checkout', 'successTitle')}
       </h1>
-      <p className='mt-3 text-sm leading-6 text-white/55'>{t('checkout', 'successBody')}</p>
+      <p className='mt-3 text-sm leading-6 text-muted'>{t('checkout', 'successBody')}</p>
 
-      <div className='mt-8 rounded-3xl border border-white/10 bg-[#12141A] p-6 text-left'>
-        <div className='flex items-center justify-between gap-4 border-b border-white/10 pb-4'>
-          <span className='text-xs font-semibold uppercase tracking-wider text-white/45'>
+      <div className='mt-8 rounded-3xl border border-line bg-surface-alt p-6 text-left'>
+        <div className='flex items-center justify-between gap-4 border-b border-line pb-4'>
+          <span className='text-xs font-semibold uppercase tracking-wider text-muted'>
             {t('checkout', 'referenceLabel')}
           </span>
           <span className='font-mono text-sm font-bold text-[#ec5800]'>
@@ -131,12 +131,12 @@ const CheckoutSuccess = ({ order }) => {
           </span>
         </div>
         <div className='flex items-center justify-between gap-4 py-4'>
-          <span className='text-xs font-semibold uppercase tracking-wider text-white/45'>
+          <span className='text-xs font-semibold uppercase tracking-wider text-muted'>
             {t('checkout', 'paidLabel')}
           </span>
-          <span className='text-lg font-black text-white'>${amount.toFixed(2)}</span>
+          <span className='text-lg font-black text-strong'>${amount.toFixed(2)}</span>
         </div>
-        <div className='flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4 text-sm text-white/55'>
+        <div className='flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4 text-sm text-muted'>
           <span className='inline-flex items-center gap-1.5'>
             <Mail size={14} className='text-[#ec5800]' />
             {order.email}
@@ -154,23 +154,23 @@ const CheckoutSuccess = ({ order }) => {
 
       <div className='mt-8 flex flex-col justify-center gap-3 sm:flex-row'>
         <Link
-          to='/orders'
+          to={`/orders/${order.reference}`}
           onClick={leaveSuccess}
-          className='inline-flex items-center justify-center gap-2 rounded-xl bg-[#ec5800] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#d04f00] active:scale-95'
+          className='inline-flex items-center justify-center gap-2 rounded-xl bg-[#ec5800] px-6 py-3 text-sm font-semibold text-strong transition hover:bg-[#d04f00] active:scale-95'
         >
-          {t('orders', 'viewOrdersCta')}
+          {t('orderStatus', 'trackOrderCta')}
         </Link>
         <Link
           to='/shop'
           onClick={leaveSuccess}
-          className='inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 px-6 py-3 text-sm font-semibold text-white/80 transition hover:border-white/35 hover:text-white active:scale-95'
+          className='inline-flex items-center justify-center gap-2 rounded-xl border border-line px-6 py-3 text-sm font-semibold text-strong transition hover:border-line-strong hover:text-strong active:scale-95'
         >
           {t('checkout', 'successShopCta')}
         </Link>
         <Link
           to='/'
           onClick={leaveSuccess}
-          className='inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 px-6 py-3 text-sm font-semibold text-white/80 transition hover:border-white/35 hover:text-white active:scale-95'
+          className='inline-flex items-center justify-center gap-2 rounded-xl border border-line px-6 py-3 text-sm font-semibold text-strong transition hover:border-line-strong hover:text-strong active:scale-95'
         >
           {t('checkout', 'successFeedCta')}
         </Link>
@@ -240,6 +240,9 @@ const Checkout = () => {
           image: item.image,
         })),
       })
+      // Land on the order status page automatically — the receipt lives there
+      // now, with the lifecycle stepper.
+      navigate(`/orders/${placedOrder.reference}`)
       setOrder(placedOrder)
       setStatus('success')
       clearCart()
@@ -258,7 +261,7 @@ const Checkout = () => {
 
   if (showReceipt) {
     return (
-      <section className='min-h-screen w-full bg-[#0A0B0F] px-5 pb-16 text-white'>
+      <section className='min-h-screen w-full bg-surface px-5 pb-16 text-strong'>
         <CheckoutSuccess order={order} />
       </section>
     )
@@ -267,15 +270,15 @@ const Checkout = () => {
   // Dead-end guard: empty cart bounces back to the shop
   if (cartItems.length === 0) {
     return (
-      <section className='min-h-screen w-full bg-[#0A0B0F] px-5 text-white'>
+      <section className='min-h-screen w-full bg-surface px-5 text-strong'>
         <div className='flex min-h-[70vh] flex-col items-center justify-center gap-5 text-center'>
-          <span className='flex h-16 w-16 items-center justify-center rounded-full bg-white/5 text-white/25'>
+          <span className='flex h-16 w-16 items-center justify-center rounded-full bg-raised text-faint'>
             <PackageX size={30} />
           </span>
           <p className='text-lg font-bold'>{t('checkout', 'emptyCartTitle')}</p>
           <Link
             to='/shop'
-            className='inline-flex items-center gap-2 rounded-xl bg-white px-6 py-2.5 text-sm font-semibold text-black transition hover:bg-white/85 active:scale-95'
+            className='inline-flex items-center gap-2 rounded-xl bg-white px-6 py-2.5 text-sm font-semibold text-black transition hover:bg-on-accent/85 active:scale-95'
           >
             {t('checkout', 'emptyCartCta')}
           </Link>
@@ -285,14 +288,14 @@ const Checkout = () => {
   }
 
   return (
-    <section className='min-h-screen w-full bg-[#0A0B0F] px-5 pb-16 text-white'>
+    <section className='min-h-screen w-full bg-surface px-5 pb-16 text-strong'>
       <div className='mx-auto max-w-7xl pt-8'>
         <button
           onClick={() => {
             setIsCartOpen(false)
             navigate(-1)
           }}
-          className='mb-6 inline-flex items-center gap-2 text-sm font-medium text-white/70 transition-colors hover:text-white'
+          className='mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted transition-colors hover:text-strong'
         >
           <ArrowLeft size={16} />
           {t('checkout', 'back')}
@@ -302,12 +305,12 @@ const Checkout = () => {
       <div className='mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.1fr_0.9fr]'>
         {/* Delivery + payment form */}
         <form onSubmit={handleSubmit} className='space-y-8'>
-          <section className='rounded-3xl border border-white/10 bg-[#12141A] p-6 sm:p-8'>
+          <section className='rounded-3xl border border-line bg-surface-alt p-6 sm:p-8'>
             <h2 className='flex items-center gap-2 text-lg font-bold'>
               <MapPin size={18} className='text-[#ec5800]' />
               {t('checkout', 'deliveryTitle')}
             </h2>
-            <p className='mt-1 text-sm text-white/45'>{t('checkout', 'deliveryHint')}</p>
+            <p className='mt-1 text-sm text-muted'>{t('checkout', 'deliveryHint')}</p>
 
             <div className='mt-6 grid gap-4 sm:grid-cols-2'>
               <Field
@@ -357,12 +360,12 @@ const Checkout = () => {
             </div>
           </section>
 
-          <section className='rounded-3xl border border-white/10 bg-[#12141A] p-6 sm:p-8'>
+          <section className='rounded-3xl border border-line bg-surface-alt p-6 sm:p-8'>
             <h2 className='flex items-center gap-2 text-lg font-bold'>
               <Lock size={18} className='text-[#ec5800]' />
               {t('checkout', 'paymentTitle')}
             </h2>
-            <p className='mt-1 text-sm text-white/45'>{t('checkout', 'paymentHint')}</p>
+            <p className='mt-1 text-sm text-muted'>{t('checkout', 'paymentHint')}</p>
 
             <div className='mt-6 space-y-3'>
               {PAYMENT_METHODS.map((method) => {
@@ -374,7 +377,7 @@ const Checkout = () => {
                     className={`flex cursor-pointer items-center gap-4 rounded-2xl border p-4 transition-all ${
                       isActive
                         ? 'border-[#ec5800] bg-[#ec5800]/10'
-                        : 'border-white/10 bg-white/[0.03] hover:border-white/25'
+                        : 'border-line bg-raised hover:border-line-strong'
                     }`}
                   >
                     <input
@@ -387,22 +390,22 @@ const Checkout = () => {
                     />
                     <span
                       className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
-                        isActive ? 'bg-[#ec5800] text-white' : 'bg-white/5 text-white/50'
+                        isActive ? 'bg-[#ec5800] text-strong' : 'bg-raised text-muted'
                       }`}
                     >
                       <Icon size={18} />
                     </span>
                     <span className='flex-1'>
-                      <span className='block text-sm font-bold text-white'>
+                      <span className='block text-sm font-bold text-strong'>
                         {t('checkout', method.labelKey)}
                       </span>
-                      <span className='mt-0.5 block text-xs text-white/45'>
+                      <span className='mt-0.5 block text-xs text-muted'>
                         {t('checkout', method.hintKey)}
                       </span>
                     </span>
                     <span
                       className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${
-                        isActive ? 'border-[#ec5800]' : 'border-white/25'
+                        isActive ? 'border-[#ec5800]' : 'border-line-strong'
                       }`}
                     >
                       {isActive && <span className='h-2.5 w-2.5 rounded-full bg-[#ec5800]' />}
@@ -413,7 +416,7 @@ const Checkout = () => {
             </div>
 
             {/* Demo note — no real charge is made */}
-            <div className='mt-6 flex items-start gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-xs leading-5 text-white/45'>
+            <div className='mt-6 flex items-start gap-2 rounded-xl border border-line bg-raised px-4 py-3 text-xs leading-5 text-muted'>
               <Lock size={13} className='mt-0.5 shrink-0 text-[#ec5800]' />
               {t('checkout', 'mockNote')}
             </div>
@@ -421,7 +424,7 @@ const Checkout = () => {
             <button
               type='submit'
               disabled={status === 'processing'}
-              className='mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-white py-4 text-sm font-bold tracking-wide text-black transition hover:bg-white/90 active:scale-[0.99] disabled:opacity-60'
+              className='mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-white py-4 text-sm font-bold tracking-wide text-black transition hover:bg-on-accent/90 active:scale-[0.99] disabled:opacity-60'
             >
               {status === 'processing' ? (
                 <>

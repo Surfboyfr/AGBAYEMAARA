@@ -22,7 +22,7 @@ const CuratedBrandRow = ({ brand }) => {
   const following = isFollowing(brand.slug)
 
   return (
-    <div className='flex items-center gap-4 rounded-2xl border border-white/10 bg-[#12141A] p-4'>
+    <div className='flex items-center gap-4 rounded-2xl border border-line bg-surface-alt p-4'>
       <img
         src={brand.coverImage}
         alt={brand.name}
@@ -31,19 +31,19 @@ const CuratedBrandRow = ({ brand }) => {
       <div className='min-w-0 flex-1'>
         <Link
           to={`/brands/${brand.slug}`}
-          className='block truncate text-sm font-bold text-white transition-colors hover:text-[#ec5800]'
+          className='block truncate text-sm font-bold text-strong transition-colors hover:text-[#ec5800]'
         >
           {brand.name}
         </Link>
-        <p className='truncate text-xs text-white/50'>{brand.tagline}</p>
+        <p className='truncate text-xs text-muted'>{brand.tagline}</p>
       </div>
       <button
         onClick={() => toggleFollowBrand(brand.slug)}
         aria-pressed={following}
         className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-all duration-200 active:scale-95 ${
           following
-            ? 'border border-white/20 bg-white/10 text-white'
-            : 'bg-[#ec5800] text-white hover:bg-[#d04f00]'
+            ? 'border border-line bg-raised-strong text-strong'
+            : 'bg-[#ec5800] text-strong hover:bg-[#d04f00]'
         }`}
       >
         {following ? (
@@ -103,7 +103,7 @@ const FollowingFeed = () => {
   const isEmpty = !isLoading && !error && feed.length === 0
 
   return (
-    <div className='min-h-screen w-full bg-[#0A0B0F] text-white'>
+    <div className='min-h-screen w-full bg-surface text-strong'>
       <DiscoveryNavbar />
 
       <main className='mx-auto max-w-7xl px-5 pb-20 pt-10'>
@@ -115,7 +115,7 @@ const FollowingFeed = () => {
           <h1 className='text-3xl font-bold tracking-tight sm:text-4xl'>
             {t('followingPage', 'title')}
           </h1>
-          <p className='mt-2 max-w-xl text-sm text-white/50'>
+          <p className='mt-2 max-w-xl text-sm text-muted'>
             {t('followingPage', 'subtitle')}
           </p>
         </header>
@@ -127,14 +127,14 @@ const FollowingFeed = () => {
         {/* Zero-follow empty state — redirect attention to Discovery with a
             prompt to follow three curated brands */}
         {isEmpty && (
-          <section className='mx-auto max-w-2xl rounded-3xl border border-dashed border-white/15 bg-white/[0.02] px-6 py-12 text-center'>
+          <section className='mx-auto max-w-2xl rounded-3xl border border-dashed border-line bg-white/[0.02] px-6 py-12 text-center'>
             <span className='mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-[#ec5800]/15 text-[#ec5800]'>
               <Heart size={24} />
             </span>
             <h2 className='text-xl font-bold sm:text-2xl'>
               {t('followingPage', 'emptyTitle')}
             </h2>
-            <p className='mx-auto mt-2 max-w-md text-sm text-white/50'>
+            <p className='mx-auto mt-2 max-w-md text-sm text-muted'>
               {t('followingPage', 'emptyBody')}
             </p>
 
@@ -146,7 +146,7 @@ const FollowingFeed = () => {
 
             <Link
               to='/'
-              className='mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-black transition hover:bg-white/85 active:scale-95'
+              className='mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-black transition hover:bg-on-accent/85 active:scale-95'
             >
               <Sparkles size={15} />
               {t('followingPage', 'emptyCta')}
@@ -157,7 +157,7 @@ const FollowingFeed = () => {
         {/* Feed */}
         {!isLoading && !error && feed.length > 0 && (
           <>
-            <p className='mb-5 text-sm text-white/40'>
+            <p className='mb-5 text-sm text-muted'>
               {followedBrands.length}{' '}
               {t('followingPage', 'brandsFollowed')}
             </p>

@@ -11,7 +11,7 @@ const BrandCard = ({ card }) => {
   const following = isFollowing(card.slug)
 
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#12141A] h-105">
+    <article className="card-lift group relative overflow-hidden rounded-2xl bg-[#12141A] shadow-card h-105">
       <img
         src={card.coverImage}
         alt={card.name}

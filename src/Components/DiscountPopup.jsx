@@ -65,7 +65,7 @@ const DiscountPopup = () => {
       {/* Popup card */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg bg-[#0D0E14] border border-white/10 rounded-3xl overflow-hidden shadow-2xl animate-pop-in"
+        className="relative w-full max-w-lg bg-surface-alt border border-line rounded-3xl overflow-hidden shadow-2xl animate-pop-in"
       >
         {/* Top accent bar */}
         <div className="h-1 w-full bg-linear-to-r from-[#ec5800] via-[#f5873a] to-[#ec5800]" />
@@ -73,7 +73,7 @@ const DiscountPopup = () => {
         {/* Close button */}
         <button
           onClick={close}
-          className="absolute top-4 right-4 z-10 text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-full p-2 transition-all duration-200"
+          className="absolute top-4 right-4 z-10 text-muted hover:text-strong bg-raised hover:bg-raised-strong rounded-full p-2 transition-all duration-200"
           aria-label="Close discount popup"
         >
           <X size={18} />
@@ -89,16 +89,16 @@ const DiscountPopup = () => {
         <div className="px-6 pt-10 pb-6 sm:px-8 sm:pt-12 sm:pb-8">
           {/* Heading */}
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-white sm:text-3xl">
+            <h2 className="text-2xl font-bold text-strong sm:text-3xl">
               {t('discountPopup', 'heading')}
             </h2>
-            <p className="text-white/50 text-sm mt-1.5">
+            <p className="text-muted text-sm mt-1.5">
               {t('discountPopup', 'subheading')}
             </p>
           </div>
 
           {/* Product card */}
-          <div className="bg-white/5 rounded-2xl border border-white/10 p-4 sm:p-5">
+          <div className="bg-raised rounded-2xl border border-line p-4 sm:p-5">
             <div className="flex items-center gap-4 sm:gap-5">
               {/* Product image */}
               <div className="relative w-28 h-28 sm:w-32 sm:h-32 shrink-0 rounded-xl overflow-hidden bg-zinc-800">
@@ -115,18 +115,18 @@ const DiscountPopup = () => {
 
               {/* Product info */}
               <div className="flex-1 min-w-0">
-                <p className="text-[11px] uppercase tracking-[0.2em] text-white/40 mb-1">
+                <p className="text-[11px] uppercase tracking-[0.2em] text-muted mb-1">
                   {currentItem?.brand}
                 </p>
-                <h3 className="text-white font-semibold text-base sm:text-lg truncate">
+                <h3 className="text-strong font-semibold text-base sm:text-lg truncate">
                   {currentItem?.productName}
                 </h3>
 
                 <div className="flex items-baseline gap-2 mt-2">
-                  <span className="text-white font-bold text-xl sm:text-2xl">
+                  <span className="text-strong font-bold text-xl sm:text-2xl">
                     ${discountedPrice}
                   </span>
-                  <span className="text-white/30 line-through text-sm">
+                  <span className="text-faint line-through text-sm">
                     ${currentItem?.productPrice.toFixed(2)}
                   </span>
                 </div>
@@ -143,7 +143,7 @@ const DiscountPopup = () => {
           <div className="flex items-center justify-between mt-5">
             <button
               onClick={goPrev}
-              className="text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-full p-2 transition-all duration-200"
+              className="text-muted hover:text-strong bg-raised hover:bg-raised-strong rounded-full p-2 transition-all duration-200"
               aria-label="Previous product"
             >
               <ChevronLeft size={18} />
@@ -157,7 +157,7 @@ const DiscountPopup = () => {
                   className={`rounded-full transition-all duration-300 ${
                     idx === currentIndex
                       ? 'w-6 h-2 bg-[#ec5800]'
-                      : 'w-2 h-2 bg-white/20 hover:bg-white/40'
+                      : 'w-2 h-2 bg-raised-strong hover:bg-line-strong'
                   }`}
                   aria-label={`Go to product ${idx + 1}`}
                 />
@@ -166,7 +166,7 @@ const DiscountPopup = () => {
 
             <button
               onClick={goNext}
-              className="text-white/40 hover:text-white bg-white/5 hover:bg-white/10 rounded-full p-2 transition-all duration-200"
+              className="text-muted hover:text-strong bg-raised hover:bg-raised-strong rounded-full p-2 transition-all duration-200"
               aria-label="Next product"
             >
               <ChevronRight size={18} />
@@ -176,7 +176,7 @@ const DiscountPopup = () => {
           {/* CTA button */}
           <button
             onClick={close}
-            className="mt-6 w-full bg-white text-black font-bold py-3.5 rounded-xl hover:bg-white/90 active:scale-[0.98] transition-all duration-200 text-sm tracking-wide"
+            className="mt-6 w-full bg-[#ec5800] text-white font-bold py-3.5 rounded-xl hover:bg-[#d04f00] active:scale-[0.98] transition-all duration-200 text-sm tracking-wide"
           >
             {t('discountPopup', 'cta')}
           </button>

@@ -13,7 +13,7 @@ const StylingCard = ({ card }) => {
   const { t } = useLanguage()
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#12141A]">
+    <article className="card-lift group flex h-full flex-col overflow-hidden rounded-2xl bg-[#12141A] shadow-card">
       <div className="relative h-56 overflow-hidden">
         <img
           src={card.media}

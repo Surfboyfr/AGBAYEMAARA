@@ -1,6 +1,5 @@
 import { Outlet } from 'react-router-dom'
 import ShopNavbar from '../Components/ShopNavbar'
-import CartDrawer from '../Components/CartDrawer'
 import Footer from '../Components/Footer'
 
 const ShopLayout = () => {
@@ -11,7 +10,6 @@ const ShopLayout = () => {
         <main>
              <Outlet />
         </main>
-        <CartDrawer />
       </div>
       <Footer />
     </>

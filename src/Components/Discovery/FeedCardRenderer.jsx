@@ -22,7 +22,7 @@ const FeedCardRenderer = ({ item }) => {
       return <NewBrandCard card={item} />
     case 'product':
       return (
-        <div className="rounded-2xl bg-white p-1">
+        <div className="card-lift rounded-2xl bg-white p-1 shadow-card">
           <ProductCard product={item} />
         </div>
       )
