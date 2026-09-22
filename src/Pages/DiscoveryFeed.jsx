@@ -220,7 +220,6 @@ const DiscoveryFeed = () => {
             </div>
           </div>
         )}
-
         {/* User journey — the loop from first scroll to delivery, deep-linked */}
         <UserJourney />
       </main>

@@ -30,7 +30,7 @@ const ProductCard = ({ product }) => {
   }
 
   return (
-    <div className="group relative border border-gray-100 rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow duration-300 h-120  "
+    <div className="group relative border border-line rounded-xl overflow-hidden bg-surface-alt hover:shadow-lg transition-shadow duration-300 h-120  "
       onClick={openDetailsPage}
     >
       {/* Image */}
@@ -44,9 +44,9 @@ const ProductCard = ({ product }) => {
 
       {/* Info */}
       <div className="p-4">
-        {brand && <p className="text-xs text-gray-400 mb-1 uppercase tracking-wider">{brand}</p>}
-        <h3 className="text-sm font-semibold text-gray-900 mb-1 truncate">{productName}</h3>
-        <p className="text-gray-800 font-bold mb-3">${productPrice.toFixed(2)}</p>
+        {brand && <p className="text-xs text-faint mb-1 uppercase tracking-wider">{brand}</p>}
+        <h3 className="text-sm font-semibold text-strong mb-1 truncate">{productName}</h3>
+        <p className="text-muted font-bold mb-3">${productPrice.toFixed(2)}</p>
 
         <button
           onClick={handleAddToCart}

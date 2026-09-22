@@ -86,14 +86,14 @@ const ShopHome = () => {
                 className={`rounded-full px-5 py-1.5 text-xs sm:text-sm font-medium transition whitespace-nowrap ${
                   isActive && !showOnSaleOnly
                     ? 'bg-[#0A0B0F] text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'bg-raised text-muted hover:bg-raised-strong hover:text-strong'
                 }`}
               >
                 {category.label}
               </button>
             )
           })}
-          <span className='hidden sm:inline text-gray-300 text-sm'>|</span>
+          <span className='hidden sm:inline text-faint text-sm'>|</span>
           {genderFilters.map((filter) => {
             const isActive = activeGender === filter.value
             return (
@@ -103,20 +103,20 @@ const ShopHome = () => {
                 className={`rounded-full px-5 py-1.5 text-xs sm:text-sm font-medium transition whitespace-nowrap ${
                   isActive && !showOnSaleOnly
                     ? 'bg-[#0A0B0F] text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'bg-raised text-muted hover:bg-raised-strong hover:text-strong'
                 }`}
               >
                 {filter.label}
               </button>
             )
           })}
-          <span className='hidden sm:inline text-gray-300 text-sm'>|</span>
+          <span className='hidden sm:inline text-faint text-sm'>|</span>
           <button
             onClick={() => setShowOnSaleOnly(!showOnSaleOnly)}
             className={`rounded-full px-5 py-1.5 text-xs sm:text-sm font-medium transition whitespace-nowrap flex items-center gap-1.5 ${
               showOnSaleOnly
                 ? 'bg-[#ec5800] text-white shadow-md'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                : 'bg-raised text-muted hover:bg-raised-strong hover:text-strong'
             }`}
           >
             <Tag size={14} />
@@ -130,7 +130,7 @@ const ShopHome = () => {
         <section className='px-5 py-4'>
           <div className='flex items-center gap-3 mb-6'>
             <div className='h-8 w-1 bg-[#ec5800] rounded-full'></div>
-            <h2 className='font-bold text-2xl text-black tracking-tight'>{t('shopHome', 'onSale')}</h2>
+            <h2 className='font-bold text-2xl text-strong tracking-tight'>{t('shopHome', 'onSale')}</h2>
             <span className='bg-[#ec5800]/10 text-[#ec5800] text-xs font-semibold px-3 py-1 rounded-full'>{onSaleProducts.length}</span>
           </div>
           <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
@@ -152,7 +152,7 @@ const ShopHome = () => {
         <section className='px-5 py-4'>
           <div className='flex items-center gap-3 mb-6'>
             <div className='h-8 w-1 bg-[#ec5800] rounded-full'></div>
-            <h2 className='font-bold text-2xl text-black tracking-tight'>{t('shopHome', 'newIn')}</h2>
+            <h2 className='font-bold text-2xl text-strong tracking-tight'>{t('shopHome', 'newIn')}</h2>
             <span className='bg-[#ec5800]/10 text-[#ec5800] text-xs font-semibold px-3 py-1 rounded-full'>{newInProducts.length}</span>
           </div>
           <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
@@ -174,14 +174,14 @@ const ShopHome = () => {
           <div className='px-5'>
             <div className='flex items-center gap-3 py-4'>
               <div className='h-8 w-1 bg-[#ec5800] rounded-full'></div>
-              <h2 className='font-bold text-2xl text-black tracking-tight'>{t('shopHome', 'title')}</h2>
+              <h2 className='font-bold text-2xl text-strong tracking-tight'>{t('shopHome', 'title')}</h2>
             </div>
           </div>
           <div id='product-grid' className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-5 m-5'>
         {filteredProducts.length > 0 ? (
           filteredProducts.map((product) => <ProductCard key={product.id} product={product} />)
         ) : (
-          <div className='col-span-full rounded-xl border border-dashed border-gray-300 bg-gray-50 p-8 text-center text-gray-600'>
+          <div className='col-span-full rounded-xl border border-dashed border-line-strong bg-raised p-8 text-center text-muted'>
             {t('shopHome', 'noProductsMessage')}
           </div>
         )}

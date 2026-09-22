@@ -173,7 +173,7 @@ const Orders = () => {
         </header>
 
         {orders.length === 0 ? (
-          <div className='flex flex-col items-center gap-5 rounded-3xl border border-dashed border-line bg-white/[0.02] px-6 py-16 text-center'>
+          <div className='flex flex-col items-center gap-5 rounded-3xl border border-dashed border-line bg-white/2 px-6 py-16 text-center'>
             <span className='flex h-14 w-14 items-center justify-center rounded-full bg-raised text-faint'>
               <PackageOpen size={26} />
             </span>

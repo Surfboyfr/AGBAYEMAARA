@@ -127,7 +127,7 @@ const FollowingFeed = () => {
         {/* Zero-follow empty state — redirect attention to Discovery with a
             prompt to follow three curated brands */}
         {isEmpty && (
-          <section className='mx-auto max-w-2xl rounded-3xl border border-dashed border-line bg-white/[0.02] px-6 py-12 text-center'>
+          <section className='mx-auto max-w-2xl rounded-3xl border border-dashed border-line bg-white/2 px-6 py-12 text-center'>
             <span className='mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-[#ec5800]/15 text-[#ec5800]'>
               <Heart size={24} />
             </span>

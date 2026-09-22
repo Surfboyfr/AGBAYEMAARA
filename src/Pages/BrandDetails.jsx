@@ -84,7 +84,7 @@ const BrandDetails = () => {
                     alt={brand.name}
                     className="h-64 w-full object-cover transition duration-500 hover:scale-105 lg:h-72"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4 backdrop-blur-sm">
                     <p className='text-sm font-semibold text-white/90'>{t('brandDetails', 'featuredProduct')}</p>
                     <p className='text-xs text-muted mt-1'>{brand.featuredProduct.productName}</p>

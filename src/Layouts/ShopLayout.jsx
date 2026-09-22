@@ -5,7 +5,7 @@ import Footer from '../Components/Footer'
 const ShopLayout = () => {
   return (
     <>
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-surface">
         <ShopNavbar />
         <main>
              <Outlet />

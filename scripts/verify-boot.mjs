@@ -1,8 +1,10 @@
 // Verifies the boot flow (run: node scripts/verify-boot.mjs [url])
-// Covers: the splash + role gate run on EVERY page load — first visit,
-// refresh, and a brand-new session all show the loading screen and the
-// shopper/brand choice before the app mounts.
+// Covers: the splash + role gate + sign-up run on EVERY page load — first
+// visit, refresh, and a brand-new session all show the loading screen, the
+// shopper/brand choice, and the name/email/password sign-up before the app
+// mounts.
 import { chromium } from 'playwright'
+import { completeSignUp } from './boot-gate.mjs'
 
 const BASE_URL = process.argv[2] ?? 'http://localhost:5174'
 const results = []
@@ -46,22 +48,44 @@ try {
   await page.locator('[data-boot="gate"]').waitFor({ state: 'visible' })
   check('role gate appears after the splash (~3s)', true)
 
-  // Shopper path → straight to the landing/discovery surface
+  // Shopper path → sign-up step → the landing/discovery surface
   await page.getByRole('button', { name: 'I am a shopper' }).click()
-  await page.waitForURL(`${BASE_URL}/`)
-  check('shopper choice lands on the discovery feed', true)
-  await page.locator('nav').first().waitFor()
-  check('discovery navbar mounts after shopper choice', true)
 
-  // ── 2. Refresh: splash + gate show again on EVERY load ────────────────────
+  // Sign-up is mandatory: submitting an incomplete form must not proceed.
+  const signup = page.locator('[data-boot="signup"]')
+  await signup.waitFor({ state: 'visible' })
+  await page.locator('#boot-name').fill('Ada Test')
+  await page.locator('#boot-email').fill('ada@example.com')
+  await page.locator('#boot-password').fill('short')
+  await page.getByRole('button', { name: 'Continue' }).click()
+  check(
+    'sign-up rejects short passwords',
+    (await page.getByRole('alert').count()) === 1
+  )
+
+  await completeSignUp(page)
+  await page.waitForURL(`${BASE_URL}/`)
+  check('shopper sign-up lands on the discovery feed', true)
+  await page.locator('nav').first().waitFor()
+  check('discovery navbar mounts after shopper sign-up', true)
+  const storedProfile = await page.evaluate(() =>
+    localStorage.getItem('agbayemaara.user')
+  )
+  check(
+    'sign-up profile is stored for the visit',
+    storedProfile?.includes('ada@example.com') ?? false
+  )
+
+  // ── 2. Refresh: splash + gate + sign-up show again on EVERY load ──────────
   await page.reload({ waitUntil: 'domcontentloaded' })
   await page.locator('[data-boot="splash"]').waitFor({ state: 'visible' })
   check('refresh shows the splash again', true)
   await page.locator('[data-boot="gate"]').waitFor({ state: 'visible' })
   check('refresh shows the role gate again', true)
   await page.getByRole('button', { name: 'I am a shopper' }).click()
+  await completeSignUp(page)
   await page.locator('nav').first().waitFor()
-  check('app mounts after choosing shopper on refresh', true)
+  check('app mounts after shopper sign-up on refresh', true)
   await page.close()
 
   // ── 3. Fresh browser context (new session): full boot flow again ──────────
@@ -73,10 +97,17 @@ try {
   await page2.locator('[data-boot="gate"]').waitFor({ state: 'visible' })
   check('brand-new session shows splash and gate', true)
 
-  // Brand-owner path → dedicated hub
+  // Brand-owner path → sign-up step → dedicated hub
   await page2.getByRole('button', { name: 'I am a brand owner' }).click()
+  const brandSignup = page2.locator('[data-boot="signup"]')
+  await brandSignup.waitFor({ state: 'visible' })
+  check(
+    'brand choice shows the brand sign-up heading',
+    (await brandSignup.innerText()).includes('Create your brand account')
+  )
+  await completeSignUp(page2)
   await page2.waitForURL('**/brand-owner')
-  check('brand choice routes to the brand-owner hub', true)
+  check('brand sign-up routes to the brand-owner hub', true)
 
   // Wait for the hub to mount fully before asserting (count() never waits).
   const showcase = page2.getByRole('heading', {
@@ -104,9 +135,10 @@ try {
   await page2.locator('[data-boot="gate"]').waitFor({ state: 'visible' })
   check('refresh on /brand-owner shows the gate again', true)
   await page2.getByRole('button', { name: 'I am a shopper' }).click()
+  await completeSignUp(page2)
   await page2.waitForURL('**/brand-owner')
   await page2.locator('main').waitFor()
-  check('app remounts on the same route after refresh', true)
+  check('app remounts on the same route after shopper sign-up', true)
   await page2.close()
 } catch (err) {
   check('script completed without throwing', false, String(err).slice(0, 300))

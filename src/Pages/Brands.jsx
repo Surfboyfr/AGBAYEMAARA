@@ -61,7 +61,7 @@ const BrandsPage = () => {
                 to={`/brands/${brand.slug}`}
                 className="group relative overflow-hidden rounded-3xl border border-[#ec5800]/20 bg-[#ec5800]/5 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[#ec5800]/40 hover:bg-[#ec5800]/10 border-b-2 border-b-transparent hover:border-b-[#ec5800]"
               >
-                <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${brand.accent}`} />
+                <div className={`absolute inset-x-0 top-0 h-1 bg-linear-to-r ${brand.accent}`} />
                 <div className="absolute top-3 right-3 z-10 bg-[#ec5800] text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
                   <Tag size={10} />
                   {t('brandsPage', 'onSaleBadge')}
@@ -74,7 +74,7 @@ const BrandsPage = () => {
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
                     />
                   ) : (
-                    <div className={`flex h-full items-center justify-center bg-gradient-to-br ${brand.accent}`}>
+                    <div className={`flex h-full items-center justify-center bg-linear-to-br ${brand.accent}`}>
                       <span className="text-4xl font-black tracking-tight text-white drop-shadow-lg">
                         {brand.name.charAt(0)}
                       </span>
@@ -128,7 +128,7 @@ const BrandsPage = () => {
               to={`/brands/${brand.slug}`}
               className="group relative overflow-hidden rounded-3xl bg-raised p-5 shadow-card transition-all duration-300 hover:-translate-y-1 hover:bg-raised-strong border-b-2 border-b-transparent hover:border-b-[#ec5800]"
             >
-              <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${brand.accent}`} />
+              <div className={`absolute inset-x-0 top-0 h-1 bg-linear-to-r ${brand.accent}`} />
               <div className="mb-5 h-28 overflow-hidden rounded-2xl shadow-lg">
                 {brand.featuredProduct ? (
                   <img
@@ -137,7 +137,7 @@ const BrandsPage = () => {
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
                   />
                 ) : (
-                  <div className={`flex h-full items-center justify-center bg-gradient-to-br ${brand.accent}`}>
+                  <div className={`flex h-full items-center justify-center bg-linear-to-br ${brand.accent}`}>
                     <span className="text-4xl font-black tracking-tight text-white drop-shadow-lg">
                       {brand.name.charAt(0)}
                     </span>

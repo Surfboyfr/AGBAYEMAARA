@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom'
+ import { Link, useParams } from 'react-router-dom'
 import { ArrowLeft, CheckCircle2, Clock, Truck, ShieldCheck, Star, PackageX, MapPin } from 'lucide-react'
 import { getProductById, getAvailability, AVAILABILITY_STATUS } from '../data/products'
 import { brands } from '../data/brands'
@@ -10,7 +10,7 @@ const AVAILABILITY_BADGES = {
   [AVAILABILITY_STATUS.IN_STOCK]: {
     labelKey: 'inStock',
     icon: CheckCircle2,
-    chipClass: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    chipClass: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30',
   },
   [AVAILABILITY_STATUS.MADE_TO_ORDER]: {
     labelKey: 'madeToOrder',
@@ -20,7 +20,7 @@ const AVAILABILITY_BADGES = {
   [AVAILABILITY_STATUS.SOLD_OUT]: {
     labelKey: 'soldOut',
     icon: PackageX,
-    chipClass: 'bg-red-50 text-red-600 border-red-200',
+    chipClass: 'bg-red-500/10 text-red-500 border-red-500/30',
   },
 }
 
@@ -60,7 +60,7 @@ const ProductDetails = () => {
   if (!product) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center gap-4 px-6 text-center">
-        <p className='text-2xl font-bold text-black'>{t('productDetails', 'notFound')}</p>
+        <p className='text-2xl font-bold text-strong'>{t('productDetails', 'notFound')}</p>
         <Link to='/shop' className='text-sm font-medium text-[#f28500] hover:underline'>
           {t('productDetails', 'return')}
         </Link>
@@ -80,19 +80,19 @@ const ProductDetails = () => {
   }
 
   return (
-    <section className="bg-white text-black px-5 py-8 lg:py-12">
+    <section className="bg-surface text-strong px-5 py-8 lg:py-12">
       <div className="max-w-7xl mx-auto">
-        <Link to="/shop" className="inline-flex items-center gap-2 text-sm font-medium text-black/70 hover:text-black mb-6">
+        <Link to="/shop" className="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-strong mb-6">
           <ArrowLeft size={16} />
           {t('productDetails', 'back')}
         </Link>
 
         <div className="grid lg:grid-cols-2 gap-10 items-start">
-          <div className="rounded-3xl overflow-hidden bg-gray-100 border border-gray-100">
+          <div className="rounded-3xl overflow-hidden bg-raised border border-line">
             <img
               src={product.productImage}
               alt={product.productName}
-              className="w-full h-[420px] lg:h-[620px] object-cover"
+              className="w-full h-105 lg:h-155 object-cover"
             />
           </div>
 
@@ -101,7 +101,7 @@ const ProductDetails = () => {
               {brandProfile ? (
                 <Link
                   to={`/brands/${brandProfile.slug}`}
-                  className="group/brand inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.25em] text-black/45 mb-3 transition-colors hover:text-[#f28500]"
+                  className="group/brand inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.25em] text-faint mb-3 transition-colors hover:text-[#f28500]"
                 >
                   {product.brand}
                   <MapPin
@@ -110,12 +110,12 @@ const ProductDetails = () => {
                   />
                 </Link>
               ) : (
-                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-black/45 mb-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-faint mb-3">
                   {product.brand}
                 </p>
               )}
-              <h1 className="text-3xl lg:text-2xl font-bold tracking-tight text-black">{product.productName}</h1>
-              <div className="flex flex-wrap items-center gap-3 mt-4 text-sm text-black/60">
+              <h1 className="text-3xl lg:text-2xl font-bold tracking-tight text-strong">{product.productName}</h1>
+              <div className="flex flex-wrap items-center gap-3 mt-4 text-sm text-muted">
                 <span className="inline-flex items-center gap-1.5">
                   <Star size={15} className="text-[#f28500] fill-[#f28500]" />
                   {product.rating}
@@ -126,64 +126,64 @@ const ProductDetails = () => {
                 <AvailabilityBadge availability={availability} />
               </div>
             </div>
+ 
+            <p className="text-3xl font-semibold text-strong">${product.productPrice.toFixed(2)}</p>
 
-            <p className="text-3xl font-semibold text-black">${product.productPrice.toFixed(2)}</p>
+            <p className="text-base leading-7 text-muted max-w-2xl">{product.description}</p>
 
-            <p className="text-base leading-7 text-black/70 max-w-2xl">{product.description}</p>
-
-            <div className="rounded-2xl bg-white border border-gray-200  shadow-md text-white p-6 space-y-4 mt-5">
-              <h2 className='text-lg font-semibold text-black'>{t('productDetails', 'overview')}</h2>
-              <p className="text-black/70 leading-7">{product.overview}</p>
+            <div className="rounded-2xl bg-surface-alt border border-line shadow-md p-6 space-y-4 mt-5">
+              <h2 className='text-lg font-semibold text-strong'>{t('productDetails', 'overview')}</h2>
+              <p className="text-muted leading-7">{product.overview}</p>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-4">
               {product.details.map((detail) => (
-                <div key={detail} className="rounded-2xl border border-gray-200 p-4 flex items-start gap-3">
+                <div key={detail} className="rounded-2xl border border-line p-4 flex items-start gap-3">
                   <CheckCircle2 size={18} className="mt-0.5 text-[#f28500] shrink-0" />
-                  <span className="text-sm leading-6 text-black/75">{detail}</span>
+                  <span className="text-sm leading-6 text-muted">{detail}</span>
                 </div>
               ))}
             </div>
 
             <div className="grid sm:grid-cols-2 gap-4">
-              <div className="rounded-2xl border border-gray-200 p-4 flex items-start gap-3">
-                <Truck size={18} className="mt-0.5 text-black/70 shrink-0" />
+              <div className="rounded-2xl border border-line p-4 flex items-start gap-3">
+                <Truck size={18} className="mt-0.5 text-muted shrink-0" />
                 <div>
-                  <p className='font-semibold text-black'>{t('productDetails', 'fastDelivery')}</p>
-                  <p className='text-sm text-black/60 mt-1'>{t('productDetails', 'fastDeliveryText')}</p>
+                  <p className='font-semibold text-strong'>{t('productDetails', 'fastDelivery')}</p>
+                  <p className='text-sm text-muted mt-1'>{t('productDetails', 'fastDeliveryText')}</p>
                 </div>
               </div>
-              <div className="rounded-2xl border border-gray-200 p-4 flex items-start gap-3">
-                <ShieldCheck size={18} className="mt-0.5 text-black/70 shrink-0" />
+              <div className="rounded-2xl border border-line p-4 flex items-start gap-3">
+                <ShieldCheck size={18} className="mt-0.5 text-muted shrink-0" />
                 <div>
-                  <p className='font-semibold text-black'>{t('productDetails', 'qualityGuarantee')}</p>
-                  <p className='text-sm text-black/60 mt-1'>{t('productDetails', 'qualityGuaranteeText')}</p>
+                  <p className='font-semibold text-strong'>{t('productDetails', 'qualityGuarantee')}</p>
+                  <p className='text-sm text-muted mt-1'>{t('productDetails', 'qualityGuaranteeText')}</p>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-gray-200 p-5 space-y-3">
-              <h2 className='text-lg font-semibold text-black'>{t('productDetails', 'care')}</h2>
-              <p className="text-sm leading-6 text-black/70">{product.care}</p>
+            <div className="rounded-2xl border border-line p-5 space-y-3">
+              <h2 className='text-lg font-semibold text-strong'>{t('productDetails', 'care')}</h2>
+              <p className="text-sm leading-6 text-muted">{product.care}</p>
             </div>
 
             {/* Availability states: inStock / madeToOrder / soldOut */}
-            <div className="rounded-2xl border border-gray-200 p-5 space-y-3">
-              <h2 className='text-lg font-semibold text-black'>Availability</h2>
+            <div className="rounded-2xl border border-line p-5 space-y-3">
+              <h2 className='text-lg font-semibold text-strong'>Availability</h2>
               {availability.status === AVAILABILITY_STATUS.IN_STOCK && (
-                <p className="text-sm leading-6 text-black/70 flex items-center gap-2">
-                  <CheckCircle2 size={18} className="text-emerald-600 shrink-0" />
+                <p className="text-sm leading-6 text-muted flex items-center gap-2">
+                  <CheckCircle2 size={18} className="text-emerald-500 shrink-0" />
                   In stock and ready to ship within 48 hours.
                 </p>
               )}
               {availability.status === AVAILABILITY_STATUS.MADE_TO_ORDER && (
-                <p className="text-sm leading-6 text-black/70 flex items-center gap-2">
+                <p className="text-sm leading-6 text-muted flex items-center gap-2">
                   <Clock size={18} className="text-[#f28500] shrink-0" />
                   Made to order for you by hand — allow {availability.leadTime} for production and delivery.
                 </p>
               )}
               {availability.status === AVAILABILITY_STATUS.SOLD_OUT && (
-                <p className="text-sm leading-6 text-black/70 flex items-center gap-2">
+                <p className="text-sm leading-6 text-muted flex items-center gap-2">
                   <PackageX size={18} className="text-red-500 shrink-0" />
                   Sold out. Join the waitlist and we’ll email you when it returns.
                 </p>
@@ -194,7 +194,7 @@ const ProductDetails = () => {
               {availability.status === AVAILABILITY_STATUS.SOLD_OUT ? (
                 <button
                   disabled
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-black/20 px-6 py-3.5 text-sm font-semibold text-white cursor-not-allowed"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-raised-strong px-6 py-3.5 text-sm font-semibold text-faint cursor-not-allowed"
                 >
                   <PackageX size={16} />
                   Sold Out
@@ -202,7 +202,7 @@ const ProductDetails = () => {
               ) : (
                 <button
                   onClick={handleAddToCart}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-surface px-6 py-3.5 text-sm font-semibold text-white hover:bg-black/90 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0A0B0F] px-6 py-3.5 text-sm font-semibold text-white hover:bg-[#f28500] transition-colors"
                 >
                   {availability.status === AVAILABILITY_STATUS.MADE_TO_ORDER ? (
                     <>
@@ -216,7 +216,7 @@ const ProductDetails = () => {
               )}
               <Link
                 to="/shop"
-                className="inline-flex items-center justify-center rounded-xl border border-gray-300 px-6 py-3.5 text-sm font-semibold text-black hover:bg-gray-50 transition-colors"
+                className="inline-flex items-center justify-center rounded-xl border border-line-strong px-6 py-3.5 text-sm font-semibold text-strong hover:bg-raised transition-colors"
               >
                 {t('productDetails', 'continueShopping')}
               </Link>
