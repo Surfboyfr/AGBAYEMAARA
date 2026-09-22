@@ -14,9 +14,10 @@ import {
 import { useLanguage } from '../Context/LanguageContext'
 
 // Chosen role + mock sign-up profile are stored for future brand-owner
-// tooling. There is deliberately no "already booted" skip flag: the splash +
-// role gate + sign-up run on EVERY page load (first visit, refresh, or a
-// brand-new session after the tab was closed).
+// tooling. The splash + role gate run on EVERY page load (first visit,
+// refresh, or a brand-new session after the tab was closed). The sign-up
+// step, however, is a first-visit requirement: a stored profile (from a
+// completed sign-up) lets returning visitors pass straight through the gate.
 const ROLE_KEY = 'agbayemaara.role'
 const USER_KEY = 'agbayemaara.user'
 
@@ -26,18 +27,31 @@ const SPLASH_MS = 2800
 // Mock password rule — mirrors the AuthModal hint ("Min. 8 characters").
 const MIN_PASSWORD_LENGTH = 8
 
+// A stored profile means the visitor has completed sign-up before — on this
+// load they pass straight through the gate without seeing the form again.
+const readStoredUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem(USER_KEY) ?? 'null')
+  } catch {
+    return null
+  }
+}
+
 // ── Boot experience (always on) ───────────────────────────────────────────────
 // Wraps the whole app. On every load nothing behind it is mounted: a black
 // splash with the wordmark and a spinner shows for ~3s, then a gate asks
-// whether the visitor is a shopper or a brand owner. Either choice leads to a
-// sign-up step (name, email, password) that must be completed before the app
-// mounts: shoppers continue to the discovery feed; brand owners are routed to
-// the brand hub.
+// whether the visitor is a shopper or a brand owner. First-time visitors then
+// complete a sign-up step (name, email, password) before the app mounts; a
+// returning visitor with a stored profile goes straight through — shoppers
+// to the discovery feed, brand owners to the brand hub.
 const BootFlow = ({ children }) => {
   const navigate = useNavigate()
   const { t } = useLanguage()
   const [phase, setPhase] = useState('splash')
   const [role, setRole] = useState(null)
+  // A stored profile means this visitor has already signed up once — they
+  // skip the form and pass straight through the gate.
+  const [hasSignedUp, setHasSignedUp] = useState(() => readStoredUser() !== null)
   const [showPassword, setShowPassword] = useState(false)
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -56,6 +70,14 @@ const BootFlow = ({ children }) => {
     } catch {
       // Storage can be unavailable (private mode) — role choice still applies
       // for this visit.
+    }
+    // Returning visitors with a stored profile skip the sign-up form.
+    if (hasSignedUp) {
+      if (nextRole === 'brand') {
+        navigate('/brand-owner', { replace: true })
+      }
+      setPhase('app')
+      return
     }
     setRole(nextRole)
     setError('')
@@ -95,6 +117,7 @@ const BootFlow = ({ children }) => {
     if (role === 'brand') {
       navigate('/brand-owner', { replace: true })
     }
+    setHasSignedUp(true)
     setPhase('app')
   }
 

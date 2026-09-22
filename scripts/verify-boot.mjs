@@ -6,6 +6,14 @@
 import { chromium } from 'playwright'
 import { completeSignUp } from './boot-gate.mjs'
 
+// True when the boot flow is currently showing the first-visit sign-up form.
+const signUpVisible = (page) =>
+  page
+    .locator('[data-boot="signup"]')
+    .waitFor({ state: 'visible', timeout: 2500 })
+    .then(() => true)
+    .catch(() => false)
+
 const BASE_URL = process.argv[2] ?? 'http://localhost:5174'
 const results = []
 const check = (name, ok, detail = '') => {
@@ -76,16 +84,26 @@ try {
     storedProfile?.includes('ada@example.com') ?? false
   )
 
-  // ── 2. Refresh: splash + gate + sign-up show again on EVERY load ──────────
+  // ── 2. Refresh: splash + gate return, but the sign-up does not ─────────────
   await page.reload({ waitUntil: 'domcontentloaded' })
   await page.locator('[data-boot="splash"]').waitFor({ state: 'visible' })
   check('refresh shows the splash again', true)
   await page.locator('[data-boot="gate"]').waitFor({ state: 'visible' })
   check('refresh shows the role gate again', true)
   await page.getByRole('button', { name: 'I am a shopper' }).click()
-  await completeSignUp(page)
+  check(
+    'refresh skips the sign-up form for a returning visitor',
+    !(await signUpVisible(page))
+  )
   await page.locator('nav').first().waitFor()
-  check('app mounts after shopper sign-up on refresh', true)
+  check('app mounts after shopper choice on refresh', true)
+  const keptProfile = await page.evaluate(() =>
+    localStorage.getItem('agbayemaara.user')
+  )
+  check(
+    'stored profile survives the refresh untouched',
+    keptProfile?.includes('ada@example.com') ?? false
+  )
   await page.close()
 
   // ── 3. Fresh browser context (new session): full boot flow again ──────────
@@ -135,10 +153,13 @@ try {
   await page2.locator('[data-boot="gate"]').waitFor({ state: 'visible' })
   check('refresh on /brand-owner shows the gate again', true)
   await page2.getByRole('button', { name: 'I am a shopper' }).click()
-  await completeSignUp(page2)
+  check(
+    'sign-up stays skipped across routes and refreshes',
+    !(await signUpVisible(page2))
+  )
   await page2.waitForURL('**/brand-owner')
   await page2.locator('main').waitFor()
-  check('app remounts on the same route after shopper sign-up', true)
+  check('app remounts on the same route after shopper choice', true)
   await page2.close()
 } catch (err) {
   check('script completed without throwing', false, String(err).slice(0, 300))

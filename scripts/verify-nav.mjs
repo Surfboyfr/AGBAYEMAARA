@@ -1,5 +1,6 @@
 // Verifies the seven-surface IA across the three navbars (run: node scripts/verify-nav.mjs [url])
 import { chromium } from 'playwright'
+import { passBootGate } from './boot-gate.mjs'
 
 const BASE_URL = process.argv[2] ?? 'http://localhost:5173'
 const results = []
@@ -11,6 +12,12 @@ const check = (name, ok, detail = '') => {
 const browser = await chromium.launch({ channel: 'chrome' })
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } })
 page.setDefaultTimeout(15000)
+
+// The boot splash + role gate run on every load; pass through as a shopper.
+const gotoPath = async (path) => {
+  await page.goto(`${BASE_URL}${path}`, { waitUntil: 'networkidle' })
+  await passBootGate(page)
+}
 
 // The primary link set every navbar must expose, plus the Cart action.
 const PRIMARY = [
@@ -31,7 +38,7 @@ const navHasIa = async (scope) => {
 
 try {
   // ── 1. Shop surface (/shop — ShopNavbar) ──────────────────────────────────
-  await page.goto(`${BASE_URL}/shop`, { waitUntil: 'networkidle' })
+  await gotoPath('/shop')
   const popupClose = page.getByRole('button', { name: 'Close discount popup' })
   await popupClose.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {})
   if (await popupClose.isVisible().catch(() => false)) await popupClose.click()
@@ -53,7 +60,7 @@ try {
   await page.keyboard.press('Escape')
 
   // ── 2. Discovery surface (/ — DiscoveryNavbar) ────────────────────────────
-  await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' })
+  await gotoPath('/')
   problem = await navHasIa(page)
   check('DiscoveryNavbar shows Discover / Following / Brands + Cart', !problem, problem ?? '')
   check(
@@ -73,14 +80,14 @@ try {
   await page.keyboard.press('Escape')
 
   // ── 3. Following surface uses the same navbar ─────────────────────────────
-  await page.goto(`${BASE_URL}/following`, { waitUntil: 'networkidle' })
+  await gotoPath('/following')
   check(
     'FollowingFeed renders DiscoveryNavbar',
     (await page.locator('nav a[href="/brands"]').count()) > 0,
   )
 
   // ── 4. About surface (/about — LandingNavBar) ─────────────────────────────
-  await page.goto(`${BASE_URL}/about`, { waitUntil: 'networkidle' })
+  await gotoPath('/about')
   problem = await navHasIa(page)
   check('LandingNavBar shows Discover / Following / Brands + Cart', !problem, problem ?? '')
   // Anchors render in both desktop and (hidden) mobile menus — presence and
@@ -97,7 +104,7 @@ try {
   )
 
   // ── 5. Cart reachable on the checkout/orders surfaces too (app-wide drawer) ─
-  await page.goto(`${BASE_URL}/orders`, { waitUntil: 'networkidle' })
+  await gotoPath('/orders')
   // No navbar renders here, but the drawer itself must not crash the page
   check('orders page loads with app-wide drawer mounted', (await page.locator('body').count()) === 1)
 
@@ -115,18 +122,18 @@ try {
     return cls.includes('after:w-0')
   }
 
-  await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' })
+  await gotoPath('/')
   check('Discover active on /', await activeIs('Discover'))
   check('Following inactive on /', await inactiveIs('Following'))
 
-  await page.goto(`${BASE_URL}/following`, { waitUntil: 'networkidle' })
+  await gotoPath('/following')
   check('Following active on /following', await activeIs('Following'))
   check('Discover inactive on /following', await inactiveIs('Discover'))
 
-  await page.goto(`${BASE_URL}/brands`, { waitUntil: 'networkidle' })
+  await gotoPath('/brands')
   check('Brands active on /brands', await activeIs('Brands'))
 
-  await page.goto(`${BASE_URL}/shop`, { waitUntil: 'networkidle' })
+  await gotoPath('/shop')
   const shopPopup = page.getByRole('button', { name: 'Close discount popup' })
   await shopPopup.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {})
   if (await shopPopup.isVisible().catch(() => false)) await shopPopup.click()
