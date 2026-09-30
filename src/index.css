@@ -28,7 +28,7 @@ body {
   animation: pop-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Boot splash: black first-paint screen with the wordmark and spinner. */
+/* Boot splash: white first-paint screen with the wordmark and spinner. */
 @keyframes splash-fade {
   from {
     opacity: 0;

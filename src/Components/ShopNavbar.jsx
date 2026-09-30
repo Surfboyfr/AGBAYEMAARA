@@ -3,13 +3,16 @@ import { Link, NavLink } from 'react-router-dom'
 import { User, ShoppingBag, Menu, X, Package } from 'lucide-react'
 import { useCart } from '../Context/CartContext'
 import { useLanguage } from '../Context/LanguageContext'
+import { useCurrency } from '../Context/CurrencyContext'
 import LanguageSwitcher from './LanguageSwitcher'
+import CurrencySwitcher from './CurrencySwitcher'
 import ThemeToggle from './ThemeToggle'
 import AuthModal from './AuthModal'
 
 const ShopNavbar = () => {
   const { cartCount, setIsCartOpen } = useCart()
   const { t, language, setLanguage, languages } = useLanguage()
+  const { currency, setCurrency, currencies } = useCurrency()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [authModalOpen, setAuthModalOpen] = useState(false)
 
@@ -77,6 +80,11 @@ const ShopNavbar = () => {
               dropdownWidth="w-32"
             />
 
+            <CurrencySwitcher
+              buttonClassName="flex items-center gap-1 rounded-lg bg-raised px-2.5 py-2 text-sm text-muted transition-colors hover:bg-raised-strong hover:text-strong"
+              dropdownWidth="w-44"
+            />
+
             {/* Orders */}
             <Link
               to="/orders"
@@ -137,8 +145,7 @@ const ShopNavbar = () => {
               >
                 {label}
               </NavLink>
-            ))}
-            <div className="px-3 py-2">
+            ))}            <div className="px-3 py-2">
               <p className="text-[11px] uppercase tracking-[0.25em] text-muted mb-2">{t('nav', 'language')}</p>
               <div className="flex flex-wrap gap-2">
                 {languages.map((item) => (
@@ -151,6 +158,23 @@ const ShopNavbar = () => {
                     className={`rounded-full px-3 py-1.5 text-sm transition ${language === item.code ? 'bg-on-accent text-surface' : 'bg-raised-strong text-muted hover:bg-raised-strong hover:text-strong'}`}
                   >
                     {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="px-3 py-2">
+              <p className="text-[11px] uppercase tracking-[0.25em] text-muted mb-2">{t('nav', 'currency')}</p>
+              <div className="flex flex-wrap gap-2">
+                {currencies.map((item) => (
+                  <button
+                    key={item.code}
+                    onClick={() => {
+                      setCurrency(item.code)
+                      setMobileMenuOpen(false)
+                    }}
+                    className={`rounded-full px-3 py-1.5 text-sm transition ${currency === item.code ? 'bg-on-accent text-surface' : 'bg-raised-strong text-muted hover:bg-raised-strong hover:text-strong'}`}
+                  >
+                    {item.symbol} {item.code}
                   </button>
                 ))}
               </div>

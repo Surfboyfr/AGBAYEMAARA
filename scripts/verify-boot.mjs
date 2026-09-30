@@ -4,7 +4,7 @@
 // shopper/brand choice, and the name/email/password sign-up before the app
 // mounts.
 import { chromium } from 'playwright'
-import { completeSignUp } from './boot-gate.mjs'
+import { completeSignUp, passCurrencyStep } from './boot-gate.mjs'
 
 // True when the boot flow is currently showing the first-visit sign-up form.
 const signUpVisible = (page) =>
@@ -37,7 +37,7 @@ try {
   const splashBg = await splash.evaluate(
     (el) => getComputedStyle(el).backgroundColor
   )
-  check('splash is a black screen', splashBg === 'rgb(0, 0, 0)', splashBg)
+  check('splash is a white screen', splashBg === 'rgb(255, 255, 255)', splashBg)
 
   const splashText = await splash.innerText()
   check('splash shows the brand name', splashText.includes('Àgbáyémáarà'))
@@ -56,8 +56,32 @@ try {
   await page.locator('[data-boot="gate"]').waitFor({ state: 'visible' })
   check('role gate appears after the splash (~3s)', true)
 
-  // Shopper path → sign-up step → the landing/discovery surface
+  // Shopper path → currency step → sign-up step → the landing surface
   await page.getByRole('button', { name: 'I am a shopper' }).click()
+
+  // Currency step is mandatory before the landing page: picking a currency
+  // must store the choice and move on to sign-up.
+  const currency = page.locator('[data-boot="currency"]')
+  await currency.waitFor({ state: 'visible' })
+  check('currency step shows after the shopper choice', true)
+  const currencyText = await currency.innerText()
+  check(
+    'currency step lists USD, NGN, GBP and EUR',
+    ['USD', 'NGN', 'GBP', 'EUR'].every((code) => currencyText.includes(code))
+  )
+  check(
+    'currency step explains prices will use the choice',
+    currencyText.includes('Prices across the site will be shown in this currency')
+  )
+  const appBehindCurrency = await page.evaluate(
+    () => document.querySelector('nav') === null
+  )
+  check('app stays unmounted behind the currency step', appBehindCurrency)
+  await page.getByRole('button', { name: /USD — US Dollar/ }).click()
+  check(
+    'currency choice is stored',
+    (await page.evaluate(() => localStorage.getItem('agbayemaara.currency'))) === 'USD'
+  )
 
   // Sign-up is mandatory: submitting an incomplete form must not proceed.
   const signup = page.locator('[data-boot="signup"]')
@@ -91,6 +115,14 @@ try {
   await page.locator('[data-boot="gate"]').waitFor({ state: 'visible' })
   check('refresh shows the role gate again', true)
   await page.getByRole('button', { name: 'I am a shopper' }).click()
+  check(
+    'refresh skips the currency step for a returning visitor',
+    !(await page
+      .locator('[data-boot="currency"]')
+      .waitFor({ state: 'visible', timeout: 1500 })
+      .then(() => true)
+      .catch(() => false))
+  )
   check(
     'refresh skips the sign-up form for a returning visitor',
     !(await signUpVisible(page))
@@ -153,6 +185,9 @@ try {
   await page2.locator('[data-boot="gate"]').waitFor({ state: 'visible' })
   check('refresh on /brand-owner shows the gate again', true)
   await page2.getByRole('button', { name: 'I am a shopper' }).click()
+  // page2 never picked a currency (the brand path skips it), so the shopper
+  // choice surfaces the currency step here — one-time, then the app mounts.
+  await passCurrencyStep(page2)
   check(
     'sign-up stays skipped across routes and refreshes',
     !(await signUpVisible(page2))

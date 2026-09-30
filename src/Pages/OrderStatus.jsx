@@ -15,6 +15,7 @@ import {
   Truck,
 } from 'lucide-react'
 import { useLanguage } from '../Context/LanguageContext'
+import { useCurrency } from '../Context/CurrencyContext'
 import {
   getOrder,
   advanceOrderStatus,
@@ -120,8 +121,9 @@ const Stepper = ({ order }) => {
 }
 
 // ── Item row ─────────────────────────────────────────────────────────────────
-const StatusItem = ({ item }) => {
+const StatusItem = ({ item, currency }) => {
   const { t } = useLanguage()
+  const { formatPriceWithCode } = useCurrency()
 
   return (
     <div className='flex items-center gap-3 rounded-2xl border border-line bg-raised p-3'>
@@ -133,7 +135,7 @@ const StatusItem = ({ item }) => {
         </p>
       </div>
       <span className='text-sm font-bold text-strong'>
-        ${(item.price * item.quantity).toFixed(2)}
+        {formatPriceWithCode(item.price * item.quantity, currency)}
       </span>
     </div>
   )
@@ -143,6 +145,7 @@ const StatusItem = ({ item }) => {
 const OrderStatus = () => {
   const { orderId } = useParams()
   const { t } = useLanguage()
+  const { formatPriceWithCode } = useCurrency()
   const [order, setOrder] = useState(() => getOrder(orderId))
   const [trackedId, setTrackedId] = useState(orderId)
 
@@ -269,12 +272,14 @@ const OrderStatus = () => {
               <Package size={18} className='text-[#ec5800]' />
               {t('checkout', 'summaryTitle')}
             </h2>
-            <span className='text-lg font-black text-strong'>${order.total.toFixed(2)}</span>
+            <span className='text-lg font-black text-strong'>
+              {formatPriceWithCode(order.total, order.currency)}
+            </span>
           </div>
 
           <div className='space-y-3 p-6'>
             {order.items.map((item) => (
-              <StatusItem key={item.id} item={item} />
+              <StatusItem key={item.id} item={item} currency={order.currency} />
             ))}
           </div>
 

@@ -2,11 +2,13 @@ import { Link } from 'react-router-dom'
 import { Sparkles } from 'lucide-react'
 import { useFollow } from '../../Context/FollowContext'
 import { useLanguage } from '../../Context/LanguageContext'
+import { useCurrency } from '../../Context/CurrencyContext'
 
 // New-brand card — freshly onboarded labels with a sample product hook.
 const NewBrandCard = ({ card }) => {
   const { isFollowing, toggleFollowBrand } = useFollow()
   const { t } = useLanguage()
+  const { formatPrice } = useCurrency()
 
   const following = isFollowing(card.slug)
 
@@ -48,7 +50,7 @@ const NewBrandCard = ({ card }) => {
                 {card.sampleProduct.productName}
               </p>
               <p className="text-xs text-white/50">
-                ${card.sampleProduct.productPrice.toFixed(2)}
+                {formatPrice(card.sampleProduct.productPrice)}
               </p>
             </div>
           </Link>

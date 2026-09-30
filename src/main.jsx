@@ -7,6 +7,7 @@ import { CartProvider } from './Context/CartContext'
 import { FollowProvider } from './Context/FollowContext'
 import { LanguageProvider } from './Context/LanguageContext'
 import { ThemeProvider } from './Context/ThemeContext'
+import { CurrencyProvider } from './Context/CurrencyContext'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -15,7 +16,9 @@ createRoot(document.getElementById('root')).render(
         <FollowProvider>
           <LanguageProvider>
           <ThemeProvider>
-            <App />
+            <CurrencyProvider>
+              <App />
+            </CurrencyProvider>
           </ThemeProvider>
           </LanguageProvider>
         </FollowProvider>

@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { useCart } from '../Context/CartContext'
 import { ShoppingBag, Check } from 'lucide-react'
 import { useLanguage } from '../Context/LanguageContext'
+import { useCurrency } from '../Context/CurrencyContext'
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate()
   const { addToCart, setIsCartOpen } = useCart()
   const { t } = useLanguage()
+  const { formatPrice } = useCurrency()
   const [added, setAdded] = useState(false)
 
   const { id, productName, productPrice, productImage, brand } = product
@@ -46,13 +48,15 @@ const ProductCard = ({ product }) => {
       <div className="p-4">
         {brand && <p className="text-xs text-faint mb-1 uppercase tracking-wider">{brand}</p>}
         <h3 className="text-sm font-semibold text-strong mb-1 truncate">{productName}</h3>
-        <p className="text-muted font-bold mb-3">${productPrice.toFixed(2)}</p>
+        <p className="text-muted font-bold mb-3">{formatPrice(productPrice)}</p>
 
         <button
           onClick={handleAddToCart}
           className={`w-full mt-5 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 ${
             added
-              ? 'bg-green-600 text-white'
+              // Lighter shade of the default ink (#0A0B0F) instead of green —
+              // signals "added" while staying in the button's neutral palette.
+              ? 'bg-[#2A2D35] text-white'
               : 'bg-[#0A0B0F] text-white hover:bg-[#f28500]'
           }`}
         >

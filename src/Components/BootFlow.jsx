@@ -12,6 +12,8 @@ import {
   User,
 } from 'lucide-react'
 import { useLanguage } from '../Context/LanguageContext'
+import { hasStoredCurrency } from '../Context/CurrencyContext'
+import { useCurrency } from '../Context/CurrencyContext'
 
 // Chosen role + mock sign-up profile are stored for future brand-owner
 // tooling. The splash + role gate run on EVERY page load (first visit,
@@ -40,13 +42,15 @@ const readStoredUser = () => {
 // ── Boot experience (always on) ───────────────────────────────────────────────
 // Wraps the whole app. On every load nothing behind it is mounted: a black
 // splash with the wordmark and a spinner shows for ~3s, then a gate asks
-// whether the visitor is a shopper or a brand owner. First-time visitors then
-// complete a sign-up step (name, email, password) before the app mounts; a
-// returning visitor with a stored profile goes straight through — shoppers
-// to the discovery feed, brand owners to the brand hub.
+// whether the visitor is a shopper or a brand owner. Shoppers then pick the
+// currency they want to shop in (once — the choice is stored). First-time
+// visitors complete a sign-up step (name, email, password) before the app
+// mounts; a returning visitor with a stored profile goes straight through —
+// shoppers to the discovery feed, brand owners to the brand hub.
 const BootFlow = ({ children }) => {
   const navigate = useNavigate()
   const { t } = useLanguage()
+  const { setCurrency, currencies } = useCurrency()
   const [phase, setPhase] = useState('splash')
   const [role, setRole] = useState(null)
   // A stored profile means this visitor has already signed up once — they
@@ -71,6 +75,13 @@ const BootFlow = ({ children }) => {
       // Storage can be unavailable (private mode) — role choice still applies
       // for this visit.
     }
+    // Shoppers pick a currency before entering; brand owners don't need one
+    // to manage their label, so they go straight through.
+    if (nextRole === 'shopper' && !hasStoredCurrency()) {
+      setRole(nextRole)
+      setPhase('currency')
+      return
+    }
     // Returning visitors with a stored profile skip the sign-up form.
     if (hasSignedUp) {
       if (nextRole === 'brand') {
@@ -82,6 +93,21 @@ const BootFlow = ({ children }) => {
     setRole(nextRole)
     setError('')
     setPhase('signup')
+  }
+
+  // Currency step confirmation: store the selection (CurrencyContext also
+  // persists it) and continue into sign-up or straight into the app.
+  const confirmCurrency = (code) => {
+    setCurrency(code)
+    if (!hasSignedUp) {
+      setError('')
+      setPhase('signup')
+      return
+    }
+    if (role === 'brand') {
+      navigate('/brand-owner', { replace: true })
+    }
+    setPhase('app')
   }
 
   const updateField = (field) => (event) => {
@@ -127,13 +153,13 @@ const BootFlow = ({ children }) => {
         data-boot='splash'
         role='status'
         aria-live='polite'
-        className='boot-splash fixed inset-0 z-[100] flex flex-col items-center justify-center gap-6 bg-black text-white'
+        className='boot-splash fixed inset-0 z-[100] flex flex-col items-center justify-center gap-6 bg-white text-black'
       >
         <div className='animate-pop-in text-center'>
           <h1 className='text-4xl font-bold tracking-wide sm:text-5xl'>
             Àgbáyémáarà
           </h1>
-          <p className='mt-3 text-sm text-white/60'>
+          <p className='mt-3 text-sm text-black/60'>
             {t('boot', 'splashTagline')}
           </p>
         </div>
@@ -150,7 +176,7 @@ const BootFlow = ({ children }) => {
     return (
       <div
         data-boot='gate'
-        className='fixed inset-0 z-[100] flex items-center justify-center bg-surface px-5 text-strong'
+        className='light fixed inset-0 z-[100] flex items-center justify-center bg-white px-5 text-strong'
       >
         <div className='animate-pop-in w-full max-w-md rounded-3xl border border-line bg-raised p-8 text-center shadow-card'>
           <p className='text-lg font-bold tracking-wide text-[#ec5800]'>
@@ -199,6 +225,54 @@ const BootFlow = ({ children }) => {
                 </span>
               </span>
             </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (phase === 'currency') {
+    return (
+      <div
+        data-boot='currency'
+        className='light fixed inset-0 z-[100] flex items-center justify-center bg-white px-5 text-strong'
+      >
+        <div className='animate-pop-in w-full max-w-md rounded-3xl border border-line bg-raised p-8 text-center shadow-card'>
+          <p className='text-lg font-bold tracking-wide text-[#ec5800]'>
+            Àgbáyémáarà
+          </p>
+          <h2 className='mt-4 text-2xl font-bold tracking-tight'>
+            {t('boot', 'currencyTitle')}
+          </h2>
+          <p className='mt-2 text-sm text-muted'>
+            {t('boot', 'currencySubtitle')}
+          </p>
+
+          <div className='mt-7 space-y-3'>
+            {currencies.map((option) => (
+              <button
+                key={option.code}
+                onClick={() => confirmCurrency(option.code)}
+                className='group flex w-full items-center gap-4 rounded-2xl border border-line-strong p-4 text-left transition-all duration-200 hover:bg-raised-strong active:scale-[0.98]'
+              >
+                <span className='flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#ec5800]/15 text-lg font-bold text-[#ec5800]'>
+                  {option.symbol}
+                </span>
+                <span>
+                  <span className='block text-sm font-bold'>
+                    {option.code} — {option.label}
+                  </span>
+                  <span className='block text-xs text-muted'>
+                    {t('boot', 'currencyPricesIn')} {option.code}
+                  </span>
+                </span>
+                <ArrowRight
+                  size={16}
+                  aria-hidden='true'
+                  className='ml-auto text-faint transition-all duration-200 group-hover:translate-x-1 group-hover:text-[#ec5800]'
+                />
+              </button>
+            ))}
           </div>
         </div>
       </div>

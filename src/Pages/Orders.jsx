@@ -11,6 +11,7 @@ import {
   Truck,
 } from 'lucide-react'
 import { useLanguage } from '../Context/LanguageContext'
+import { useCurrency } from '../Context/CurrencyContext'
 import { getOrders } from '../lib/orders'
 
 const formatDate = (iso) =>
@@ -41,6 +42,7 @@ const isFailedStatus = (status) => status === 'fulfilment_failed' || status === 
 
 const OrderCard = ({ order }) => {
   const { t } = useLanguage()
+  const { formatPriceWithCode } = useCurrency()
   const [expanded, setExpanded] = useState(false)
 
   return (
@@ -65,7 +67,7 @@ const OrderCard = ({ order }) => {
         </span>
 
         <span className='text-lg font-black text-strong'>
-          ${order.total.toFixed(2)}
+          {formatPriceWithCode(order.total, order.currency)}
         </span>
 
         <Link
@@ -110,7 +112,7 @@ const OrderCard = ({ order }) => {
                   </p>
                 </div>
                 <span className='text-sm font-bold text-strong'>
-                  ${(item.price * item.quantity).toFixed(2)}
+                  {formatPriceWithCode(item.price * item.quantity, order.currency)}
                 </span>
               </div>
             ))}

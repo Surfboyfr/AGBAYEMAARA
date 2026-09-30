@@ -4,6 +4,7 @@ import { getProductById, getAvailability, AVAILABILITY_STATUS } from '../data/pr
 import { brands } from '../data/brands'
 import { useCart } from '../Context/CartContext'
 import { useLanguage } from '../Context/LanguageContext'
+import { useCurrency } from '../Context/CurrencyContext'
 
 // Proper state badges: in stock / made to order (+ lead time) / sold out.
 const AVAILABILITY_BADGES = {
@@ -50,6 +51,7 @@ const ProductDetails = () => {
   const product = getProductById(productId)
   const { addToCart, setIsCartOpen } = useCart()
   const { t } = useLanguage()
+  const { formatPrice } = useCurrency()
   const availability = getAvailability(product)
   // The brand name is tappable when the label has a Brand Profile; products
   // from unlisted brands fall back to plain text.
@@ -127,7 +129,7 @@ const ProductDetails = () => {
               </div>
             </div>
  
-            <p className="text-3xl font-semibold text-strong">${product.productPrice.toFixed(2)}</p>
+            <p className="text-3xl font-semibold text-strong">{formatPrice(product.productPrice)}</p>
 
             <p className="text-base leading-7 text-muted max-w-2xl">{product.description}</p>
 

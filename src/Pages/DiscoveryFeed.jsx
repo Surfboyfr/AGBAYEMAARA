@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { Compass, ShoppingBag } from 'lucide-react'
+import { useLocation } from 'react-router-dom'
+import { Compass } from 'lucide-react'
 import { useFollow } from '../Context/FollowContext'
 import { useLanguage } from '../Context/LanguageContext'
 import DiscoveryNavbar from '../Components/Discovery/DiscoveryNavbar'
@@ -18,7 +18,7 @@ import {
 } from '../data/discoveryFeed'
 import UserJourney from '../Components/UserJourney'
 
-// ── Filter pills + shop navigation pill ───────────────────────────────────────
+// ── Filter pills ───────────────────────────────────────
 const FilterPills = ({ active, onChange }) => {
   const { t } = useLanguage()
 
@@ -26,28 +26,11 @@ const FilterPills = ({ active, onChange }) => {
     { label: t('discovery', 'forYou'), value: FEED_FILTERS.FOR_YOU },
     { label: t('discovery', 'followingTab'), value: FEED_FILTERS.FOLLOWING },
     { label: t('discovery', 'newBrands'), value: FEED_FILTERS.NEW_BRANDS },
-    // Navigation pill, not a filter — routes straight to the shop surface.
-    { label: t('nav', 'shop'), to: '/shop' },
   ]
 
   return (
     <div className="flex flex-wrap items-center gap-2.5">
       {pills.map((pill) => {
-        // Shop pill: outlined + bag icon so it reads as "go shopping" rather
-        // than one of the feed filters, and fills orange on hover.
-        if (pill.to) {
-          return (
-            <Link
-              key={pill.to}
-              to={pill.to}
-              className="inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-raised px-5 py-2 text-sm font-semibold text-strong transition-all duration-200 hover:border-[#ec5800] hover:bg-[#ec5800] hover:text-white active:scale-95"
-            >
-              <ShoppingBag size={15} />
-              {pill.label}
-            </Link>
-          )
-        }
-
         const isActive = active === pill.value
         return (
           <button

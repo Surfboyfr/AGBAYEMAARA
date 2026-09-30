@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useCart } from '../Context/CartContext'
 import { X, Minus, Plus, Trash2, ShoppingBag } from 'lucide-react'
 import { useLanguage } from '../Context/LanguageContext'
+import { useCurrency } from '../Context/CurrencyContext'
 
 const CartDrawer = () => {
   const {
@@ -16,6 +17,7 @@ const CartDrawer = () => {
   } = useCart()
   const navigate = useNavigate()
   const { t } = useLanguage()
+  const { formatPrice } = useCurrency()
 
   // Close on Escape key
   useEffect(() => {
@@ -127,7 +129,7 @@ const CartDrawer = () => {
                       </div>
 
                       <p className="text-strong text-base font-bold">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        {formatPrice(item.price * item.quantity)}
                       </p>
                     </div>
                   </div>
@@ -143,7 +145,7 @@ const CartDrawer = () => {
             <div className="mx-auto max-w-3xl space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-muted text-sm">{t('cart', 'subtotal')}</span>
-                <span className="text-strong font-bold text-xl">${cartTotal.toFixed(2)}</span>
+                <span className="text-strong font-bold text-xl">{formatPrice(cartTotal)}</span>
               </div>
               <p className="text-faint text-xs">{t('cart', 'shipping')}</p>
 

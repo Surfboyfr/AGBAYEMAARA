@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { X, ChevronLeft, ChevronRight, Timer } from 'lucide-react'
 import { products } from '../data/products'
 import { useLanguage } from '../Context/LanguageContext'
+import { useCurrency } from '../Context/CurrencyContext'
 
 const DISCOUNT_PERCENT = 25
 
@@ -22,6 +23,7 @@ const DiscountPopup = () => {
     () => sessionStorage.getItem(SESSION_FLAG) === '1'
   )
   const { t } = useLanguage()
+  const { formatPrice } = useCurrency()
 
   useEffect(() => {
     // Show the promo once per session, with a short delay after mount
@@ -46,8 +48,8 @@ const DiscountPopup = () => {
 
   const currentItem = discountItems[currentIndex]
   const discountedPrice = currentItem
-    ? (currentItem.productPrice * (1 - DISCOUNT_PERCENT / 100)).toFixed(2)
-    : '0.00'
+    ? currentItem.productPrice * (1 - DISCOUNT_PERCENT / 100)
+    : 0
 
   const goNext = () => {
     setCurrentIndex((prev) => (prev + 1) % discountItems.length)
@@ -131,10 +133,10 @@ const DiscountPopup = () => {
 
                 <div className="flex items-baseline gap-2 mt-2">
                   <span className="text-strong font-bold text-xl sm:text-2xl">
-                    ${discountedPrice}
+                    {formatPrice(discountedPrice)}
                   </span>
                   <span className="text-faint line-through text-sm">
-                    ${currentItem?.productPrice.toFixed(2)}
+                    {formatPrice(currentItem?.productPrice ?? 0)}
                   </span>
                 </div>
 

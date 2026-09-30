@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import { useCart } from '../Context/CartContext'
 import { useLanguage } from '../Context/LanguageContext'
+import { useCurrency } from '../Context/CurrencyContext'
 import { initializeTransaction } from '../lib/payments'
 import { saveOrder, getLastOrder, clearLastOrder } from '../lib/orders'
 
@@ -45,6 +46,7 @@ const Field = ({ label, optional, ...inputProps }) => (
 // ── Order summary ────────────────────────────────────────────────────────────
 const OrderSummary = ({ items, total }) => {
   const { t } = useLanguage()
+  const { formatPrice } = useCurrency()
 
   return (
     <div className='rounded-3xl border border-line bg-surface-alt p-6 lg:sticky lg:top-8'>
@@ -72,7 +74,7 @@ const OrderSummary = ({ items, total }) => {
                 {item.brand || t('cart', 'brandFallback')}
               </p>
               <p className='mt-0.5 text-sm font-bold text-strong'>
-                ${(item.price * item.quantity).toFixed(2)}
+                {formatPrice(item.price * item.quantity)}
               </p>
             </div>
           </div>
@@ -82,7 +84,7 @@ const OrderSummary = ({ items, total }) => {
       <div className='mt-6 space-y-2.5 border-t border-line pt-5 text-sm'>
         <div className='flex justify-between text-muted'>
           <span>{t('cart', 'subtotal')}</span>
-          <span className='font-semibold text-strong'>${total.toFixed(2)}</span>
+          <span className='font-semibold text-strong'>{formatPrice(total)}</span>
         </div>
         <div className='flex justify-between text-muted'>
           <span>{t('checkout', 'shippingLabel')}</span>
@@ -92,7 +94,7 @@ const OrderSummary = ({ items, total }) => {
         </div>
         <div className='flex justify-between border-t border-line pt-3 text-base'>
           <span className='font-bold text-strong'>{t('checkout', 'totalLabel')}</span>
-          <span className='font-black text-[#ec5800]'>${total.toFixed(2)}</span>
+          <span className='font-black text-[#ec5800]'>{formatPrice(total)}</span>
         </div>
       </div>
     </div>
@@ -102,6 +104,7 @@ const OrderSummary = ({ items, total }) => {
 // ── Success state ────────────────────────────────────────────────────────────
 const CheckoutSuccess = ({ order }) => {
   const { t } = useLanguage()
+  const { formatPriceWithCode } = useCurrency()
 
   // Accepts both the fresh payment payload (`amount`) and the restored
   // persisted order (`total`) so the receipt renders identically on refresh.
@@ -134,7 +137,9 @@ const CheckoutSuccess = ({ order }) => {
           <span className='text-xs font-semibold uppercase tracking-wider text-muted'>
             {t('checkout', 'paidLabel')}
           </span>
-          <span className='text-lg font-black text-strong'>${amount.toFixed(2)}</span>
+          <span className='text-lg font-black text-strong'>
+            {formatPriceWithCode(amount, order.currency)}
+          </span>
         </div>
         <div className='flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4 text-sm text-muted'>
           <span className='inline-flex items-center gap-1.5'>
@@ -183,6 +188,7 @@ const CheckoutSuccess = ({ order }) => {
 const Checkout = () => {
   const { cartItems, cartTotal, clearCart, setIsCartOpen } = useCart()
   const { t } = useLanguage()
+  const { currency, formatPrice, convertPrice } = useCurrency()
   const navigate = useNavigate()
 
   const [form, setForm] = useState({
@@ -211,10 +217,17 @@ const Checkout = () => {
     try {
       // Mock transaction — swap initializeTransaction for the real endpoint
       // once the Express service exists.
-      const tx = await initializeTransaction({ email: form.email, amount: cartTotal })
+      // Charge in the shopper's chosen currency; the converted amount and the
+      // currency code are both snapshot onto the order.
+      const tx = await initializeTransaction({
+        email: form.email,
+        amount: convertPrice(cartTotal),
+        currency,
+      })
       const placedOrder = {
         reference: tx.data.reference,
         amount: tx.data.amount / 100,
+        currency: tx.data.currency,
         email: form.email,
       }
       // Persist the full order so the receipt survives a refresh and shows up
@@ -225,6 +238,7 @@ const Checkout = () => {
         status: 'paid',
         email: placedOrder.email,
         total: placedOrder.amount,
+        currency: placedOrder.currency,
         paymentMethod,
         delivery: {
           address: form.address,
@@ -434,7 +448,7 @@ const Checkout = () => {
               ) : (
                 <>
                   <Lock size={15} />
-                  {t('checkout', 'payButton')} ${cartTotal.toFixed(2)}
+                  {t('checkout', 'payButton')} {formatPrice(cartTotal)}
                 </>
               )}
             </button>

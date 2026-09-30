@@ -1,15 +1,20 @@
 // Shared boot-flow helper for verify scripts.
 //
 // The splash + role gate run on EVERY full page load, so any goto()/reload()
-// in a script must pass through the gate before the app mounts. The sign-up
-// form only appears on a FIRST visit (no stored profile) — returning visitors
-// skip it. This helper handles both paths, so callers work regardless of
+// in a script must pass through the gate before the app mounts. The currency
+// picker appears once per browser (until localStorage is cleared) and the
+// sign-up form only on a FIRST visit (no stored profile) — returning visitors
+// skip both. This helper handles all paths, so callers work regardless of
 // whether the suite's page has signed up before. Shoppers are the default
 // persona for test suites.
 export const passBootGate = async (page, timeout = 20000) => {
   const gate = page.locator('[data-boot="gate"]')
   await gate.waitFor({ state: 'visible', timeout })
   await page.getByRole('button', { name: 'I am a shopper' }).click()
+
+  // First visit on this page: the currency picker appears after the gate.
+  // Returning visits: it never mounts — the wait below wins instantly.
+  await passCurrencyStep(page)
 
   // First visit on this page: the sign-up form appears and must be filled.
   // Returning visits: the gate detaches straight away — the wait below wins
@@ -24,6 +29,20 @@ export const passBootGate = async (page, timeout = 20000) => {
   }
 
   await gate.waitFor({ state: 'detached', timeout: 5000 })
+}
+
+// Choose USD at the currency step if it is showing. USD keeps every price
+// assertion in the suites on the default `$xx.xx` formatting.
+export const passCurrencyStep = async (page) => {
+  const currency = page.locator('[data-boot="currency"]')
+  const needsCurrency = await currency
+    .waitFor({ state: 'visible', timeout: 2500 })
+    .then(() => true)
+    .catch(() => false)
+  if (needsCurrency) {
+    await page.getByRole('button', { name: /USD — US Dollar/ }).click()
+    await currency.waitFor({ state: 'detached', timeout: 5000 })
+  }
 }
 
 // Fill the first-visit sign-up step. Kept separate so boot scripts can drive

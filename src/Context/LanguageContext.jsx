@@ -12,6 +12,7 @@ const translations = {
       brands: 'Brands',
       signIn: 'Sign In / Register',
       language: 'Language',
+      currency: 'Currency',
     },
     landingNav: {
       home: 'Home',
@@ -255,7 +256,7 @@ const translations = {
       toggleMenu: 'Toggle menu',
     },
     discovery: {
-      eyebrow: 'The Feed',
+      eyebrow: 'Feed',
       title: 'Discover African fashion, story first',
       subtitle: 'Editorial, drops, milestones, and the labels behind them — one feed, newest first.',
       forYou: 'FOR YOU',
@@ -312,6 +313,9 @@ const translations = {
       signUpTogglePassword: 'Show or hide password',
       signUpError: 'Please fill in your name, a valid email, and a password of at least 8 characters.',
       signUpContinue: 'Continue',
+      currencyTitle: 'Choose your shopping currency',
+      currencySubtitle: 'Prices across the site will be shown in this currency.',
+      currencyPricesIn: 'Shop in',
     },
     brandOwner: {
       eyebrow: 'Brand owners',
@@ -339,7 +343,7 @@ const translations = {
       backToApp: 'Back to the app',
     },
     journey: {
-      eyebrow: 'The Journey',
+      eyebrow: 'Journey',
       title: 'How Àgbáyémáarà works',
       subtitle: 'From the first scroll to the knock on your door — and back again. Every step below takes you straight to where it happens.',
       ctaLabel: 'Take me there',
@@ -393,6 +397,7 @@ const translations = {
       brands: 'Marcas',
       signIn: 'Iniciar sesión / Registrarse',
       language: 'Idioma',
+      currency: 'Moneda',
     },
     landingNav: {
       home: 'Inicio',
@@ -693,6 +698,9 @@ const translations = {
       signUpTogglePassword: 'Mostrar u ocultar contraseña',
       signUpError: 'Completa tu nombre, un correo válido y una contraseña de al menos 8 caracteres.',
       signUpContinue: 'Continuar',
+      currencyTitle: 'Elige tu moneda de compra',
+      currencySubtitle: 'Los precios de todo el sitio se mostrarán en esta moneda.',
+      currencyPricesIn: 'Comprar en',
     },
     brandOwner: {
       eyebrow: 'Dueños de marcas',
@@ -774,6 +782,7 @@ const translations = {
       brands: 'Marques',
       signIn: 'Se connecter / S’inscrire',
       language: 'Langue',
+      currency: 'Devise',
     },
     landingNav: {
       home: 'Accueil',
@@ -1074,6 +1083,9 @@ const translations = {
       signUpTogglePassword: 'Afficher ou masquer le mot de passe',
       signUpError: 'Renseignez votre nom, un email valide et un mot de passe d’au moins 8 caractères.',
       signUpContinue: 'Continuer',
+      currencyTitle: 'Choisissez votre devise d’achat',
+      currencySubtitle: 'Les prix du site s’afficheront dans cette devise.',
+      currencyPricesIn: 'Acheter en',
     },
     brandOwner: {
       eyebrow: 'Propriétaires de marques',

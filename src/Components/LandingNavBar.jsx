@@ -4,6 +4,7 @@ import { Menu, X, ShoppingBag, User } from 'lucide-react'
 import { useCart } from '../Context/CartContext'
 import { useLanguage } from '../Context/LanguageContext'
 import LanguageSwitcher from './LanguageSwitcher'
+import CurrencySwitcher from './CurrencySwitcher'
 import ThemeToggle from './ThemeToggle'
 import AuthModal from './AuthModal'
 
@@ -57,6 +58,10 @@ const NavBar = () => {
             <ThemeToggle className='text-strong' />
 
             <LanguageSwitcher
+              buttonClassName='flex items-center gap-1 rounded-full bg-raised px-3 py-1.5 text-sm text-muted transition-colors hover:bg-raised-strong hover:text-strong'
+            />
+
+            <CurrencySwitcher
               buttonClassName='flex items-center gap-1 rounded-full bg-raised px-3 py-1.5 text-sm text-muted transition-colors hover:bg-raised-strong hover:text-strong'
             />
 
@@ -131,6 +136,10 @@ const NavBar = () => {
               <ThemeToggle className='text-strong' />
 
               <LanguageSwitcher
+                buttonClassName='flex items-center gap-1 rounded-full bg-raised px-3 py-1.5 text-sm text-muted transition-colors hover:bg-raised-strong hover:text-strong'
+              />
+
+              <CurrencySwitcher
                 buttonClassName='flex items-center gap-1 rounded-full bg-raised px-3 py-1.5 text-sm text-muted transition-colors hover:bg-raised-strong hover:text-strong'
               />
             </div>

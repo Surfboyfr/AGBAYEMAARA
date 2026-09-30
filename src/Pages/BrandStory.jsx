@@ -15,6 +15,7 @@ import { getProductById } from '../data/products'
 import { useCart } from '../Context/CartContext'
 import { useFollow } from '../Context/FollowContext'
 import { useLanguage } from '../Context/LanguageContext'
+import { useCurrency } from '../Context/CurrencyContext'
 
 const formatDate = (isoDate) =>
   new Date(isoDate).toLocaleDateString(undefined, {
@@ -30,6 +31,7 @@ const StoryProductBridge = ({ product, brand }) => {
   const { addToCart } = useCart()
   const { isFollowing, toggleFollowBrand } = useFollow()
   const { t } = useLanguage()
+  const { formatPrice } = useCurrency()
   const [added, setAdded] = useState(false)
 
   if (!product) return null
@@ -75,7 +77,7 @@ const StoryProductBridge = ({ product, brand }) => {
             </h3>
             <p className='mt-1 text-sm text-muted'>{product.brand}</p>
             <p className='mt-2 text-lg font-bold text-strong'>
-              ${product.productPrice.toFixed(2)}
+              {formatPrice(product.productPrice)}
             </p>
 
             <div className='mt-5 flex flex-wrap items-center gap-3'>
@@ -90,7 +92,9 @@ const StoryProductBridge = ({ product, brand }) => {
                 onClick={handleAddToCart}
                 className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-300 active:scale-95 ${
                   added
-                    ? 'bg-green-600 text-white'
+                    // Lighter shade of the default raised surface instead of
+                    // green — stays in the button's neutral palette.
+                    ? 'border border-line-strong bg-raised-strong text-strong'
                     : 'border border-line bg-raised text-strong hover:border-line-strong hover:bg-raised-strong'
                 }`}
               >
