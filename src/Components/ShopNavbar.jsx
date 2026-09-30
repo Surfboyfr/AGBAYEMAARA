@@ -94,10 +94,10 @@ const ShopNavbar = () => {
               <Package size={20} />
             </Link>
 
-            {/* Cart */}
+            {/* Cart — hidden on mobile: the hamburger menu has a cart row. */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative p-2.5 text-muted hover:text-strong hover:bg-raised-strong rounded-lg transition-all duration-200"
+              className="relative hidden p-2.5 text-muted hover:text-strong hover:bg-raised-strong rounded-lg transition-all duration-200 md:block"
               aria-label={t('auth', 'openCart')}
             >
               <ShoppingBag size={20} />
@@ -131,7 +131,9 @@ const ShopNavbar = () => {
         {/* Mobile dropdown menu */}
         <div
           className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out border-t border-line ${
-            mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+            // Tall cap: the menu holds nav links + language/currency pills +
+            // cart/orders/sign-in rows, which exceed the old max-h-96.
+            mobileMenuOpen ? 'max-h-[34rem] opacity-100' : 'max-h-0 opacity-0'
           }`}
         >
           <div className="px-5 py-3 flex flex-col gap-1">
@@ -145,7 +147,8 @@ const ShopNavbar = () => {
               >
                 {label}
               </NavLink>
-            ))}            <div className="px-3 py-2">
+            ))}
+            <div className="px-3 py-2">
               <p className="text-[11px] uppercase tracking-[0.25em] text-muted mb-2">{t('nav', 'language')}</p>
               <div className="flex flex-wrap gap-2">
                 {languages.map((item) => (
@@ -179,6 +182,14 @@ const ShopNavbar = () => {
                 ))}
               </div>
             </div>
+            {/* Cart row — the top bar's cart icon is hidden on mobile */}
+            <button
+              onClick={() => { setIsCartOpen(true); setMobileMenuOpen(false) }}
+              className="text-muted hover:text-strong text-sm font-medium py-2.5 px-3 rounded-lg hover:bg-raised transition-all duration-200 text-left flex items-center gap-2"
+            >
+              <ShoppingBag size={15} />
+              {t('auth', 'openCart')}
+            </button>
             <Link
               to="/orders"
               onClick={() => setMobileMenuOpen(false)}

@@ -65,10 +65,11 @@ const NavBar = () => {
               buttonClassName='flex items-center gap-1 rounded-full bg-raised px-3 py-1.5 text-sm text-muted transition-colors hover:bg-raised-strong hover:text-strong'
             />
 
-            {/* Cart — opens the app-wide drawer */}
+            {/* Cart — opens the app-wide drawer. Hidden on mobile: the
+                hamburger menu has a cart row. */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className='relative p-2 text-muted transition-all duration-200 hover:bg-raised hover:text-strong active:scale-95 rounded-full'
+              className='relative hidden p-2 text-muted transition-all duration-200 hover:bg-raised hover:text-strong active:scale-95 rounded-full md:block'
               aria-label={t('auth', 'openCart')}
             >
               <ShoppingBag size={20} />

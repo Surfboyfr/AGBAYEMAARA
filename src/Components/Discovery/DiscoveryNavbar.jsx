@@ -73,10 +73,11 @@ const DiscoveryNavbar = () => {
               dropdownWidth='w-32'
             />
 
-            {/* Cart — opens the app-wide drawer (badge like the shop navbar) */}
+            {/* Cart — opens the app-wide drawer (badge like the shop navbar).
+                Hidden on mobile: the hamburger menu has a cart row. */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className='relative rounded-lg p-2 text-muted transition-all hover:bg-raised-strong hover:text-strong'
+              className='relative hidden rounded-lg p-2 text-muted transition-all hover:bg-raised-strong hover:text-strong md:block'
               aria-label={t('auth', 'openCart')}
             >
               <ShoppingBag size={20} />
@@ -93,14 +94,6 @@ const DiscoveryNavbar = () => {
             >
               {t('auth', 'signInAction')}
             </button>
-            <button
-              onClick={() => setAuthOpen(true)}
-              className='rounded-lg p-2 text-muted transition-all hover:bg-raised-strong hover:text-strong md:hidden'
-              aria-label={t('auth', 'signInAction')}
-            >
-              <User size={20} />
-            </button>
-
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
