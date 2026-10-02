@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import './App.css'
 import BootFlow from './Components/BootFlow'
 import CartDrawer from './Components/CartDrawer'
@@ -16,8 +16,44 @@ import MainLayout from './Layouts/MainLayout'
 import ProductDetails from './Pages/ProductDetails'
 import BrandDetails from './Pages/BrandDetails'
 import BrandStory from './Pages/BrandStory'
+// Seller portal (frontend-only) — lives in its own route tree so the shopper
+// boot gate (splash → role → sign-up) and cart drawer never touch it.
+import { SellerProvider } from './Context/SellerContext'
+import SellerLayout from './Layouts/SellerLayout'
+import SellerLogin from './Pages/seller/SellerLogin'
+import SellerDashboard from './Pages/seller/SellerDashboard'
+import SellerInventory from './Pages/seller/SellerInventory'
+import SellerProducts from './Pages/seller/SellerProducts'
+import SellerOrders from './Pages/seller/SellerOrders'
+import SellerProfile from './Pages/seller/SellerProfile'
 
 function App() {
+  const { pathname } = useLocation()
+
+  // ── Seller portal routes ──────────────────────────────────────────────────
+  // Mounted outside BootFlow: onboarding is for shoppers/brand owners, and
+  // /seller/* must be directly reachable (e.g. refreshing /seller/dashboard).
+  // NOTE: these routes are NOT authenticated — login is a visual mock until
+  // real auth + backend authorization land.
+  if (pathname === '/seller' || pathname.startsWith('/seller/')) {
+    return (
+      <SellerProvider>
+        <Routes>
+          <Route path='/seller/login' element={<SellerLogin />} />
+          <Route path='/seller' element={<SellerLayout />}>
+            <Route index element={<SellerDashboard />} />
+            <Route path='dashboard' element={<SellerDashboard />} />
+            <Route path='inventory' element={<SellerInventory />} />
+            <Route path='products' element={<SellerProducts />} />
+            <Route path='orders' element={<SellerOrders />} />
+            <Route path='profile' element={<SellerProfile />} />
+            <Route path='*' element={<Navigate to='/seller/dashboard' replace />} />
+          </Route>
+        </Routes>
+      </SellerProvider>
+    )
+  }
+
   return (
     <BootFlow>
     <Routes>
