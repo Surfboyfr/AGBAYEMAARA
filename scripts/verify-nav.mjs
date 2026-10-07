@@ -13,7 +13,8 @@ const browser = await chromium.launch({ channel: 'chrome' })
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } })
 page.setDefaultTimeout(15000)
 
-// The boot splash + role gate run on every load; pass through as a shopper.
+// The boot splash runs on every load; wait for it and the one-time boot
+// steps (currency, sign-up) to clear before asserting.
 const gotoPath = async (path) => {
   await page.goto(`${BASE_URL}${path}`, { waitUntil: 'networkidle' })
   await passBootGate(page)
@@ -141,6 +142,37 @@ try {
   // highlighted (Discover matches only the exact / route).
   check('nothing falsely active on /shop (Discover = exact / only)', await inactiveIs('Discover'))
   check('Brands inactive on /shop', await inactiveIs('Brands'))
+
+  // ── 7. Brand detail page: the section tab bar sits in normal flow ────────
+  // position: static — it scrolls away with the page instead of sticking
+  // under the top navbar (the sticky behaviour was deliberately removed).
+  await gotoPath('/brands/lisa-folawiyo')
+  const brandTabs = page.locator('nav[aria-label="Brand sections"]')
+  await brandTabs.waitFor({ state: 'visible' })
+  const tabsPosition = await brandTabs.evaluate((el) => getComputedStyle(el).position)
+  check(
+    'brand section tab bar is in normal flow (position static)',
+    tabsPosition === 'static',
+    tabsPosition,
+  )
+
+  const tabsTopBefore = await brandTabs.evaluate((el) => el.getBoundingClientRect().top)
+  await page.evaluate((y) => window.scrollTo(0, y), tabsTopBefore + 500)
+  await page.waitForTimeout(400)
+  const tabsTopAfter = await brandTabs.evaluate((el) => el.getBoundingClientRect().top)
+  check(
+    'brand tab bar scrolls away with the page (not clamped under the navbar)',
+    tabsTopAfter < 0,
+    `top ${tabsTopBefore.toFixed(0)}px → ${tabsTopAfter.toFixed(0)}px`,
+  )
+  await page.evaluate(() => window.scrollTo(0, 0))
+
+  // The tabs still switch sections after the position change.
+  await page.getByRole('button', { name: /Milestones & History/ }).click()
+  await page
+    .getByRole('heading', { name: /Historical Journey & Milestones/ })
+    .waitFor({ state: 'visible' })
+  check('brand tabs still switch sections', true)
 } catch (err) {
   check('script completed without throwing', false, String(err).slice(0, 300))
 } finally {

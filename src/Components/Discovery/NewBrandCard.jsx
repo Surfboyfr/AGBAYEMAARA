@@ -20,7 +20,9 @@ const NewBrandCard = ({ card }) => {
           alt={card.name}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-[#12141A] via-transparent to-transparent" />
+        {/* Short fade at the bottom edge only — blends the image into the
+            dark card body without covering most of the photo. */}
+        <div className="absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-[#12141A] via-transparent to-transparent" />
         <span className="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full bg-[#ec5800] px-3 py-1 text-xs font-bold text-white">
           <Sparkles size={12} />
           {t('discovery', 'newBrandBadge')}

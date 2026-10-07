@@ -14,7 +14,8 @@ const browser = await chromium.launch({ channel: 'chrome' })
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } })
 page.setDefaultTimeout(15000)
 
-// The boot splash + role gate run on every load; pass through as a shopper.
+// The boot splash runs on every load; wait for it and the one-time boot
+// steps (currency, sign-up) to clear before asserting.
 const gotoWithBoot = async (path, wait = 'networkidle') => {
   await page.goto(`${BASE_URL}${path}`, { waitUntil: wait })
   await passBootGate(page)
@@ -145,7 +146,7 @@ try {
 
   // ── 6. Persistence: refresh keeps the state, /orders links to the page ────
   await page.reload({ waitUntil: 'networkidle' })
-  await passBootGate(page) // boot gate runs on every load, refresh included
+  await passBootGate(page) // the boot splash runs on every load, refresh included
   await page.getByRole('heading', { name: 'Fulfilment failed' }).waitFor()
   check('failure state survives a refresh (localStorage)', true)
 

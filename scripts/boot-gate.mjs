@@ -1,24 +1,31 @@
 // Shared boot-flow helper for verify scripts.
 //
-// The splash + role gate run on EVERY full page load, so any goto()/reload()
-// in a script must pass through the gate before the app mounts. The currency
-// picker appears once per browser (until localStorage is cleared) and the
-// sign-up form only on a FIRST visit (no stored profile) — returning visitors
-// skip both. This helper handles all paths, so callers work regardless of
-// whether the suite's page has signed up before. Shoppers are the default
-// persona for test suites.
+// The order on every full page load is: splash → Welcome screen → Get
+// Started → currency picker (once per browser, until localStorage is
+// cleared) → sign-up form (FIRST visit only, no stored profile) → the app.
+// Any goto()/reload() in a script must wait for the splash to clear and then
+// click through the Welcome screen. There is no shopper/brand choice screen.
+// This helper handles all paths, so callers work regardless of whether the
+// suite's page has signed up before, and it no-ops on surfaces outside
+// BootFlow (/about, /seller, /admin) where none of this mounts.
 export const passBootGate = async (page, timeout = 20000) => {
-  const gate = page.locator('[data-boot="gate"]')
-  await gate.waitFor({ state: 'visible', timeout })
-  await page.getByRole('button', { name: 'I am a shopper' }).click()
+  const splash = page.locator('[data-boot="splash"]')
+  // The splash shows for ~3s on every load. If the caller never left the
+  // mounted app there is nothing to wait for — the waits below win instantly.
+  await splash.waitFor({ state: 'visible', timeout: 3000 }).catch(() => {})
+  await splash.waitFor({ state: 'detached', timeout })
 
-  // First visit on this page: the currency picker appears after the gate.
-  // Returning visits: it never mounts — the wait below wins instantly.
+  // The page after the loading screen: Welcome. Get Started is the way into
+  // the steps below — it never shows on surfaces outside BootFlow, where the
+  // wait times out harmlessly.
+  await passWelcome(page)
+
+  // First visit on this page: the currency picker appears after Get Started.
+  // Returning visits: it never mounts — the wait below times out harmlessly.
   await passCurrencyStep(page)
 
   // First visit on this page: the sign-up form appears and must be filled.
-  // Returning visits: the gate detaches straight away — the wait below wins
-  // instantly, no form is touched.
+  // Returning visits: the wait below times out harmlessly, no form is touched.
   const signup = page.locator('[data-boot="signup"]')
   const needsSignUp = await signup
     .waitFor({ state: 'visible', timeout: 2500 })
@@ -28,7 +35,20 @@ export const passBootGate = async (page, timeout = 20000) => {
     await completeSignUp(page)
   }
 
-  await gate.waitFor({ state: 'detached', timeout: 5000 })
+  await splash.waitFor({ state: 'detached', timeout: 5000 })
+}
+
+// Click through the Welcome screen — the page that follows the loading
+// splash on every visit. Returns true when it was there (so callers can
+// distinguish "clicked through" from "not on a boot surface").
+export const passWelcome = async (page) => {
+  const getStarted = page.locator('[data-welcome="get-started"]')
+  const needsClick = await getStarted
+    .waitFor({ state: 'visible', timeout: 3000 })
+    .then(() => true)
+    .catch(() => false)
+  if (needsClick) await getStarted.click()
+  return needsClick
 }
 
 // Choose USD at the currency step if it is showing. USD keeps every price

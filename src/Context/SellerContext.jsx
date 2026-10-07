@@ -8,6 +8,7 @@ import {
   sellerProducts,
   sellerProfile,
 } from '../data/sellerMockData'
+import { recordActivity } from '../lib/activity'
 
 // ── Seller state (frontend-only) ─────────────────────────────────────────────
 // Single source of truth for the seller portal: products, orders, profile and
@@ -90,6 +91,8 @@ export const SellerProvider = ({ children }) => {
       const nextId = prev.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0) + 1
       return [{ ...product, id: nextId, createdAt: new Date().toISOString() }, ...prev]
     })
+    // Tracked for /admin — catalogue changes in the seller section.
+    recordActivity('seller', 'product.added', `Added "${product.name}" to the catalogue`)
   }
 
   const updateProduct = (id, fields) => {
@@ -97,16 +100,26 @@ export const SellerProvider = ({ children }) => {
     setProducts((prev) =>
       prev.map((product) => (product.id === id ? { ...product, ...fields } : product))
     )
+    const name = products.find((product) => product.id === id)?.name ?? `#${id}`
+    recordActivity(
+      'seller',
+      'product.updated',
+      `Updated "${name}"`,
+      Object.keys(fields).join(', ')
+    )
   }
 
   const deleteProduct = (id) => {
     // Future: await api.delete(`/api/seller/products/${id}`)
+    const name = products.find((product) => product.id === id)?.name ?? `#${id}`
     setProducts((prev) => prev.filter((product) => product.id !== id))
+    recordActivity('seller', 'product.removed', `Removed "${name}" from the catalogue`)
   }
 
   const updateProfile = (fields) => {
     // Future: await api.put('/api/seller/profile', fields)
     setProfile((prev) => ({ ...prev, ...fields }))
+    recordActivity('seller', 'profile.updated', 'Seller profile updated')
   }
 
   // ── Derived stats ──────────────────────────────────────────────────────────

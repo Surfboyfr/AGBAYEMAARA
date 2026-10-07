@@ -2,8 +2,16 @@ import { useState, useEffect, useRef } from 'react'
 import { User, X, Eye, EyeOff, ArrowRight, Mail, Lock } from 'lucide-react'
 import { useLanguage } from '../Context/LanguageContext'
 
-const AuthModal = ({ isOpen, onClose }) => {
-  const [mode, setMode] = useState('signin') // 'signin' | 'signup'
+const AuthModal = ({ isOpen, onClose, mode: modeProp, onModeChange }) => {
+  // Uncontrolled callers (the app navbars) keep the modal's own state; a
+  // caller that needs to open it directly in sign-up — the welcome navbar's
+  // Log in / Sign up buttons — drives `mode` + `onModeChange` instead.
+  const [internalMode, setInternalMode] = useState('signin') // 'signin' | 'signup'
+  const mode = modeProp ?? internalMode
+  const setMode = (next) => {
+    onModeChange?.(next)
+    if (modeProp === undefined) setInternalMode(next)
+  }
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

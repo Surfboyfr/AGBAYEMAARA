@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
+import { recordActivity } from '../lib/activity'
 
 const FollowContext = createContext(null)
 
@@ -28,17 +29,25 @@ export const FollowProvider = ({ children }) => {
     setFollowedBrands((prev) =>
       prev.includes(slug) ? prev : [...prev, slug]
     )
+    recordActivity('customer', 'brand.follow', `Followed ${slug}`)
   }
 
   const unfollowBrand = (slug) => {
     setFollowedBrands((prev) => prev.filter((item) => item !== slug))
+    recordActivity('customer', 'brand.unfollow', `Unfollowed ${slug}`)
   }
 
   const toggleFollowBrand = (slug) => {
+    const willFollow = !followedBrands.includes(slug)
     setFollowedBrands((prev) =>
       prev.includes(slug)
         ? prev.filter((item) => item !== slug)
         : [...prev, slug]
+    )
+    recordActivity(
+      'customer',
+      willFollow ? 'brand.follow' : 'brand.unfollow',
+      willFollow ? `Followed ${slug}` : `Unfollowed ${slug}`
     )
   }
 

@@ -184,6 +184,46 @@ body {
   }
 }
 
+/* ── Brand image marquee (Welcome page bottom slider) ─────────────────────── */
+@keyframes brandMarqueeScroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.brand-marquee-container {
+  overflow: hidden;
+  width: 100%;
+}
+
+.brand-marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 1.25rem;
+  padding-block: 0.5rem;
+  animation: brandMarqueeScroll 32s linear infinite;
+  will-change: transform;
+}
+
+.brand-marquee-container:hover .brand-marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-marquee-track {
+    animation: none;
+  }
+  .brand-marquee-container {
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+}
+
+
 /* ── User-journey marquee ────────────────────────────────────────────────────
    The journey is a loop (the last step folds back into the first), so the
    track holds two copies and shifts by exactly 50% for a seamless cycle.

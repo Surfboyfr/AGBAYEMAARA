@@ -17,6 +17,7 @@ import {
   buildNewBrandsFeed,
 } from '../data/discoveryFeed'
 import UserJourney from '../Components/UserJourney'
+import { products } from '../data/products'
 
 // ── Filter pills ───────────────────────────────────────
 const FilterPills = ({ active, onChange }) => {
@@ -52,6 +53,115 @@ const FilterPills = ({ active, onChange }) => {
 }
 
 // ── Discovery feed page ────────────────────────────────────────────────────────
+// ── Shop: category navbar + capped product grid ──────────────────────────────
+// Sits at the top of the feed page: a category navbar directly above a product
+// grid that shows three rows (3/6/9 cards across the breakpoints) and hides the
+// rest behind a "Show more" button.
+const SHOP_CATEGORIES = ['all', 'Shoes', 'Bags', 'Wigs', 'Jewelries', 'Hats']
+
+const ShopSection = () => {
+  const { t } = useLanguage()
+  const [category, setCategory] = useState('all')
+  const [expanded, setExpanded] = useState(false)
+  const [columns, setColumns] = useState(3)
+
+  // Three visible rows at every breakpoint: 1/2/3 columns → 3/6/9 cards.
+  useEffect(() => {
+    const lg = window.matchMedia('(min-width: 1024px)')
+    const sm = window.matchMedia('(min-width: 640px)')
+    const update = () => setColumns(lg.matches ? 3 : sm.matches ? 2 : 1)
+    update()
+    lg.addEventListener('change', update)
+    sm.addEventListener('change', update)
+    return () => {
+      lg.removeEventListener('change', update)
+      sm.removeEventListener('change', update)
+    }
+  }, [])
+
+  const filtered = useMemo(
+    () => (category === 'all' ? products : products.filter((p) => p.category === category)),
+    [category],
+  )
+
+  const ROWS = 3
+  const perView = columns * ROWS
+  const canToggle = filtered.length > perView
+  const visible = expanded ? filtered : filtered.slice(0, perView)
+
+  const categoryLabels = {
+    all: t('discovery', 'catAll'),
+    Shoes: t('discovery', 'catShoes'),
+    Bags: t('discovery', 'catBags'),
+    Wigs: t('discovery', 'catWigs'),
+    Jewelries: t('discovery', 'catJewelries'),
+    Hats: t('discovery', 'catHats'),
+  }
+
+  const selectCategory = (value) => {
+    setCategory(value)
+    // A new category starts back at three rows.
+    setExpanded(false)
+  }
+
+  return (
+    <section aria-label='Shop' className='mb-10'>
+      {/* Category navbar — directly above the product grid */}
+      <nav
+        aria-label='Shop categories'
+        className='mb-5 flex items-center gap-2 overflow-x-auto pb-1 [scrollbar-width:none]'
+      >
+        {SHOP_CATEGORIES.map((value) => {
+          const isActive = category === value
+          return (
+            <button
+              key={value}
+              type='button'
+              onClick={() => selectCategory(value)}
+              aria-pressed={isActive}
+              className={`shrink-0 rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+                isActive
+                  ? 'border-[#ec5800] bg-[#ec5800]/10 text-[#ec5800] shadow-[0_6px_20px_-8px_rgba(236,88,0,0.7)]'
+                  : 'border-line text-muted hover:border-line-strong hover:text-strong'
+              }`}
+            >
+              {categoryLabels[value]}
+            </button>
+          )
+        })}
+      </nav>
+
+      {visible.length === 0 ? (
+        <div className='rounded-3xl bg-raised px-6 py-16 text-center text-sm text-muted'>
+          {t('discovery', 'shopEmpty')}
+        </div>
+      ) : (
+        <div className='grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3'>
+          {visible.map((product) => (
+            <div key={product.id} className='h-full rounded-2xl'>
+              <FeedCardRenderer item={{ kind: 'product', ...product }} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Three rows are shown; the rest wait behind Show more. */}
+      {canToggle && (
+        <div className='mt-7 flex justify-center'>
+          <button
+            type='button'
+            onClick={() => setExpanded((value) => !value)}
+            data-shop='show-more'
+            className='rounded-full border border-line-strong bg-raised px-7 py-3 text-sm font-bold text-strong transition-all duration-200 hover:border-[#ec5800] hover:text-[#ec5800] active:scale-[0.98]'
+          >
+            {expanded ? t('discovery', 'showLess') : t('discovery', 'showMore')}
+          </button>
+        </div>
+      )}
+    </section>
+  )
+}
+
 const DiscoveryFeed = () => {
   const { followedBrands } = useFollow()
   const { t } = useLanguage()
@@ -155,6 +265,8 @@ const DiscoveryFeed = () => {
       <DiscoveryNavbar />
 
       <main className="mx-auto max-w-7xl px-5 pb-20 pt-10">
+        {/* Shop first: category navbar + three-row product grid, directly above the feed */}
+        <ShopSection />
         {/* Masthead */}
         <header className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>

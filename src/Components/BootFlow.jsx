@@ -7,23 +7,22 @@ import {
   Loader2,
   Lock,
   Mail,
-  ShoppingBag,
-  Store,
   User,
 } from 'lucide-react'
 import { useLanguage } from '../Context/LanguageContext'
 import { hasStoredCurrency } from '../Context/CurrencyContext'
 import { useCurrency } from '../Context/CurrencyContext'
+import Welcome from '../Pages/Welcome'
 
-// Chosen role + mock sign-up profile are stored for future brand-owner
-// tooling. The splash + role gate run on EVERY page load (first visit,
-// refresh, or a brand-new session after the tab was closed). The sign-up
-// step, however, is a first-visit requirement: a stored profile (from a
-// completed sign-up) lets returning visitors pass straight through the gate.
+// Mock sign-up profile + last chosen role are stored for future brand-owner
+// tooling. The splash runs on EVERY page load (first visit, refresh, or a
+// brand-new session after the tab was closed). The sign-up step, however, is
+// a first-visit requirement: a stored profile (from a completed sign-up)
+// lets returning visitors pass straight through to the app.
 const ROLE_KEY = 'agbayemaara.role'
 const USER_KEY = 'agbayemaara.user'
 
-// "About three seconds" of brand splash before the role gate appears.
+// "About three seconds" of brand splash before the boot flow continues.
 const SPLASH_MS = 2800
 
 // Mock password rule — mirrors the AuthModal hint ("Min. 8 characters").
@@ -39,60 +38,71 @@ const readStoredUser = () => {
   }
 }
 
+// The shopper/brand-owner choice screen no longer exists — the stored choice
+// (if any) still decides the path, so returning brand owners land on the
+// brand hub; everyone else boots straight into the shopper experience.
+const readStoredRole = () => {
+  try {
+    const stored = localStorage.getItem(ROLE_KEY)
+    if (stored === 'brand' || stored === 'shopper') return stored
+    if (readStoredUser()?.role === 'brand') return 'brand'
+  } catch {
+    // Storage can be unavailable (private mode) — default to shopper.
+  }
+  return 'shopper'
+}
+
 // ── Boot experience (always on) ───────────────────────────────────────────────
-// Wraps the whole app. On every load nothing behind it is mounted: a black
-// splash with the wordmark and a spinner shows for ~3s, then a gate asks
-// whether the visitor is a shopper or a brand owner. Shoppers then pick the
-// currency they want to shop in (once — the choice is stored). First-time
-// visitors complete a sign-up step (name, email, password) before the app
-// mounts; a returning visitor with a stored profile goes straight through —
-// shoppers to the discovery feed, brand owners to the brand hub.
+// Wraps the whole app and owns the order of the entry experience:
+//   loading splash (~3s) → Welcome page → Get Started → boot steps → app.
+// The Welcome page shows on EVERY visit (first-timers and returning visitors
+// alike) — it is the page that follows the loading screen. "Get Started" is
+// what runs the steps behind it: the currency pick (once — the choice is
+// stored) and, for first-time visitors, a sign-up step (name, email,
+// password). A returning visitor with a stored profile passes straight
+// through — shoppers to the discovery feed, brand owners to the brand hub.
 const BootFlow = ({ children }) => {
   const navigate = useNavigate()
   const { t } = useLanguage()
   const { setCurrency, currencies } = useCurrency()
   const [phase, setPhase] = useState('splash')
-  const [role, setRole] = useState(null)
+  const [role] = useState(readStoredRole)
   // A stored profile means this visitor has already signed up once — they
-  // skip the form and pass straight through the gate.
+  // skip the sign-up form and pass straight through.
   const [hasSignedUp, setHasSignedUp] = useState(() => readStoredUser() !== null)
   const [showPassword, setShowPassword] = useState(false)
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [form, setForm] = useState({ name: '', email: '' })
 
-  // Splash → gate after the brand beat. The app only mounts at 'app'.
+  // Splash → the Welcome page, once the brand beat is over. Nothing behind
+  // the splash is mounted: the Welcome page IS the next page after the
+  // loading screen, on every visit.
   useEffect(() => {
     if (phase !== 'splash') return undefined
-    const timer = setTimeout(() => setPhase('gate'), SPLASH_MS)
+    const timer = setTimeout(() => setPhase('welcome'), SPLASH_MS)
     return () => clearTimeout(timer)
   }, [phase])
 
-  const chooseRole = (nextRole) => {
-    try {
-      localStorage.setItem(ROLE_KEY, nextRole)
-    } catch {
-      // Storage can be unavailable (private mode) — role choice still applies
-      // for this visit.
-    }
-    // Shoppers pick a currency before entering; brand owners don't need one
-    // to manage their label, so they go straight through.
-    if (nextRole === 'shopper' && !hasStoredCurrency()) {
-      setRole(nextRole)
+  // Get Started — hand the visitor from the Welcome page into the boot steps:
+  // the shopper currency pick if no choice is stored yet (CurrencyProvider
+  // persists the default on mount, so this never blocks later visits), then
+  // the sign-up form for first-timers, everyone else straight through —
+  // shoppers to the discovery feed, brand owners to the brand hub.
+  const handleGetStarted = () => {
+    if (role === 'shopper' && !hasStoredCurrency()) {
       setPhase('currency')
       return
     }
-    // Returning visitors with a stored profile skip the sign-up form.
-    if (hasSignedUp) {
-      if (nextRole === 'brand') {
-        navigate('/brand-owner', { replace: true })
-      }
-      setPhase('app')
+    if (!hasSignedUp) {
+      setError('')
+      setPhase('signup')
       return
     }
-    setRole(nextRole)
-    setError('')
-    setPhase('signup')
+    if (role === 'brand') {
+      navigate('/brand-owner', { replace: true })
+    }
+    setPhase('app')
   }
 
   // Currency step confirmation: store the selection (CurrencyContext also
@@ -172,63 +182,10 @@ const BootFlow = ({ children }) => {
     )
   }
 
-  if (phase === 'gate') {
-    return (
-      <div
-        data-boot='gate'
-        className='light fixed inset-0 z-[100] flex items-center justify-center bg-white px-5 text-strong'
-      >
-        <div className='animate-pop-in w-full max-w-md rounded-3xl border border-line bg-raised p-8 text-center shadow-card'>
-          <p className='text-lg font-bold tracking-wide text-[#ec5800]'>
-            Àgbáyémáarà
-          </p>
-          <h2 className='mt-4 text-2xl font-bold tracking-tight'>
-            {t('boot', 'gateTitle')}
-          </h2>
-          <p className='mt-2 text-sm text-muted'>
-            {t('boot', 'gateSubtitle')}
-          </p>
-
-          <div className='mt-7 space-y-3'>
-            {/* Primary flow — shoppers sign up, then enter the platform */}
-            <button
-              onClick={() => chooseRole('shopper')}
-              className='group flex w-full items-center gap-4 rounded-2xl bg-[#ec5800] p-4 text-left text-white transition-all duration-200 hover:bg-[#d04f00] active:scale-[0.98]'
-            >
-              <span className='flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-black/15'>
-                <ShoppingBag size={20} />
-              </span>
-              <span>
-                <span className='block text-sm font-bold'>
-                  {t('boot', 'shopperCta')}
-                </span>
-                <span className='block text-xs text-white/80'>
-                  {t('boot', 'shopperDesc')}
-                </span>
-              </span>
-            </button>
-
-            {/* Brand owners sign up, then land in the dedicated brand hub */}
-            <button
-              onClick={() => chooseRole('brand')}
-              className='flex w-full items-center gap-4 rounded-2xl border border-line-strong p-4 text-left transition-all duration-200 hover:bg-raised-strong active:scale-[0.98]'
-            >
-              <span className='flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#ec5800]/15 text-[#ec5800]'>
-                <Store size={20} />
-              </span>
-              <span>
-                <span className='block text-sm font-bold'>
-                  {t('boot', 'brandCta')}
-                </span>
-                <span className='block text-xs text-muted'>
-                  {t('boot', 'brandDesc')}
-                </span>
-              </span>
-            </button>
-          </div>
-        </div>
-      </div>
-    )
+  // The page after the loading screen: Welcome, rendered alone (the app
+  // behind it mounts only once Get Started has run the steps below).
+  if (phase === 'welcome') {
+    return <Welcome onGetStarted={handleGetStarted} />
   }
 
   if (phase === 'currency') {

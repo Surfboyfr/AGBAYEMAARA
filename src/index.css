@@ -54,8 +54,8 @@ body {
   }
 }
 
-/* Route changes glide instead of jumping; splash/gate render as fixed
-   overlays so their own layout never scrolls. */
+/* Route changes glide instead of jumping; the boot overlays render as fixed
+   screens so their own layout never scrolls. */
 html {
   scroll-behavior: smooth;
 }

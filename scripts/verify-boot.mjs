@@ -1,10 +1,11 @@
 // Verifies the boot flow (run: node scripts/verify-boot.mjs [url])
-// Covers: the splash + role gate + sign-up run on EVERY page load — first
-// visit, refresh, and a brand-new session all show the loading screen, the
-// shopper/brand choice, and the name/email/password sign-up before the app
-// mounts.
+// Covers: the splash runs on EVERY page load — first visit, refresh, and a
+// brand-new session all show the loading screen — the Welcome page follows
+// the splash on every visit, the old shopper/brand choice screen never
+// appears, and first-timers still pass a sign-up step (after Get Started)
+// before the app mounts (returning visitors go straight through).
 import { chromium } from 'playwright'
-import { completeSignUp, passCurrencyStep } from './boot-gate.mjs'
+import { completeSignUp } from './boot-gate.mjs'
 
 // True when the boot flow is currently showing the first-visit sign-up form.
 const signUpVisible = (page) =>
@@ -13,6 +14,17 @@ const signUpVisible = (page) =>
     .waitFor({ state: 'visible', timeout: 2500 })
     .then(() => true)
     .catch(() => false)
+
+// True when the boot flow is currently showing the currency picker.
+const currencyVisible = (page) =>
+  page
+    .locator('[data-boot="currency"]')
+    .waitFor({ state: 'visible', timeout: 2500 })
+    .then(() => true)
+    .catch(() => false)
+
+// The removed choice screen — it must never mount again.
+const gateCount = (page) => page.locator('[data-boot="gate"]').count()
 
 const BASE_URL = process.argv[2] ?? 'http://localhost:5174'
 const results = []
@@ -24,7 +36,7 @@ const check = (name, ok, detail = '') => {
 const browser = await chromium.launch({ channel: 'chrome' })
 
 try {
-  // ── 1. First visit: splash → gate → shopper → discovery ───────────────────
+  // ── 1. First visit: splash → currency → sign-up → discovery ──────────────
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } })
   page.setDefaultTimeout(15000)
 
@@ -51,41 +63,45 @@ try {
     () => document.querySelector('nav') === null
   )
   check('app stays unmounted behind the splash', appHiddenDuringSplash)
+  check('no choice screen behind the splash', (await gateCount(page)) === 0)
 
-  // Splash ≈ 3s — the gate must not appear immediately
-  await page.locator('[data-boot="gate"]').waitFor({ state: 'visible' })
-  check('role gate appears after the splash (~3s)', true)
-
-  // Shopper path → currency step → sign-up step → the landing surface
-  await page.getByRole('button', { name: 'I am a shopper' }).click()
-
-  // Currency step is mandatory before the landing page: picking a currency
-  // must store the choice and move on to sign-up.
-  const currency = page.locator('[data-boot="currency"]')
-  await currency.waitFor({ state: 'visible' })
-  check('currency step shows after the shopper choice', true)
-  const currencyText = await currency.innerText()
+  // Splash → Welcome: the page that follows the loading screen, reached
+  // with no choice screen, currency pick, or sign-up step ahead of it.
+  const welcome = page.locator('[data-welcome="page"]')
+  await welcome.waitFor({ state: 'visible' })
+  check('Welcome page follows the splash', true)
+  check('no choice screen in between', (await gateCount(page)) === 0)
   check(
-    'currency step lists USD, NGN, GBP and EUR',
-    ['USD', 'NGN', 'GBP', 'EUR'].every((code) => currencyText.includes(code))
+    'no sign-up step runs before the Welcome page',
+    (await page.locator('[data-boot="signup"]').count()) === 0
   )
   check(
-    'currency step explains prices will use the choice',
-    currencyText.includes('Prices across the site will be shown in this currency')
+    'no currency step runs before the Welcome page',
+    (await page.locator('[data-boot="currency"]').count()) === 0
   )
-  const appBehindCurrency = await page.evaluate(
-    () => document.querySelector('nav') === null
-  )
-  check('app stays unmounted behind the currency step', appBehindCurrency)
-  await page.getByRole('button', { name: /USD — US Dollar/ }).click()
+  check('Welcome navbar is the only nav', (await page.locator('nav').count()) === 1)
+
+  // Get Started → the boot steps: sign-up for a first-timer (the shopper
+  // currency is persisted by CurrencyProvider on mount, so no currency step
+  // blocks a first visit either).
+  await page.locator('[data-welcome="get-started"]').click()
+  const signup = page.locator('[data-boot="signup"]')
+  await signup.waitFor({ state: 'visible' })
   check(
-    'currency choice is stored',
+    'sign-up follows Get Started with no choice screen in between',
+    (await gateCount(page)) === 0
+  )
+  check(
+    'no currency step blocks the first visit',
+    (await page.locator('[data-boot="currency"]').count()) === 0
+  )
+  check('app stays unmounted behind the sign-up step', await page.evaluate(() => document.querySelector('nav') === null))
+  check(
+    'shopper currency is stored for the visit',
     (await page.evaluate(() => localStorage.getItem('agbayemaara.currency'))) === 'USD'
   )
 
   // Sign-up is mandatory: submitting an incomplete form must not proceed.
-  const signup = page.locator('[data-boot="signup"]')
-  await signup.waitFor({ state: 'visible' })
   await page.locator('#boot-name').fill('Ada Test')
   await page.locator('#boot-email').fill('ada@example.com')
   await page.locator('#boot-password').fill('short')
@@ -98,8 +114,9 @@ try {
   await completeSignUp(page)
   await page.waitForURL(`${BASE_URL}/`)
   check('shopper sign-up lands on the discovery feed', true)
-  await page.locator('nav').first().waitFor()
+  await page.locator('nav a[href="/following"]').first().waitFor()
   check('discovery navbar mounts after shopper sign-up', true)
+  check('choice screen never appears during boot', (await gateCount(page)) === 0)
   const storedProfile = await page.evaluate(() =>
     localStorage.getItem('agbayemaara.user')
   )
@@ -108,27 +125,28 @@ try {
     storedProfile?.includes('ada@example.com') ?? false
   )
 
-  // ── 2. Refresh: splash + gate return, but the sign-up does not ─────────────
+  // ── 2. Refresh: the splash returns, the first-visit steps do not ─────────
   await page.reload({ waitUntil: 'domcontentloaded' })
   await page.locator('[data-boot="splash"]').waitFor({ state: 'visible' })
   check('refresh shows the splash again', true)
-  await page.locator('[data-boot="gate"]').waitFor({ state: 'visible' })
-  check('refresh shows the role gate again', true)
-  await page.getByRole('button', { name: 'I am a shopper' }).click()
+  await page.locator('[data-boot="splash"]').waitFor({ state: 'detached' })
+  check('refresh never shows the choice screen', (await gateCount(page)) === 0)
   check(
     'refresh skips the currency step for a returning visitor',
-    !(await page
-      .locator('[data-boot="currency"]')
-      .waitFor({ state: 'visible', timeout: 1500 })
-      .then(() => true)
-      .catch(() => false))
+    !(await currencyVisible(page))
   )
   check(
     'refresh skips the sign-up form for a returning visitor',
     !(await signUpVisible(page))
   )
-  await page.locator('nav').first().waitFor()
-  check('app mounts after shopper choice on refresh', true)
+
+  // The Welcome page shows on every visit, returning visitors included —
+  // Get Started is what lets them through to the app.
+  await welcome.waitFor({ state: 'visible' })
+  check('Welcome page shows on refresh too', true)
+  await page.locator('[data-welcome="get-started"]').click()
+  await page.locator('nav a[href="/following"]').first().waitFor()
+  check('app mounts after Get Started on refresh', true)
   const keptProfile = await page.evaluate(() =>
     localStorage.getItem('agbayemaara.user')
   )
@@ -138,21 +156,38 @@ try {
   )
   await page.close()
 
-  // ── 3. Fresh browser context (new session): full boot flow again ──────────
+  // ── 3. Fresh browser context (brand owner stored from before) ────────────
   const page2 = await browser.newPage({ viewport: { width: 1280, height: 900 } })
   page2.setDefaultTimeout(15000)
+  // The choice screen used to record this; without it the stored role is what
+  // still routes brand owners to their hub.
+  await page2.addInitScript(() => {
+    try {
+      localStorage.setItem('agbayemaara.role', 'brand')
+    } catch {
+      // Storage unavailable — the test falls back to the shopper path.
+    }
+  })
 
   await page2.goto(`${BASE_URL}/`, { waitUntil: 'domcontentloaded' })
   await page2.locator('[data-boot="splash"]').waitFor({ state: 'visible' })
-  await page2.locator('[data-boot="gate"]').waitFor({ state: 'visible' })
-  check('brand-new session shows splash and gate', true)
+  check('brand-new session shows the splash', true)
 
-  // Brand-owner path → sign-up step → dedicated hub
-  await page2.getByRole('button', { name: 'I am a brand owner' }).click()
+  // Brand path: splash → Welcome, then Get Started into the brand sign-up —
+  // with no choice screen to click through at any point, and no currency
+  // step (brand owners don't shop in a chosen currency).
+  const brandWelcome = page2.locator('[data-welcome="page"]')
+  await brandWelcome.waitFor({ state: 'visible' })
+  check('brand boot shows the Welcome page after the splash', true)
+  await page2.locator('[data-welcome="get-started"]').click()
   const brandSignup = page2.locator('[data-boot="signup"]')
   await brandSignup.waitFor({ state: 'visible' })
   check(
-    'brand choice shows the brand sign-up heading',
+    'brand sign-up follows Get Started with no choice screen',
+    (await gateCount(page2)) === 0
+  )
+  check(
+    'brand sign-up uses the brand heading',
     (await brandSignup.innerText()).includes('Create your brand account')
   )
   await completeSignUp(page2)
@@ -179,22 +214,23 @@ try {
     .count()
   check('hub shows the coming-soon owner toolkit', soonBadges >= 3, `${soonBadges} badges`)
 
-  // Refresh on the hub: boot flow runs again, brand route is preserved,
-  // and the app mounts after the shopper choice (role choice is per-visit).
+  // Refresh on the hub: the splash runs again, the stored role keeps the
+  // brand route, and no choice screen stands in the way.
   await page2.reload({ waitUntil: 'domcontentloaded' })
-  await page2.locator('[data-boot="gate"]').waitFor({ state: 'visible' })
-  check('refresh on /brand-owner shows the gate again', true)
-  await page2.getByRole('button', { name: 'I am a shopper' }).click()
-  // page2 never picked a currency (the brand path skips it), so the shopper
-  // choice surfaces the currency step here — one-time, then the app mounts.
-  await passCurrencyStep(page2)
+  await page2.locator('[data-boot="splash"]').waitFor({ state: 'visible' })
+  await page2.locator('[data-boot="splash"]').waitFor({ state: 'detached' })
+  check('refresh on /brand-owner never shows the choice screen', (await gateCount(page2)) === 0)
   check(
     'sign-up stays skipped across routes and refreshes',
     !(await signUpVisible(page2))
   )
+  // Welcome shows on every visit; Get Started lets the returning brand owner
+  // straight through to the hub (their stored role keeps the brand route).
+  await page2.locator('[data-welcome="get-started"]').waitFor({ state: 'visible' })
+  await page2.locator('[data-welcome="get-started"]').click()
   await page2.waitForURL('**/brand-owner')
   await page2.locator('main').waitFor()
-  check('app remounts on the same route after shopper choice', true)
+  check('app remounts on the brand-owner route after the splash', true)
   await page2.close()
 } catch (err) {
   check('script completed without throwing', false, String(err).slice(0, 300))

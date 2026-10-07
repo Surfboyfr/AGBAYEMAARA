@@ -12,7 +12,8 @@ import { brands } from '../data/brands'
 import { useLanguage } from '../Context/LanguageContext'
 
 // ── Brand-owner hub ───────────────────────────────────────────────────────────
-// The surface brand owners land on after choosing "brand" at the boot gate.
+// The surface brand owners land on — a stored "brand" role still routes
+// them here at boot (the old shopper/brand choice screen is gone).
 // V1 is a showcase of the platform's brands plus a coming-soon toolkit; it
 // will grow into real owner tooling as the product progresses.
 const BrandOwner = () => {

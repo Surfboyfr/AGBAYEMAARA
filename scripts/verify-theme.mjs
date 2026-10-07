@@ -18,7 +18,8 @@ const css = (locator, prop) =>
 const browser = await chromium.launch({ channel: 'chrome' })
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 } })
 
-// The boot splash + role gate run on every load; pass through as a shopper.
+// The boot splash runs on every load; wait for it and the one-time boot
+// steps (currency, sign-up) to clear before asserting.
 const gotoWithBoot = async (path, wait = 'networkidle') => {
   await page.goto(`${BASE_URL}${path}`, { waitUntil: wait })
   await passBootGate(page)

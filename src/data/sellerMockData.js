@@ -11,13 +11,13 @@
 // Shared seller constants (statuses, categories) and tiny format helpers also
 // live here so every screen stays in sync with the data it renders.
 
-import img1 from '../assets/imgFolder/Female/img1.jpg'
+import img1 from '../assets/imgFolder/Female/img1.jfif'
 import img2 from '../assets/imgFolder/Female/img2.jpg'
 import img3 from '../assets/imgFolder/Female/img3.jpg'
 import img5 from '../assets/imgFolder/Female/img5.jpg'
 import img6 from '../assets/imgFolder/Female/img6.jpg'
 import img12 from '../assets/imgFolder/Female/img12.jpg'
-import img13 from '../assets/imgFolder/Female/img13.jpg'
+import img13 from '../assets/imgFolder/Female/img13.jfif'
 import male1 from '../assets/imgFolder/Male/male1.jfif'
 import male3 from '../assets/imgFolder/Male/male3.jfif'
 import male4 from '../assets/imgFolder/Male/male4.jfif'

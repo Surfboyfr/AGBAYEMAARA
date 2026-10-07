@@ -19,8 +19,8 @@ const page = await browser.newPage({
 })
 page.setDefaultTimeout(15000)
 
-// The boot splash + role gate run on every load; pass through as a shopper.
-// (The gate's own behavior is covered by scripts/verify-boot.mjs.)
+// The boot splash runs on every load; wait for it and the one-time boot
+// steps to clear. (The boot flow itself is covered by scripts/verify-boot.mjs.)
 const gotoWithBoot = async (path, wait = 'networkidle') => {
   await page.goto(`${BASE_URL}${path}`, { waitUntil: wait })
   await passBootGate(page)
@@ -92,6 +92,34 @@ try {
   await section.locator('a[href="/brands/lisa-folawiyo/story/c1"]').first().click()
   await page.waitForURL('**/brands/lisa-folawiyo/story/c1')
   check('story deep-link navigates to the story page', true)
+
+  // ── NEW BRANDS cards keep their photos visible ───────────────────────────
+  // The card's dark gradient must stay a short strip at the bottom edge
+  // (blending into the card body) instead of covering the whole image.
+  await gotoWithBoot('/')
+  await page.getByRole('button', { name: /NEW BRANDS/i }).click()
+  const newBrandCard = page.locator('article').filter({ hasText: 'New brand' }).first()
+  await newBrandCard.waitFor({ state: 'visible', timeout: 15000 })
+  const gradient = await newBrandCard.evaluate((el) => {
+    const img = el.querySelector('img')
+    const wrap = img.parentElement
+    const overlay = [...wrap.children].find((c) =>
+      (getComputedStyle(c).backgroundImage || '').includes('linear-gradient'),
+    )
+    const wr = wrap.getBoundingClientRect()
+    const or = overlay.getBoundingClientRect()
+    return {
+      coveredPct: Math.round((or.height / wr.height) * 100),
+      bottomGap: Math.round((wr.bottom - or.bottom) * 10) / 10,
+      imgOk: img.naturalWidth > 0,
+    }
+  })
+  check('new-brand card image is loaded', gradient.imgOk)
+  check(
+    'new-brand dark gradient stays a short bottom strip',
+    gradient.coveredPct < 50 && gradient.bottomGap <= 1,
+    `${gradient.coveredPct}% of the image, ${gradient.bottomGap}px from the bottom edge`,
+  )
 
   // ── 4b. Shop pill in the feed header navigates to /shop ────────────────────
   await gotoWithBoot('/')

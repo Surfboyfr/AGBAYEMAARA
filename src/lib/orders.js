@@ -3,6 +3,8 @@
 // and the order history page has something to list. When a backend exists this
 // becomes an API-backed store with the same shape.
 
+import { recordActivity } from './activity'
+
 const ORDERS_KEY = 'agbayemaara.orders'
 const LAST_ORDER_KEY = 'agbayemaara.last-order'
 
@@ -86,7 +88,16 @@ export const advanceOrderStatus = (reference) => {
 
   const index = stageIndex(order.status)
   const nextStage = ORDER_STAGES[Math.min(index + 1, ORDER_STAGES.length - 1)]
-  return patchOrder(reference, { status: nextStage })
+  const updated = patchOrder(reference, { status: nextStage })
+  if (updated && updated.status !== order.status) {
+    recordActivity(
+      'customer',
+      'order.stage',
+      `Order ${reference} moved to ${nextStage}`,
+      order.email ?? ''
+    )
+  }
+  return updated
 }
 
 // ── Failure branch ───────────────────────────────────────────────────────────
@@ -101,11 +112,24 @@ export const advanceOrderStatus = (reference) => {
 export const failOrder = (reference) => {
   const order = getOrder(reference)
   if (!order) return null
-  return patchOrder(reference, { status: 'fulfilment_failed', failedAt: order.status })
+  const updated = patchOrder(reference, { status: 'fulfilment_failed', failedAt: order.status })
+  recordActivity(
+    'customer',
+    'order.failed',
+    `Order ${reference} fulfilment failed`,
+    order.email ?? ''
+  )
+  return updated
 }
 
 // Refund processed: money returned to the original payment method.
-export const refundOrder = (reference) => patchOrder(reference, { status: 'refunded' })
+export const refundOrder = (reference) => {
+  const updated = patchOrder(reference, { status: 'refunded' })
+  if (updated) {
+    recordActivity('customer', 'order.refunded', `Order ${reference} refunded`)
+  }
+  return updated
+}
 
 // Demo reset: back to a fresh order so the flow can be replayed.
 export const resetOrder = (reference) =>
@@ -133,6 +157,13 @@ export const saveOrder = (order) => {
   const orders = [order, ...getOrders().filter((o) => o.reference !== order.reference)]
   write(ORDERS_KEY, orders)
   write(LAST_ORDER_KEY, order)
+  // Tracked for /admin — the shopper section's headline event.
+  recordActivity(
+    'customer',
+    'order.placed',
+    `Order ${order.reference} placed`,
+    `${order.currency ?? 'USD'} ${Number(order.total) || 0}`
+  )
   return order
 }
 

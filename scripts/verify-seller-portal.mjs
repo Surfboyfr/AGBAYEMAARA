@@ -23,10 +23,10 @@ page.on('console', (msg) => {
 })
 
 try {
-  // ── 1. Direct load of /seller/login (no shopper boot gate) ────────────────
+  // ── 1. Direct load of /seller/login (bypasses the customer boot flow) ─────
   await page.goto(`${BASE}/seller/login`, { waitUntil: 'networkidle' })
   const bootOverlays = await page.locator('[data-boot]').count()
-  step('seller login bypasses the shopper boot gate', bootOverlays === 0)
+  step('seller login bypasses the customer boot flow', bootOverlays === 0)
   step('login form renders', await page.getByLabel('Email', { exact: true }).isVisible())
 
   // ── 2. Mock sign-in → dashboard ───────────────────────────────────────────
@@ -198,8 +198,15 @@ try {
   await page.goto(`${BASE}/`, { waitUntil: 'networkidle' })
   await page.locator('[data-boot="splash"]').waitFor()
   step('customer route still shows the boot splash', true)
-  await page.locator('[data-boot="gate"]').waitFor({ timeout: 8000 })
-  step('customer role gate still appears after splash', true)
+  await page.locator('[data-welcome="get-started"]').waitFor({ timeout: 8000 })
+  step('splash hands over to the Welcome page', true)
+  await page.locator('[data-welcome="get-started"]').click()
+  await page.locator('[data-boot="signup"]').waitFor({ timeout: 8000 })
+  step('Get Started continues into sign-up for a first-timer', true)
+  step(
+    'removed choice screen stays gone',
+    (await page.locator('[data-boot="gate"]').count()) === 0
+  )
 } catch (err) {
   step('unexpected failure', false, String(err).slice(0, 300))
 } finally {

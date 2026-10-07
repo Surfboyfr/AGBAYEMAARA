@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react'
+import { recordActivity } from '../lib/activity'
 
 const CartContext = createContext(null)
 
@@ -18,10 +19,18 @@ export const CartProvider = ({ children }) => {
       }
       return [...prev, { ...product, quantity: 1 }]
     })
+    // Tracked for /admin — what shoppers are putting in their carts.
+    recordActivity(
+      'customer',
+      'cart.add',
+      `Added ${product.name ?? product.title ?? 'an item'} to cart`,
+      product.brand ? `from ${product.brand}` : ''
+    )
   }
 
   const removeFromCart = (productId) => {
     setCartItems(prev => prev.filter(item => item.id !== productId))
+    recordActivity('customer', 'cart.remove', `Removed item #${productId} from cart`)
   }
 
   const updateQuantity = (productId, quantity) => {
@@ -36,7 +45,10 @@ export const CartProvider = ({ children }) => {
     )
   }
 
-  const clearCart = () => setCartItems([])
+  const clearCart = () => {
+    setCartItems([])
+    recordActivity('customer', 'cart.cleared', 'Cart cleared')
+  }
 
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
   const cartTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)

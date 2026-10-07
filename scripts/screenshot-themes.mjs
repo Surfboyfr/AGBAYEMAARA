@@ -7,7 +7,8 @@ const BASE_URL = process.argv[2] ?? 'http://localhost:5173'
 const browser = await chromium.launch({ channel: 'chrome' })
 const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } })
 
-// The boot splash + role gate run on every load; pass through as a shopper.
+// The boot splash runs on every load; wait for it and the one-time boot
+// steps (currency, sign-up) to clear before capturing.
 const captureTheme = async (theme) => {
   await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' })
   await passBootGate(page)
