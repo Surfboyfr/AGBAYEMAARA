@@ -53,15 +53,65 @@ const FilterPills = ({ active, onChange }) => {
 }
 
 // ── Discovery feed page ────────────────────────────────────────────────────────
-// ── Shop: category navbar + capped product grid ──────────────────────────────
-// Sits at the top of the feed page: a category navbar directly above a product
-// grid that shows three rows (3/6/9 cards across the breakpoints) and hides the
-// rest behind a "Show more" button.
-const SHOP_CATEGORIES = ['all', 'Shoes', 'Bags', 'Wigs', 'Jewelries', 'Hats']
+// ── Shop: category navbar (top) + capped product grid (page bottom) ──────────
+// The shop is split in two so the feed reads first: the category navbar stays
+// at the top of the feed page, while the product grid — three rows (3/6/9
+// cards across the breakpoints) with the rest behind a "Show more" button —
+// sits at the very bottom, after the feed and the journey strip. Category
+// state is lifted to the page: clicking a pill up top filters the grid and
+// scrolls down to it.
+const SHOP_CATEGORIES = ['all', 'Shoes', 'Bags', 'Wigs', 'Jewelries', 'Hats', 'Accessories', 'Clothing', 'Beauty', 'Home', 'Other']
 
-const ShopSection = () => {
+// Top half: the category navbar. Purely controlled — the page owns the state.
+const ShopCategories = ({ active, onSelect }) => {
   const { t } = useLanguage()
-  const [category, setCategory] = useState('all')
+
+  const categoryLabels = {
+    all: t('discovery', 'All'),
+    Shoes: t('discovery', 'Shoes'),
+    Bags: t('discovery', 'Bags'),
+    Wigs: t('discovery', 'Wigs'),
+    Jewelries: t('discovery', 'Jewelries'),
+    Hats: t('discovery', 'Hats'),
+    Accessories: t('discovery', 'Accessories'),
+    Clothing: t('discovery', 'Clothing'),
+    Beauty: t('discovery', 'Beauty'),
+    Home: t('discovery', 'Home'),
+    Other: t('discovery', 'Other'),
+  }
+
+  return (
+    <nav
+      aria-label='Shop categories'
+      className='mb-5 flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none'
+    >
+      {SHOP_CATEGORIES.map((value) => {
+        const isActive = active === value
+        return (
+          <button
+            key={value}
+            type='button'
+            onClick={() => onSelect(value)}
+            aria-pressed={isActive}
+            className={`shrink-0 rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+              isActive
+                ? 'border-[#ec5800] bg-[#ec5800]/10 text-[#ec5800] shadow-[0_6px_20px_-8px_rgba(236,88,0,0.7)]'
+                : 'border-line text-muted hover:border-line-strong hover:text-strong'
+            }`}
+          >
+            {categoryLabels[value]}
+          </button>
+        )
+      })}
+    </nav>
+  )
+}
+
+// Bottom half: the grid itself, mounted once at the very end of the page.
+// Keyed by category on the page so a new category remounts it — the grid
+// starts back at three rows without a reset effect.
+const ShopGrid = ({ category }) => {
+  const { t } = useLanguage()
   const [expanded, setExpanded] = useState(false)
   const [columns, setColumns] = useState(3)
 
@@ -89,48 +139,8 @@ const ShopSection = () => {
   const canToggle = filtered.length > perView
   const visible = expanded ? filtered : filtered.slice(0, perView)
 
-  const categoryLabels = {
-    all: t('discovery', 'catAll'),
-    Shoes: t('discovery', 'catShoes'),
-    Bags: t('discovery', 'catBags'),
-    Wigs: t('discovery', 'catWigs'),
-    Jewelries: t('discovery', 'catJewelries'),
-    Hats: t('discovery', 'catHats'),
-  }
-
-  const selectCategory = (value) => {
-    setCategory(value)
-    // A new category starts back at three rows.
-    setExpanded(false)
-  }
-
   return (
-    <section aria-label='Shop' className='mb-10'>
-      {/* Category navbar — directly above the product grid */}
-      <nav
-        aria-label='Shop categories'
-        className='mb-5 flex items-center gap-2 overflow-x-auto pb-1 [scrollbar-width:none]'
-      >
-        {SHOP_CATEGORIES.map((value) => {
-          const isActive = category === value
-          return (
-            <button
-              key={value}
-              type='button'
-              onClick={() => selectCategory(value)}
-              aria-pressed={isActive}
-              className={`shrink-0 rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-200 ${
-                isActive
-                  ? 'border-[#ec5800] bg-[#ec5800]/10 text-[#ec5800] shadow-[0_6px_20px_-8px_rgba(236,88,0,0.7)]'
-                  : 'border-line text-muted hover:border-line-strong hover:text-strong'
-              }`}
-            >
-              {categoryLabels[value]}
-            </button>
-          )
-        })}
-      </nav>
-
+    <section id='shop' aria-label='Shop' className='mt-16 scroll-mt-24'>
       {visible.length === 0 ? (
         <div className='rounded-3xl bg-raised px-6 py-16 text-center text-sm text-muted'>
           {t('discovery', 'shopEmpty')}
@@ -167,6 +177,8 @@ const DiscoveryFeed = () => {
   const { t } = useLanguage()
   const location = useLocation()
   const [activeFilter, setActiveFilter] = useState(FEED_FILTERS.FOR_YOU)
+  // Shop category, shared by the navbar at the top and the grid at the bottom.
+  const [shopCategory, setShopCategory] = useState('all')
   const [retryCount, setRetryCount] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -178,6 +190,21 @@ const DiscoveryFeed = () => {
     setActiveFilter(value)
     setIsLoading(true)
     setError(null)
+  }
+
+  // A category pill was clicked up top: filter the grid, then take the user
+  // to it at the bottom of the page. The scroll runs on the next frame — the
+  // grid remounts under a new key, and scrolling the node that is about to be
+  // detached would abort the smooth scroll. Honours prefers-reduced-motion,
+  // like the rest of the app's scroll-into-view behaviour.
+  const handleShopCategory = (value) => {
+    setShopCategory(value)
+    requestAnimationFrame(() => {
+      const shop = document.getElementById('shop')
+      if (!shop) return
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      shop.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+    })
   }
 
   const handleRetry = () => {
@@ -265,8 +292,8 @@ const DiscoveryFeed = () => {
       <DiscoveryNavbar />
 
       <main className="mx-auto max-w-7xl px-5 pb-20 pt-10">
-        {/* Shop first: category navbar + three-row product grid, directly above the feed */}
-        <ShopSection />
+        {/* Categories stay at the top: a click filters the grid and scrolls to it */}
+        <ShopCategories active={shopCategory} onSelect={handleShopCategory} />
         {/* Masthead */}
         <header className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -317,6 +344,10 @@ const DiscoveryFeed = () => {
         )}
         {/* User journey — the loop from first scroll to delivery, deep-linked */}
         <UserJourney />
+
+        {/* Shop grid — the very bottom of the page; the navbar up top scrolls
+            here. The key remounts it per category so Show more resets. */}
+        <ShopGrid key={shopCategory} category={shopCategory} />
       </main>
     </div>
   )

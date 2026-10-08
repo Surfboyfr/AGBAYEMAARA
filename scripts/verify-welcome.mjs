@@ -7,7 +7,7 @@
 // legacy /welcome URL rejoins the flow and /about still loads directly, the
 // "Become a seller" button reaches the seller login page (/seller/login),
 // the page renders on a white background with ink text, and the brand
-// marquee at the bottom of the page shows the brands sliding.
+// marquee sits directly below that button and shows the brands sliding.
 import { chromium } from 'playwright'
 import { completeSignUp } from './boot-gate.mjs'
 
@@ -216,23 +216,30 @@ try {
     `hero=${await sellerLink.getAttribute('href')}, nav=${await navSellerLink.getAttribute('href')}`,
   )
 
-  // The marquee sits after the main content — at the bottom of the page.
+  // The marquee sits directly below the "Become a seller" button.
   const marqueeTrack = welcome.locator('.brand-marquee-track')
   check('the Welcome page has the brand marquee', (await marqueeTrack.count()) === 1)
   const layout = await page.evaluate(() => {
-    const root = document.querySelector('[data-welcome="page"]')
-    const kids = [...root.children]
+    const seller = document.querySelector('[data-welcome="page"] main a[href="/seller/login"]')
+    const marquee = document.querySelector('.brand-marquee-container')?.closest('section')
+    if (!seller || !marquee) return { ok: false, detail: 'missing seller link or marquee' }
+    // The seller CTA lives in a two-level wrapper (row > link box); the
+    // marquee section should be that row's very next sibling, inside main.
+    const ctaRow = seller.parentElement?.parentElement
+    const inMain = !!marquee.closest('main')
+    const directlyBelow = ctaRow?.nextElementSibling === marquee
+    const afterSeller = ctaRow
+      ? !!(ctaRow.compareDocumentPosition(marquee) & Node.DOCUMENT_POSITION_FOLLOWING)
+      : false
     return {
-      mainIdx: kids.findIndex((el) => el.tagName === 'MAIN'),
-      marqueeIdx: kids.findIndex((el) =>
-        el.contains(document.querySelector('.brand-marquee-container')),
-      ),
+      ok: inMain && directlyBelow && afterSeller,
+      detail: `inMain=${inMain}, directlyBelow=${directlyBelow}, afterSeller=${afterSeller}`,
     }
   })
   check(
-    'the marquee renders below the main content (bottom of the page)',
-    layout.mainIdx !== -1 && layout.marqueeIdx > layout.mainIdx,
-    `main #${layout.mainIdx}, marquee #${layout.marqueeIdx}`,
+    'the marquee renders directly below the "Become a seller" button',
+    layout.ok,
+    layout.detail,
   )
 
   const marqueeCards = await marqueeTrack.locator('a').count()

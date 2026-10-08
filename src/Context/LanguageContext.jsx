@@ -28,7 +28,7 @@ const translations = {
       body: 'Àgbáyémáarà is a fashion tech platform redefining, connecting businesses, professionals, products and services across Africa\'s fashion ecosystem',
       featureDiscoverTitle: 'Discover',
       featureDiscoverBody: 'One feed of stories, drops, and milestones from labels across the continent.',
-      featureStoryTitle: 'Read the story',
+      featureStoryTitle: 'Know their story',
       featureStoryBody: 'Go behind every piece — the people, the craft, and the culture it comes from.',
       featureShopTitle: 'Shop the look',
       featureShopBody: 'Follow a brand, add what you love to your cart, and check out in a few taps.',
