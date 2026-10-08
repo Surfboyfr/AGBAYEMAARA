@@ -77,7 +77,7 @@ const Welcome = ({ onGetStarted }) => {
           className='pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(236,88,0,0.12)_1px,transparent_1px)] bg-size-[22px_22px] mask-[radial-gradient(ellipse_at_center,black_20%,transparent_75%)]'
         />
 
-        <div className='animate-pop-in relative z-10 w-full max-w-4xl text-center'>
+        <div className='animate-pop-in relative z-10 w-full text-center'>
           <span className='inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-orange-600'>
             {t('welcome', 'eyebrow')}
           </span>
