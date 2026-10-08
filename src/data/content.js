@@ -10,6 +10,7 @@ import male3 from '../assets/imgFolder/Male/male3.jfif'
 import male4 from '../assets/imgFolder/Male/male4.jfif'
 import male7 from '../assets/imgFolder/Male/male7.jfif'
 import male8 from '../assets/imgFolder/Male/male8.jfif'
+//just to add git
 
 // Content Unit entity
 // type: 'story' | 'styling' | 'milestone' | 'drop'
