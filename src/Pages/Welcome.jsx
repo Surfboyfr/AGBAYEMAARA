@@ -86,7 +86,7 @@ const Welcome = ({ onGetStarted }) => {
             {t('welcome', 'title')}
           </h1>
 
-          <p className='mx-auto mt-4 max-w-2xl text-balance text-4xl leading-relaxed text-neutral-600 sm:text-xl'>
+          <p className='mx-auto mt-4 max-w-2xl text-balance text-lg leading-relaxed text-neutral-600 sm:text-xs sm:leading-relaxed md:text-lg md:leading-relaxed lg:text-2xl'>
             {t('welcome', 'subtitle')}
           </p>
 

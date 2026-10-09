@@ -12,17 +12,17 @@
 // live here so every screen stays in sync with the data it renders.
 
 import img1 from '../assets/imgFolder/Female/img1.jfif'
-import img2 from '../assets/imgFolder/Female/img2.jpg'
-import img3 from '../assets/imgFolder/Female/img3.jpg'
-import img5 from '../assets/imgFolder/Female/img5.jpg'
-import img6 from '../assets/imgFolder/Female/img6.jpg'
+import img2 from '../assets/imgFolder/Female/img2.jfif'
+import img3 from '../assets/imgFolder/Female/img3.jfif'
+import img5 from '../assets/imgFolder/Female/img5.jfif'
+import img6 from '../assets/imgFolder/Female/img6.jfif'
 import img12 from '../assets/imgFolder/Female/img12.jpg'
 import img13 from '../assets/imgFolder/Female/img13.jfif'
 import male1 from '../assets/imgFolder/Male/male1.jfif'
 import male3 from '../assets/imgFolder/Male/male3.jfif'
 import male4 from '../assets/imgFolder/Male/male4.jfif'
 import male9 from '../assets/imgFolder/Male/male9.jfif'
-import img4 from '../assets/imgFolder/Male/img4.jpg'
+import img4 from '../assets/imgFolder/Male/img4.jfif'
 import brandAvatar from '../assets/brand1.jfif'
 
 // Stock at or below this (but above zero) renders as "Low Stock".
