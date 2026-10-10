@@ -173,6 +173,44 @@ try {
     .getByRole('heading', { name: /Historical Journey & Milestones/ })
     .waitFor({ state: 'visible' })
   check('brand tabs still switch sections', true)
+
+  // ── 8. Session awareness on the discovery navbar ─────────────────────────
+  // The boot gate's sign-up created a real session earlier in this run, so
+  // the signed-in navbar shows the chip + Log out instead of Sign in. The
+  // session is remembered across reloads; logging out (and back in through
+  // the AuthModal) swaps the two states.
+  const AUTH_EMAIL = process.env.TEST_AUTH_EMAIL ?? 'Adewaleadebayo630@gmail.com'
+  const AUTH_PASSWORD = process.env.TEST_AUTH_PASSWORD ?? 'goodboy101#'
+  // Discovery page has a second <nav> (shop categories) — scope to the navbar.
+  const navbar = page.locator('nav').first()
+  const navSignIn = navbar.getByRole('button', { name: 'Sign in' })
+  const navLogOut = navbar.getByRole('button', { name: 'Log out' })
+  const navSignVisible = () => navSignIn.first().isVisible().catch(() => false)
+
+  await gotoPath('/')
+  check('signed-in navbar hides the Sign in action', !(await navSignVisible()))
+  check('signed-in navbar shows the session chip + Log out', await navLogOut.first().isVisible())
+
+  // Session memory: the signed-in state survives a full reload (the boot
+  // gate passes on the stored profile).
+  await page.reload({ waitUntil: 'networkidle' })
+  await passBootGate(page)
+  check('session survives a reload — Sign in stays hidden', !(await navSignVisible()))
+  check('session chip still shows after the reload', await navLogOut.first().isVisible())
+
+  // Logging out restores the signed-out navbar…
+  await navLogOut.first().click()
+  await navSignIn.first().waitFor({ timeout: 15000 })
+  check('logout restores the Sign in action', await navSignVisible())
+
+  // …and signing back in through the AuthModal swaps it back.
+  await navSignIn.first().click()
+  await page.getByRole('heading', { name: 'Welcome back' }).waitFor()
+  await page.getByLabel('Email', { exact: true }).fill(AUTH_EMAIL)
+  await page.getByLabel('Password', { exact: true }).fill(AUTH_PASSWORD)
+  await page.locator('form').getByRole('button', { name: 'Sign In' }).click()
+  await navLogOut.first().waitFor({ timeout: 15000 })
+  check('AuthModal sign-in swaps the navbar back to the session chip', await navLogOut.first().isVisible())
 } catch (err) {
   check('script completed without throwing', false, String(err).slice(0, 300))
 } finally {

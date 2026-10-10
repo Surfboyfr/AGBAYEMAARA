@@ -1,0 +1,1370 @@
+{
+  "info": {
+    "_postman_id": "62c47200-fa43-41c5-9366-30fee0308723",
+    "name": "Àgbáyémáarà V1 Backend API",
+    "description": "Comprehensive Postman collection for Àgbáyémáarà discovery, following, cart, checkout, payments, and 24-hr vendor fulfilment intent SLA.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "18453040",
+    "_collection_link": "https://go.postman.co/collection/18453040-62c47200-fa43-41c5-9366-30fee0308723?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "1. Customer - Register Account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('authToken', jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"Adewaleadebayo630@gmail.com\",\n  \"password\": \"goodboy101#\",\n  \"displayName\": \"Adewale Adebayo\",\n  \"role\": \"buyer\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Registers a customer account and auto-saves token to {{authToken}}."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Customer - Login (Adewale Adebayo)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('authToken', jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"Adewaleadebayo630@gmail.com\",\n  \"password\": \"goodboy101#\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Authenticates customer Adewale Adebayo and auto-populates {{authToken}}."
+          },
+          "response": []
+        },
+        {
+          "name": "3. Vendor - Register (Onboarding)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('vendorToken', jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessName\": \"Omolúàbí Atelier\",\n  \"contactEmail\": \"Adewaleadebayo630@gmail.com\",\n  \"contactPhone\": \"+2348023456789\",\n  \"location\": \"Lagos, Nigeria\",\n  \"description\": \"Contemporary Yoruba silhouettes and ancestral textile design.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/seller/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "seller",
+                "register"
+              ]
+            },
+            "description": "Onboards a user as an artisan seller / vendor and initializes their brand. Logo and cover images can be uploaded directly after login using 'Upload Logo & Cover to Vendor Profile' (form-data)."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Vendor - Login (Omolúàbí Atelier)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('vendorToken', jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"Adewaleadebayo630@gmail.com\",\n  \"password\": \"goodboy101#\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Authenticates Seller Omolúàbí Atelier and auto-populates {{vendorToken}}."
+          },
+          "response": []
+        },
+        {
+          "name": "5. Admin - Login (Ops Lead)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('adminToken', jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"Adewaleadebayo630@gmail.com\",\n  \"password\": \"goodboy101#\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Authenticates Ops Admin and auto-populates {{adminToken}}."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Liveness Probe (healthz)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{serverUrl}}/healthz",
+              "host": [
+                "{{serverUrl}}"
+              ],
+              "path": [
+                "healthz"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Readiness Probe (readyz)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{serverUrl}}/readyz",
+              "host": [
+                "{{serverUrl}}"
+              ],
+              "path": [
+                "readyz"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Discovery & Editorial",
+      "item": [
+        {
+          "name": "Get Curated Feed (for_you)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/feed?surface=for_you",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "feed"
+              ],
+              "query": [
+                {
+                  "key": "surface",
+                  "value": "for_you"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Following Feed",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/feed/following",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "feed",
+                "following"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Brand By Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/brands/omoluabi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "brands",
+                "omoluabi"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Follow Brand",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/brands/brd_omoluabi/follow",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "brands",
+                "brd_omoluabi",
+                "follow"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unfollow Brand",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/brands/brd_omoluabi/follow",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "brands",
+                "brd_omoluabi",
+                "follow"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Products (ShopHome Filter: Clothes, Shoes, Bags, Hats)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products?category=Clothes&gender=female&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "Clothes",
+                  "description": "Filter by category: Clothes, Shoes, Bags, Jewelries, Hats"
+                },
+                {
+                  "key": "gender",
+                  "value": "female",
+                  "description": "female, male, unisex"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product By Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products/handwoven-aso-oke-tunic",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                "handwoven-aso-oke-tunic"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Content Story By Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/content/weaving-identity-omoluabi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "content",
+                "weaving-identity-omoluabi"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "Get Active Cart",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cart",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cart"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Item to Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"prd_aso_oke_tunic\",\n  \"quantity\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cart/items",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cart",
+                "items"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Cart Item Quantity",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cart/items/:itemId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cart",
+                "items",
+                ":itemId"
+              ],
+              "variable": [
+                {
+                  "key": "itemId"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Clear Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cart",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cart"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Checkout & Payments",
+      "item": [
+        {
+          "name": "Create Checkout (Idempotent)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "idem-uuid-checkout-001"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deliveryAddress\": {\n    \"recipientName\": \"Wale Adewale\",\n    \"phoneNumber\": \"+2348031234567\",\n    \"streetAddress\": \"12 Admiralty Way, Lekki Phase 1\",\n    \"city\": \"Lagos\",\n    \"state\": \"Lagos\",\n    \"country\": \"Nigeria\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/checkouts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "checkouts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Checkout Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/checkouts/{{checkoutId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "checkouts",
+                "{{checkoutId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Initialize Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"callbackUrl\": \"http://localhost:5173/orders/confirmation\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/checkouts/{{checkoutId}}/payment",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "checkouts",
+                "{{checkoutId}}",
+                "payment"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Payment Webhook (Simulate Success)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Webhook-Signature",
+                "value": "mock_signature"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event\": \"charge.success\",\n  \"reference\": \"ref_pay_sample123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/payments/webhook",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payments",
+                "webhook"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Orders (Buyer)",
+      "item": [
+        {
+          "name": "List Buyer Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Buyer Order Detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{orderId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "orders",
+                "{{orderId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Vendor Fulfilment SLA (24 Hours)",
+      "item": [
+        {
+          "name": "Vendor Order Inbox",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/vendor/orders?vendorId=vnd_lagos_atelier",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "vendor",
+                "orders"
+              ],
+              "query": [
+                {
+                  "key": "vendorId",
+                  "value": "vnd_lagos_atelier"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Respond to Fulfilment Intent (Accept)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"accepted\",\n  \"note\": \"Fabric cuts prepped, completing in 48 hours.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/vendor/orders/{{vendorOrderId}}/intent",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "vendor",
+                "orders",
+                "{{vendorOrderId}}",
+                "intent"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Respond to Fulfilment Intent (Decline)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"declined\",\n  \"note\": \"Textile loom machine currently in maintenance.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/vendor/orders/{{vendorOrderId}}/intent",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "vendor",
+                "orders",
+                "{{vendorOrderId}}",
+                "intent"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Media Upload",
+      "item": [
+        {
+          "name": "Direct Multipart Image Upload (Local File to Cloudinary)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "description": "Select any local image (.jpg, .png, .webp) directly from your computer",
+                  "value": null
+                },
+                {
+                  "key": "folder",
+                  "value": "agba/uploads",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/media/upload",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "media",
+                "upload"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Cloudinary Direct Upload Signature",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"folder\": \"agbayemaara/brands/brd_omoluabi\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/media/sign",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "media",
+                "sign"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Ingest Analytics Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"eventName\": \"card_tap\",\n  \"anonymousId\": \"anon_user_99\",\n  \"properties\": {\n    \"cardId\": \"cnt_omoluabi_origins\",\n    \"surface\": \"for_you\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/events",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "events"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Seller Portal (Frontend SellerContext)",
+      "item": [
+        {
+          "name": "Sign Cloudinary Upload for Seller (Logo or Banner)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"folder\": \"agbayemaara/brands/logos\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/seller/media/sign",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "seller",
+                "media",
+                "sign"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register as Seller / Vendor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessName\": \"Oja Atelier\",\n  \"contactEmail\": \"hello@oja-atelier.example\",\n  \"contactPhone\": \"+2348034567890\",\n  \"location\": \"Lekki, Lagos, Nigeria\",\n  \"description\": \"Contemporary Nigerian fashion house blending Ankara and Adire craftsmanship.\",\n  \"logoUrl\": \"https://res.cloudinary.com/agbayemaara/image/upload/v12345/agbayemaara/brands/logo.jpg\",\n  \"coverUrl\": \"https://res.cloudinary.com/agbayemaara/image/upload/v12345/agbayemaara/brands/cover.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/seller/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "seller",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Seller Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/seller/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "seller",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Seller Profile (Text Info)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessName\": \"Omolúàbí Atelier\",\n  \"location\": \"Victoria Island, Lagos, Nigeria\",\n  \"description\": \"Contemporary Yoruba silhouettes and ancestral textile design.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/seller/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "seller",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Logo & Cover to Vendor Profile (Multipart Form-Data)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendorToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "logo",
+                  "type": "file",
+                  "description": "Select local logo image file (PNG/JPG)",
+                  "value": null
+                },
+                {
+                  "key": "cover",
+                  "type": "file",
+                  "description": "Select local cover banner image file (PNG/JPG)",
+                  "value": null
+                },
+                {
+                  "key": "businessName",
+                  "value": "Omolúàbí Atelier",
+                  "type": "text"
+                },
+                {
+                  "key": "location",
+                  "value": "Lagos, Nigeria",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/seller/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "seller",
+                "profile"
+              ]
+            },
+            "description": "Uploads raw image files from device. The backend securely pushes them directly to Cloudinary and saves the resulting URLs into the vendor profile and brand."
+          },
+          "response": []
+        },
+        {
+          "name": "List Seller Products / Inventory",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/seller/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "seller",
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Seller Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Adire Silk Kaftan\",\n  \"description\": \"Hand-dyed organic silk kaftan\",\n  \"price\": 95000,\n  \"inventoryQuantity\": 20,\n  \"leadTime\": \"3-5 days\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/seller/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "seller",
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Seller Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Adire Silk Kaftan Deluxe\",\n  \"price\": 105000,\n  \"inventoryQuantity\": 15\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/seller/products/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "seller",
+                "products",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete / Archive Seller Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/seller/products/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "seller",
+                "products",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Seller Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/seller/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "seller",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Order Fulfilment Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"shipped\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/seller/orders/:id/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "seller",
+                "orders",
+                ":id",
+                "status"
+              ],
+              "variable": [
+                {
+                  "key": "id"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Seller Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{vendorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/seller/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "seller",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://agba-api-273038897334.us-central1.run.app/api/v1"
+    },
+    {
+      "key": "serverUrl",
+      "value": "https://agba-api-273038897334.us-central1.run.app"
+    },
+    {
+      "key": "authToken",
+      "value": "dev_tolu_ade"
+    },
+    {
+      "key": "vendorToken",
+      "value": "dev_adewale_vendor"
+    },
+    {
+      "key": "adminToken",
+      "value": "dev_admin_ops"
+    },
+    {
+      "key": "checkoutId",
+      "value": "chk_01m4f97767bs17vrgqd54efze2"
+    },
+    {
+      "key": "orderId",
+      "value": "ord_01m4f97abg50ej3be31584jfns"
+    },
+    {
+      "key": "vendorOrderId",
+      "value": "vo_01m4f97abgzsrrf1s4ewd3hfz9"
+    }
+  ]
+}

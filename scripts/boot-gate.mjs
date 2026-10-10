@@ -74,5 +74,7 @@ export const completeSignUp = async (page) => {
   await page.locator('#boot-email').fill('ada@example.com')
   await page.locator('#boot-password').fill('password123')
   await page.getByRole('button', { name: 'Continue' }).click()
-  await signup.waitFor({ state: 'detached', timeout: 5000 })
+  // Real backend behind this click now: /auth/register (plus a login
+  // fallback when the email already exists) — allow for cold-start latency.
+  await signup.waitFor({ state: 'detached', timeout: 15000 })
 }

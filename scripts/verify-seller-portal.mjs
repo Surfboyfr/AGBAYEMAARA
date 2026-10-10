@@ -1,9 +1,24 @@
-// E2E verification: seller portal routes, mock login, dashboard, inventory
+// E2E verification: seller portal routes, real API login, dashboard, inventory
 // CRUD + filters, products, orders, profile editing, logout, mobile nav and
 // the untouched customer boot flow. Run with the Vite dev server on :5173.
 import { chromium } from 'playwright'
 
 const BASE = process.env.BASE_URL ?? 'http://localhost:5173'
+
+// Real vendor credentials (the demo vendor from docs/). Override via env for
+// runs against a different backend instance.
+const SELLER_EMAIL = process.env.SELLER_TEST_EMAIL ?? 'Adewaleadebayo630@gmail.com'
+const SELLER_PASSWORD = process.env.SELLER_TEST_PASSWORD ?? 'goodboy101#'
+
+// Sign in through the real /seller/login form (POST /auth/login + vendor
+// profile probe) and wait for the dashboard.
+const signInAsSeller = async (page) => {
+  await page.goto(`${BASE}/seller/login`, { waitUntil: 'networkidle' })
+  await page.getByLabel('Email', { exact: true }).fill(SELLER_EMAIL)
+  await page.getByLabel('Password', { exact: true }).fill(SELLER_PASSWORD)
+  await page.getByRole('button', { name: 'Sign In' }).click()
+  await page.waitForURL('**/seller/dashboard')
+}
 
 const results = []
 const step = (name, ok, detail = '') => {
@@ -29,12 +44,9 @@ try {
   step('seller login bypasses the customer boot flow', bootOverlays === 0)
   step('login form renders', await page.getByLabel('Email', { exact: true }).isVisible())
 
-  // ── 2. Mock sign-in → dashboard ───────────────────────────────────────────
-  await page.getByLabel('Email', { exact: true }).fill('seller@example.com')
-  await page.getByLabel('Password', { exact: true }).fill('password123')
-  await page.getByRole('button', { name: 'Sign In' }).click()
-  await page.waitForURL('**/seller/dashboard')
-  step('mock sign-in routes to /seller/dashboard', page.url().endsWith('/seller/dashboard'))
+  // ── 2. Real sign-in → dashboard ───────────────────────────────────────────
+  await signInAsSeller(page)
+  step('sign-in routes to /seller/dashboard', page.url().endsWith('/seller/dashboard'))
 
   await page.getByRole('heading', { name: /Welcome back, Adaeze/ }).waitFor()
   step('dashboard welcome renders', true)
@@ -182,10 +194,18 @@ try {
   step('logout returns to /seller/login', page.url().endsWith('/seller/login'))
 
   // ── 9. Mobile: drawer navigation ──────────────────────────────────────────
+  // New page = fresh storage = no session token, so sign in first (the
+  // /seller/* route guard bounces tokenless loads to the login screen).
   const mobile = await browser.newPage({ viewport: { width: 390, height: 844 } })
-  await mobile.goto(`${BASE}/seller/dashboard`, { waitUntil: 'networkidle' })
+  await signInAsSeller(mobile)
+  // The URL changes as soon as navigation fires; wait for the dashboard to
+  // paint before asserting on its controls.
   const menuButton = mobile.getByRole('button', { name: 'Open menu' })
-  step('mobile shows the menu button', await menuButton.isVisible())
+  const menuVisible = await menuButton
+    .waitFor({ state: 'visible', timeout: 15000 })
+    .then(() => true)
+    .catch(() => false)
+  step('mobile shows the menu button', menuVisible)
   await menuButton.click()
   await mobile.getByRole('link', { name: 'Orders' }).waitFor()
   step('mobile drawer opens', await mobile.getByRole('link', { name: 'Orders' }).isVisible())

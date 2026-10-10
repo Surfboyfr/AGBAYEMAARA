@@ -1,4 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom'
+import { signOut } from '../../lib/api'
 import {
   ClipboardList,
   LayoutDashboard,
@@ -30,9 +31,10 @@ const linkClass = ({ isActive }) =>
 const SellerSidebar = ({ open, onClose, lowStockCount = 0 }) => {
   const navigate = useNavigate()
 
-  // MOCK LOGOUT — there is no session/token to clear yet. When real auth
-  // lands, clear the seller session here before navigating.
+  // Real logout — clears the stored API session token, then returns to the
+  // login screen (the /seller/* route guard sends tokenless loads there too).
   const handleLogout = () => {
+    signOut()
     navigate('/seller/login', { replace: true })
   }
 

@@ -20,6 +20,7 @@ import BrandStory from './Pages/BrandStory'
 // Seller portal (frontend-only) — lives in its own route tree so the shopper
 // boot flow (splash → sign-up) and cart drawer never touch it.
 import { SellerProvider } from './Context/SellerContext'
+import { getToken } from './lib/api'
 import SellerLayout from './Layouts/SellerLayout'
 import SellerLogin from './Pages/seller/SellerLogin'
 import SellerDashboard from './Pages/seller/SellerDashboard'
@@ -34,9 +35,13 @@ function App() {
   // ── Seller portal routes ──────────────────────────────────────────────────
   // Mounted outside BootFlow: onboarding is for shoppers/brand owners, and
   // /seller/* must be directly reachable (e.g. refreshing /seller/dashboard).
-  // NOTE: these routes are NOT authenticated — login is a visual mock until
-  // real auth + backend authorization land.
+  // Auth: /seller/login performs a real POST /auth/login (plus a vendor-profile
+  // probe), and every other /seller/* URL requires a stored session token —
+  // tokenless loads bounce to the login screen.
   if (pathname === '/seller' || pathname.startsWith('/seller/')) {
+    if (pathname !== '/seller/login' && !getToken()) {
+      return <Navigate to='/seller/login' replace />
+    }
     return (
       <SellerProvider>
         <Routes>

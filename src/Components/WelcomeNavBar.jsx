@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Store } from 'lucide-react'
 import { useLanguage } from '../Context/LanguageContext'
+import { useSession } from '../lib/session'
 import AuthModal from './AuthModal'
 
 // Navbar for the Welcome boot screen. Deliberately minimal — wordmark plus
@@ -10,6 +11,10 @@ import AuthModal from './AuthModal'
 // (/seller/login).
 const WelcomeNavBar = () => {
   const { t } = useLanguage()
+  // A returning signed-in session (profile + token, see lib/session.js) sees
+  // a greeting + Log out instead of the two auth actions.
+  const { user, isLoggedIn, logout } = useSession()
+  const firstName = (user?.name || user?.email || '').trim().split(/\s+/)[0]
   // AuthModal stays mounted (like every other navbar) — `mode` only applies
   // when it opens, so each button launches the right form.
   const [auth, setAuth] = useState({ open: false, mode: 'signin' })
@@ -36,19 +41,37 @@ const WelcomeNavBar = () => {
               <span>Become a seller</span>
             </Link>
 
-            <button
-              onClick={() => openAuth('signin')}
-              className='rounded-full border border-neutral-300 px-4 py-2 text-sm font-bold tracking-wide text-neutral-800 transition-all duration-200 hover:bg-neutral-100 active:scale-95'
-            >
-              {t('welcome', 'login')}
-            </button>
+            {isLoggedIn ? (
+              <div className='flex items-center gap-2 sm:gap-3'>
+                {firstName && (
+                  <span className='hidden max-w-40 truncate text-sm font-bold text-neutral-800 sm:block'>
+                    Hi, {firstName}
+                  </span>
+                )}
+                <button
+                  onClick={logout}
+                  className='rounded-full border border-neutral-300 px-4 py-2 text-sm font-bold tracking-wide text-neutral-800 transition-all duration-200 hover:bg-neutral-100 active:scale-95'
+                >
+                  {t('auth', 'logOut')}
+                </button>
+              </div>
+            ) : (
+              <div className='flex items-center gap-2 sm:gap-3'>
+                <button
+                  onClick={() => openAuth('signin')}
+                  className='rounded-full border border-neutral-300 px-4 py-2 text-sm font-bold tracking-wide text-neutral-800 transition-all duration-200 hover:bg-neutral-100 active:scale-95'
+                >
+                  {t('welcome', 'login')}
+                </button>
 
-            <button
-              onClick={() => openAuth('signup')}
-              className='rounded-full bg-neutral-900 px-5 py-2 text-sm font-bold tracking-wide text-white transition-all duration-200 hover:bg-neutral-800 active:scale-95'
-            >
-              {t('welcome', 'signUp')}
-            </button>
+                <button
+                  onClick={() => openAuth('signup')}
+                  className='rounded-full bg-neutral-900 px-5 py-2 text-sm font-bold tracking-wide text-white transition-all duration-200 hover:bg-neutral-800 active:scale-95'
+                >
+                  {t('welcome', 'signUp')}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </nav>

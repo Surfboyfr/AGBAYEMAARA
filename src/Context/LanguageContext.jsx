@@ -271,6 +271,10 @@ const translations = {
       openCart: 'Open cart',
       signInAction: 'Sign in',
       toggleMenu: 'Toggle menu',
+      logOut: 'Log out',
+      passwordTooShort: 'Password must be at least 8 characters.',
+      invalidCredentials: 'Email or password is incorrect.',
+      authErrorGeneric: 'Something went wrong. Please try again.',
     },
     discovery: {
       eyebrow: 'Feed',
@@ -681,6 +685,10 @@ const translations = {
       openCart: 'Abrir carrito',
       signInAction: 'Iniciar sesión',
       toggleMenu: 'Alternar menú',
+      logOut: 'Cerrar sesión',
+      passwordTooShort: 'La contraseña debe tener al menos 8 caracteres.',
+      invalidCredentials: 'El correo o la contraseña son incorrectos.',
+      authErrorGeneric: 'Algo salió mal. Inténtalo de nuevo.',
     },
     discovery: {
       eyebrow: 'El Feed',
@@ -1091,6 +1099,10 @@ const translations = {
       openCart: 'Ouvrir le panier',
       signInAction: 'Se connecter',
       toggleMenu: 'Basculer le menu',
+      logOut: 'Se déconnecter',
+      passwordTooShort: 'Le mot de passe doit comporter au moins 8 caractères.',
+      invalidCredentials: 'Email ou mot de passe incorrect.',
+      authErrorGeneric: 'Une erreur est survenue. Veuillez réessayer.',
     },
     discovery: {
       eyebrow: 'Le Feed',
