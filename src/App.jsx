@@ -23,6 +23,7 @@ import { SellerProvider } from './Context/SellerContext'
 import { getToken } from './lib/api'
 import SellerLayout from './Layouts/SellerLayout'
 import SellerLogin from './Pages/seller/SellerLogin'
+import SellerRegister from './Pages/seller/SellerRegister'
 import SellerDashboard from './Pages/seller/SellerDashboard'
 import SellerInventory from './Pages/seller/SellerInventory'
 import SellerProducts from './Pages/seller/SellerProducts'
@@ -36,16 +37,19 @@ function App() {
   // Mounted outside BootFlow: onboarding is for shoppers/brand owners, and
   // /seller/* must be directly reachable (e.g. refreshing /seller/dashboard).
   // Auth: /seller/login performs a real POST /auth/login (plus a vendor-profile
-  // probe), and every other /seller/* URL requires a stored session token —
-  // tokenless loads bounce to the login screen.
+  // probe) and /seller/register is the public "Become a seller" onboarding page
+  // (POST /seller/register once it holds a token); every other /seller/* URL
+  // requires a stored session token — tokenless loads bounce to the login
+  // screen.
   if (pathname === '/seller' || pathname.startsWith('/seller/')) {
-    if (pathname !== '/seller/login' && !getToken()) {
+    if (pathname !== '/seller/login' && pathname !== '/seller/register' && !getToken()) {
       return <Navigate to='/seller/login' replace />
     }
     return (
       <SellerProvider>
         <Routes>
           <Route path='/seller/login' element={<SellerLogin />} />
+          <Route path='/seller/register' element={<SellerRegister />} />
           <Route path='/seller' element={<SellerLayout />}>
             <Route index element={<SellerDashboard />} />
             <Route path='dashboard' element={<SellerDashboard />} />

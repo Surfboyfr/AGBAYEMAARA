@@ -68,7 +68,7 @@ const ProductForm = ({ product, onClose, onSubmit }) => {
       role='dialog'
       aria-modal='true'
       aria-label={product ? 'Edit product' : 'Add product'}
-      className='fixed inset-0 z-[60] flex items-center justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm'
+      className='fixed inset-0 z-60 flex items-center justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm'
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose()
       }}

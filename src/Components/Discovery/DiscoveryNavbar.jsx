@@ -48,7 +48,7 @@ const DiscoveryNavbar = () => {
   return (
     <>
       {/* Glass bar: blur + soft shadow instead of a hard outline */}
-      <nav className='sticky top-0 z-30 w-full border-b border-transparent bg-surface/85 shadow-nav backdrop-blur-md supports-[backdrop-filter]:bg-surface/70'>
+      <nav className='sticky top-0 z-30 w-full border-b border-transparent bg-surface/85 shadow-nav backdrop-blur-md supports-backdrop-filter:bg-surface/70'>
         <div className='mx-auto flex h-16 max-w-7xl items-center justify-between px-5'>
           <Link
             to='/'

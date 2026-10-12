@@ -14,11 +14,11 @@ const StylingCard = ({ card }) => {
 
   return (
     <article className="card-lift group flex h-full flex-col overflow-hidden rounded-2xl bg-[#12141A] shadow-card">
-      <div className="relative h-56 overflow-hidden">
+      <div className="relative h-66 overflow-hidden">
         <img
           src={card.media}
           alt={card.title}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
         />
         <span className="absolute top-3 left-3 rounded-full bg-white/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white backdrop-blur-sm">
           {card.type === 'drop'

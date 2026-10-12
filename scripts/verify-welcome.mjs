@@ -5,7 +5,7 @@
 // it leads to the DiscoveryFeed — through the one-time sign-up step for a
 // first-timer, straight through for a returning visitor. Also checks the
 // legacy /welcome URL rejoins the flow and /about still loads directly, the
-// "Become a seller" button reaches the seller login page (/seller/login),
+// "Become a seller" button reaches the vendor registration page (/seller/register),
 // the page renders on a white background with ink text, and the brand
 // marquee sits directly below that button and shows the brands sliding.
 import { chromium } from 'playwright'
@@ -210,9 +210,9 @@ try {
     .getByRole('link', { name: /become a seller/i })
   check('the navbar shows a "Become a seller" link', await navSellerLink.isVisible())
   check(
-    'both seller links point at the seller login page',
-    (await sellerLink.getAttribute('href')) === '/seller/login' &&
-      (await navSellerLink.getAttribute('href')) === '/seller/login',
+    'both seller links point at the seller registration page',
+    (await sellerLink.getAttribute('href')) === '/seller/register' &&
+      (await navSellerLink.getAttribute('href')) === '/seller/register',
     `hero=${await sellerLink.getAttribute('href')}, nav=${await navSellerLink.getAttribute('href')}`,
   )
 
@@ -220,7 +220,7 @@ try {
   const marqueeTrack = welcome.locator('.brand-marquee-track')
   check('the Welcome page has the brand marquee', (await marqueeTrack.count()) === 1)
   const layout = await page.evaluate(() => {
-    const seller = document.querySelector('[data-welcome="page"] main a[href="/seller/login"]')
+    const seller = document.querySelector('[data-welcome="page"] main a[href="/seller/register"]')
     const marquee = document.querySelector('.brand-marquee-container')?.closest('section')
     if (!seller || !marquee) return { ok: false, detail: 'missing seller link or marquee' }
     // The seller CTA lives in a two-level wrapper (row > link box); the
@@ -295,16 +295,16 @@ try {
   )
 
   await sellerLink.click()
-  await page.waitForURL('**/seller/login', { timeout: 10000 })
-  check('the seller button lands on the login URL', page.url().endsWith('/seller/login'))
-  // Wait for the login page's own copy to paint (the URL changes before
+  await page.waitForURL('**/seller/register', { timeout: 10000 })
+  check('the seller button lands on the registration URL', page.url().endsWith('/seller/register'))
+  // Wait for the registration page's own copy to paint (the URL changes before
   // React commits the route), which also proves the dashboard did NOT render.
-  const loginRendered = await page
-    .getByText('Sign in to manage products', { exact: false })
+  const registerRendered = await page
+    .getByText('Register your business and open your storefront', { exact: false })
     .waitFor({ state: 'visible', timeout: 10000 })
     .then(() => true)
     .catch(() => false)
-  check('the seller login page renders (not the dashboard)', loginRendered)
+  check('the seller registration page renders (not the login page)', registerRendered)
 
   await page.close()
 } catch (err) {

@@ -94,8 +94,9 @@ const Welcome = ({ onGetStarted }) => {
             {t('welcome', 'body')}
           </p> */}
 
-          {/* Central action buttons: Get Started (shopper boot) + Become a seller (/seller/login).
-              Stacked so Get Started stays centred on the page. */}
+          {/* Central action buttons: Get Started (shopper boot) + Become a seller
+              (/seller/register — the vendor onboarding form). Stacked so Get
+              Started stays centred on the page. */}
           <div className='mt-8 flex flex-col items-center justify-center gap-3.5'>
             <div>
               <button
@@ -114,7 +115,7 @@ const Welcome = ({ onGetStarted }) => {
 
             <div className='mb-7'>
               <Link
-                to='/seller/login'
+                to='/seller/register'
                 className='group inline-flex items-center gap-2 rounded-full border border-neutral-300 bg-white px-7 py-3 text-sm font-bold tracking-wide text-neutral-800 shadow-sm transition-all duration-200 hover:border-neutral-900 hover:text-[#ec5800] active:scale-[0.98]'
               >
                 <Store size={16} className='text-[#ec5800]' />

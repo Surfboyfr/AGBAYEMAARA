@@ -14,7 +14,7 @@ const Th = ({ children, className = '' }) => (
 // lists never blow up the row.
 const OrderTable = ({ orders }) => (
   <div className='overflow-x-auto rounded-2xl border border-line bg-surface-alt'>
-    <table className='w-full min-w-[900px] text-sm'>
+    <table className='w-full min-w-225 text-sm'>
       <thead className='border-b border-line bg-raised/50'>
         <tr>
           <Th>Order ID</Th>

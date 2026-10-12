@@ -7,8 +7,8 @@ import AuthModal from './AuthModal'
 
 // Navbar for the Welcome boot screen. Deliberately minimal — wordmark plus
 // the two auth actions: Log in opens the AuthModal in sign-in mode, Sign up
-// in sign-up mode, and Become a seller links to the seller login page
-// (/seller/login).
+// in sign-up mode, and Become a seller links to the vendor registration page
+// (/seller/register).
 const WelcomeNavBar = () => {
   const { t } = useLanguage()
   // A returning signed-in session (profile + token, see lib/session.js) sees
@@ -23,7 +23,7 @@ const WelcomeNavBar = () => {
 
   return (
     <>
-      <nav className='sticky top-0 z-30 w-full border-b border-neutral-200/80 bg-white/85 shadow-[0_8px_24px_-18px_rgba(15,23,42,0.35)] backdrop-blur-md supports-[backdrop-filter]:bg-white/70'>
+      <nav className='sticky top-0 z-30 w-full border-b border-neutral-200/80 bg-white/85 shadow-[0_8px_24px_-18px_rgba(15,23,42,0.35)] backdrop-blur-md supports-backdrop-filter:bg-white/70'>
         <div className='mx-auto flex h-16 max-w-7xl items-center justify-between px-5'>
           <Link
             to='/'
@@ -34,7 +34,7 @@ const WelcomeNavBar = () => {
 
           <div className='flex items-center gap-2 sm:gap-3'>
             <Link
-              to='/seller/login'
+              to='/seller/register'
               className='hidden sm:inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-white px-4 py-2 text-xs sm:text-sm font-bold tracking-wide text-neutral-800 transition-all duration-200 hover:border-orange-300 hover:bg-orange-50 hover:text-[#ec5800] active:scale-95'
             >
               <Store size={14} className='text-[#ec5800]' />

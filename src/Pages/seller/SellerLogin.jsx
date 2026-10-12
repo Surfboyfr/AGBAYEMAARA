@@ -243,7 +243,7 @@ const SellerLogin = () => {
           <p className='mt-6 text-center text-sm text-muted'>
             Want to sell on Àgbáyémáarà?{' '}
             <Link
-              to='/brand-owner'
+              to='/seller/register'
               className='font-semibold text-[#ec5800] transition-colors hover:text-[#ff7a33] hover:underline'
             >
               Become a seller

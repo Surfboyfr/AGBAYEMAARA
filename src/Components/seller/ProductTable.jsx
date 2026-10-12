@@ -21,7 +21,7 @@ const Th = ({ children, className = '' }) => (
 // separate image column.
 const ProductTable = ({ products, onEdit, onDelete }) => (
   <div className='overflow-x-auto rounded-2xl border border-line bg-surface-alt'>
-    <table className='w-full min-w-[820px] text-sm'>
+    <table className='w-full min-w-205 text-sm'>
       <thead className='border-b border-line bg-raised/50'>
         <tr>
           <Th>Product</Th>
