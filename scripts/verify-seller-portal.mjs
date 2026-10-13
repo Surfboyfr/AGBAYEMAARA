@@ -159,7 +159,11 @@ try {
   await page.getByRole('link', { name: 'Products' }).click()
   await page.waitForURL('**/seller/products')
   await page.getByRole('heading', { name: 'Products', exact: true }).waitFor()
-  step('products page lists the catalog', (await page.locator('tbody tr').count()) > 0)
+  // The products screen renders cards (ProductGrid), not table rows.
+  const productCards = page.locator('article')
+  await productCards.first().waitFor()
+  const productCount = await productCards.count()
+  step('products page lists the catalog', productCount > 0, `${productCount} cards`)
 
   await page.getByRole('link', { name: 'Orders' }).click()
   await page.waitForURL('**/seller/orders')

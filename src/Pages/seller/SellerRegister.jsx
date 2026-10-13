@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import { apiFetch, getToken, registerOrLogin, signOut } from '../../lib/api'
 import { useSession } from '../../lib/session'
+import { recordRegistration } from '../../lib/activity'
 
 // Selling points shown on the branded half of the split registration screen.
 const PERKS = [
@@ -159,6 +160,15 @@ const SellerRegister = () => {
           location: location.trim(),
           description: description.trim(),
         },
+      })
+      // Tracked for /admin — the vendor list records every onboarding. The
+      // "already a vendor" fallback below deliberately skips this so a repeat
+      // visit never counts as a new vendor.
+      recordRegistration('vendor', {
+        name: businessName.trim(),
+        email: contactEmail.trim(),
+        detail: `${location.trim()} · ${contactPhone.trim()}`,
+        meta: { location: location.trim(), phone: contactPhone.trim() },
       })
       navigate('/seller/dashboard', { replace: true })
     } catch (err) {

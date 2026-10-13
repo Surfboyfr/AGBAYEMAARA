@@ -11,6 +11,8 @@
 //
 // No extra dependency — the browser fetch API is enough.
 
+import { recordRegistration } from './activity'
+
 const API_BASE = (
   import.meta.env.VITE_API_BASE_URL ||
   'https://agba-api-273038897334.us-central1.run.app/api/v1'
@@ -129,6 +131,15 @@ export const signUp = async ({ email, password, displayName, role = 'buyer' }) =
     auth: false,
   })
   if (data?.token) setToken(data.token)
+  // Tracked for /admin — this only runs when POST /auth/register actually
+  // succeeded, so the login fallback in registerOrLogin never counts as a
+  // new sign-up.
+  recordRegistration('user', {
+    name: displayName ?? '',
+    email,
+    detail: role === 'brand' ? 'Brand-owner account' : 'Shopper account',
+    meta: { role },
+  })
   return data
 }
 

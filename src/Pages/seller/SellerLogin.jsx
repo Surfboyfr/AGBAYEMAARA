@@ -14,6 +14,7 @@ import {
   TrendingUp,
 } from 'lucide-react'
 import { signIn, apiFetch } from '../../lib/api'
+import { recordActivity } from '../../lib/activity'
 
 // Selling points shown on the branded half of the split login screen.
 const PERKS = [
@@ -47,6 +48,9 @@ const SellerLogin = () => {
     try {
       await signIn({ email, password })
       await apiFetch('/seller/profile') // vendor-membership guard
+      // Tracked for /admin — only sessions that pass the vendor-membership
+      // guard count as seller activity.
+      recordActivity('seller', 'seller.login', `Seller signed in: ${email}`, '', { email })
       navigate('/seller/dashboard', { replace: true })
     } catch (err) {
       if (err?.code === 'VENDOR_MEMBERSHIP_REQUIRED') {

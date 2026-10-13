@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react'
-import { recordActivity } from '../lib/activity'
+import { recordActivity, trackCartAdd, trackCartRemoved } from '../lib/activity'
 
 const CartContext = createContext(null)
 
@@ -19,7 +19,9 @@ export const CartProvider = ({ children }) => {
       }
       return [...prev, { ...product, quantity: 1 }]
     })
-    // Tracked for /admin — what shoppers are putting in their carts.
+    // Tracked for /admin — what shoppers are putting in their carts, and the
+    // first stage of the cart → purchase pipeline (see lib/activity.js).
+    trackCartAdd(product)
     recordActivity(
       'customer',
       'cart.add',
@@ -30,6 +32,7 @@ export const CartProvider = ({ children }) => {
 
   const removeFromCart = (productId) => {
     setCartItems(prev => prev.filter(item => item.id !== productId))
+    trackCartRemoved(productId)
     recordActivity('customer', 'cart.remove', `Removed item #${productId} from cart`)
   }
 
@@ -46,6 +49,9 @@ export const CartProvider = ({ children }) => {
   }
 
   const clearCart = () => {
+    // Pipeline entries past in_cart (checked out / paid) are untouched — the
+    // post-payment clear must not erase a completed purchase.
+    trackCartRemoved([], true)
     setCartItems([])
     recordActivity('customer', 'cart.cleared', 'Cart cleared')
   }

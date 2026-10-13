@@ -12,6 +12,7 @@
 // component can react to login/logout.
 import { useSyncExternalStore } from 'react'
 import { getToken, registerOrLogin, signIn, signOut } from './api'
+import { recordActivity } from './activity'
 
 const USER_KEY = 'agbayemaara.user'
 
@@ -58,6 +59,10 @@ export const login = async ({ email, password }) => {
   }
   writeUser(profile)
   setState({ user: profile })
+  // Tracked for /admin — every sign-in is part of the user activity trail.
+  recordActivity('customer', 'user.login', `User signed in: ${profile.email}`, profile.name, {
+    email: profile.email,
+  })
   return session
 }
 
