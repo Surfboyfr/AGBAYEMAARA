@@ -106,13 +106,15 @@ const SellerSidebar = ({ open, onClose, lowStockCount = 0 }) => {
           </ul>
         </nav>
 
-        {/* Honest demo notice — seller routes are NOT secured yet. */}
+        {/* Honest demo notice — profile/catalogue/stats are real when
+            signed in; product writes are still local. */}
         <div className='border-t border-line px-5 py-4'>
           <p className='flex items-start gap-2 text-[11px] leading-relaxed text-faint'>
             <TriangleAlert size={13} className='mt-0.5 shrink-0 text-amber-500' />
             <span>
-              Demo build — mock login and local data only. Seller auth and
-              permissions arrive with the backend.
+              Signed-in data (profile, catalogue, stats) comes from the
+              Àgbáyémáarà API. Product edits are saved locally until the
+              write endpoints ship.
             </span>
           </p>
         </div>

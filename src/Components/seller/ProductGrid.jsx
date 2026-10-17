@@ -50,7 +50,7 @@ const ProductGrid = ({ products, onEdit, onDelete }) => (
                 <p className='mt-0.5 text-xs font-medium text-muted'>{product.category}</p>
               </div>
               <p className='shrink-0 text-base font-black tracking-tight text-strong'>
-                {formatPrice(product.price)}
+                {formatPrice(product.price, product.currency)}
               </p>
             </div>
 

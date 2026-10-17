@@ -20,7 +20,8 @@ const labelClass = 'mb-1.5 block text-xs font-semibold uppercase tracking-wider 
 // render), which seeds `form` fresh from `product` on every mount: `product`
 // is null for a fresh add or the row being edited; `onSubmit` receives plain
 // form values so the page decides whether to add or update (and, later, which
-// API to call).
+// API to call). The category options always include the product's own value
+// so hydrated backend categories outside the default list stay editable.
 const ProductForm = ({ product, onClose, onSubmit }) => {
   const [form, setForm] = useState(() =>
     product
@@ -34,6 +35,10 @@ const ProductForm = ({ product, onClose, onSubmit }) => {
         }
       : EMPTY_FORM
   )
+
+  const categoryOptions = SELLER_CATEGORIES.includes(form.category)
+    ? SELLER_CATEGORIES
+    : [form.category, ...SELLER_CATEGORIES]
 
   // Close on Escape + lock background scroll while open (same pattern as
   // AuthModal).
@@ -152,7 +157,7 @@ const ProductForm = ({ product, onClose, onSubmit }) => {
                 onChange={setField('category')}
                 className={`${inputClass} appearance-none`}
               >
-                {SELLER_CATEGORIES.map((category) => (
+                {categoryOptions.map((category) => (
                   <option key={category} value={category}>
                     {category}
                   </option>
@@ -161,7 +166,7 @@ const ProductForm = ({ product, onClose, onSubmit }) => {
             </div>
             <div>
               <label htmlFor='product-price' className={labelClass}>
-                Price ($)
+                Price
               </label>
               <input
                 id='product-price'

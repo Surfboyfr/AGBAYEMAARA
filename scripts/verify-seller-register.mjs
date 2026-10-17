@@ -136,6 +136,30 @@ try {
   await page.waitForURL('**/seller/dashboard', { timeout: 15000 })
   check('submitting the form lands on /seller/dashboard', page.url().endsWith('/seller/dashboard'))
 
+  // The signup details must drive the portal — no mock defaults on screen.
+  // The dashboard greeting uses the owner's first name only. Wait for the
+  // heading to paint — waitForURL resolves before React commits the route.
+  const greetedVendor = await page
+    .getByRole('heading', { name: /^Welcome back, E2E$/ })
+    .waitFor({ state: 'visible', timeout: 10000 })
+    .then(() => true)
+    .catch(() => false)
+  check('dashboard greets the seller by the name from the signup form', greetedVendor)
+  const businessOnDashboard = await page
+    .getByText('E2E Atelier', { exact: false })
+    .first()
+    .waitFor({ state: 'visible', timeout: 10000 })
+    .then(() => true)
+    .catch(() => false)
+  check(
+    'dashboard shows the business name from the signup form',
+    businessOnDashboard,
+  )
+  check(
+    'the mock default seller name is gone',
+    (await page.getByText('Adaeze', { exact: false }).count()) === 0,
+  )
+
   const authCall = apiCalls.find((c) => c.path.endsWith('/auth/register'))
   check(
     'POST /auth/register was called with the account details',

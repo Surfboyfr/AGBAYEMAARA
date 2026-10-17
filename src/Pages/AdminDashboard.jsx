@@ -395,7 +395,7 @@ const AdminDashboard = () => {
           <SellerStatCard
             icon={CreditCard}
             label='Seller revenue'
-            value={formatPrice(stats.totalRevenue)}
+            value={formatPrice(stats.totalRevenue, stats.currency)}
             hint={`${stats.pendingOrders} pending of ${stats.totalOrders} orders`}
             tone='amber'
           />
@@ -659,7 +659,7 @@ const AdminDashboard = () => {
                 warn={stats.lowStockProducts > 0}
               />
               <MiniStat label='Orders' value={stats.totalOrders} />
-              <MiniStat label='Revenue' value={formatPrice(stats.totalRevenue)} />
+              <MiniStat label='Revenue' value={formatPrice(stats.totalRevenue, stats.currency)} />
             </div>
             {recentSellerOrders.length === 0 ? (
               <EmptyState>No seller orders recorded yet.</EmptyState>
@@ -687,7 +687,7 @@ const AdminDashboard = () => {
                         {order.status}
                       </span>
                       <span className='whitespace-nowrap text-sm font-bold text-strong'>
-                        {formatPrice(order.total)}
+                        {formatPrice(order.total, order.currency)}
                       </span>
                     </div>
                   </li>

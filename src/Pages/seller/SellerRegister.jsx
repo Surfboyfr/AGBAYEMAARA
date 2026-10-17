@@ -16,8 +16,9 @@ import {
   TrendingUp,
   User,
 } from 'lucide-react'
-import { apiFetch, getToken, registerOrLogin, signOut } from '../../lib/api'
+import { apiFetch, getToken, signOut } from '../../lib/api'
 import { useSession } from '../../lib/session'
+import { useSeller } from '../../Context/SellerContext'
 import { recordRegistration } from '../../lib/activity'
 
 // Selling points shown on the branded half of the split registration screen.
@@ -71,7 +72,12 @@ const sectionTitle = 'text-xs font-bold uppercase tracking-[0.2em] text-[#ec5800
 
 const SellerRegister = () => {
   const navigate = useNavigate()
-  const { user } = useSession()
+  const { user, signup } = useSession()
+  // Seeding the portal profile with the details collected below so the
+  // dashboard greets this seller by name/business instead of the mock's.
+  // refreshPortal() then pulls their real catalogue/orders/stats — for a
+  // brand-new vendor that is an empty catalogue, which is the truth.
+  const { syncProfile, refreshPortal } = useSeller()
   // A stored session token skips the account step — the backend needs a
   // Bearer token for POST /seller/register, and we already have one.
   const [hasAccount, setHasAccount] = useState(() => Boolean(getToken()))
@@ -127,14 +133,11 @@ const SellerRegister = () => {
     setIsSubmitting(true)
 
     // ── 1. Make sure we hold a token (POST /auth/register, login fallback) ─
+    // session.signup also persists the user profile (agbayemaara.user) next
+    // to the token, so the rest of the app knows who is signed in.
     if (!hasAccount) {
       try {
-        await registerOrLogin({
-          email: email.trim(),
-          password,
-          displayName: name.trim(),
-          role: 'buyer',
-        })
+        await signup({ name: name.trim(), email: email.trim(), password })
         setHasAccount(true)
       } catch (err) {
         if (err?.status === 401 || err?.message === 'INVALID_LOGIN_CREDENTIALS') {
@@ -170,6 +173,19 @@ const SellerRegister = () => {
         detail: `${location.trim()} · ${contactPhone.trim()}`,
         meta: { location: location.trim(), phone: contactPhone.trim() },
       })
+      // Put the signup details straight into the portal profile — the
+      // dashboard, header chip and profile page all render from it.
+      syncProfile({
+        ownerName: name.trim() || user?.name || '',
+        businessName: businessName.trim(),
+        email: contactEmail.trim(),
+        phone: contactPhone.trim(),
+        location: location.trim(),
+        description: description.trim(),
+      })
+      // Hydrate the rest from the backend (empty catalogue/stats for a new
+      // vendor) — runs in the background, the dashboard skeleton covers it.
+      refreshPortal()
       navigate('/seller/dashboard', { replace: true })
     } catch (err) {
       if (isAlreadyVendor(err)) {

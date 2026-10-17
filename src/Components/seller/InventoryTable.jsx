@@ -49,7 +49,7 @@ const InventoryTable = ({ products, onEdit, onDelete }) => (
               </td>
               <td className='whitespace-nowrap px-4 py-3 text-muted'>{product.category}</td>
               <td className='whitespace-nowrap px-4 py-3 font-bold text-strong'>
-                {formatPrice(product.price)}
+                {formatPrice(product.price, product.currency)}
               </td>
               <td className='whitespace-nowrap px-4 py-3'>
                 <span

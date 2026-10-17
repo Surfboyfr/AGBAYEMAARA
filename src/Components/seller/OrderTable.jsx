@@ -1,5 +1,9 @@
 import { ORDER_STATUS_TONES, formatDate, formatPrice } from '../../data/sellerMockData'
 
+// Unknown statuses from the backend (not in the known map) still render —
+// just with a neutral chip instead of an undefined class string.
+const NEUTRAL_CHIP = 'border-line-strong bg-raised text-muted'
+
 const Th = ({ children, className = '' }) => (
   <th
     scope='col'
@@ -28,6 +32,35 @@ const OrderTable = ({ orders }) => (
       <tbody className='divide-y divide-line'>
         {orders.map((order) => {
           const [first, ...rest] = order.items
+          // A hydrated backend order can arrive without line items; show a
+          // placeholder row instead of crashing on first.name.
+          if (!first) {
+            return (
+              <tr key={order.id} className='transition-colors duration-150 hover:bg-raised'>
+                <td className='whitespace-nowrap px-4 py-3'>
+                  <span className='font-mono text-sm font-bold text-[#ec5800]'>{order.id}</span>
+                </td>
+                <td className='px-4 py-3'>
+                  <p className='font-semibold text-strong'>{order.customer.name}</p>
+                  <p className='text-xs text-muted'>{order.customer.email}</p>
+                </td>
+                <td className='px-4 py-3 text-xs text-muted'>No line items</td>
+                <td className='whitespace-nowrap px-4 py-3 font-bold text-strong'>
+                  {formatPrice(order.total, order.currency)}
+                </td>
+                <td className='whitespace-nowrap px-4 py-3 text-muted'>{formatDate(order.date)}</td>
+                <td className='whitespace-nowrap px-4 py-3'>
+                  <span
+                    className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold ${
+                      ORDER_STATUS_TONES[order.status] ?? NEUTRAL_CHIP
+                    }`}
+                  >
+                    {order.status}
+                  </span>
+                </td>
+              </tr>
+            )
+          }
           return (
             <tr key={order.id} className='transition-colors duration-150 hover:bg-raised'>
               <td className='whitespace-nowrap px-4 py-3'>
@@ -40,14 +73,22 @@ const OrderTable = ({ orders }) => (
               <td className='px-4 py-3'>
                 <div className='flex items-center gap-2'>
                   <div className='flex -space-x-2'>
-                    {order.items.slice(0, 3).map((item) => (
-                      <img
-                        key={`${order.id}-${item.productId}`}
-                        src={item.image}
-                        alt={item.name}
-                        className='h-8 w-8 rounded-full border-2 border-surface-alt object-cover'
-                      />
-                    ))}
+                    {order.items.slice(0, 3).map((item) =>
+                      item.image ? (
+                        <img
+                          key={`${order.id}-${item.productId}`}
+                          src={item.image}
+                          alt={item.name}
+                          className='h-8 w-8 rounded-full border-2 border-surface-alt object-cover'
+                        />
+                      ) : (
+                        <span
+                          key={`${order.id}-${item.productId}`}
+                          className='h-8 w-8 rounded-full border-2 border-surface-alt bg-raised'
+                          aria-hidden='true'
+                        />
+                      )
+                    )}
                   </div>
                   <div className='min-w-0'>
                     <p className='truncate text-xs text-strong'>
@@ -62,12 +103,14 @@ const OrderTable = ({ orders }) => (
                 </div>
               </td>
               <td className='whitespace-nowrap px-4 py-3 font-bold text-strong'>
-                {formatPrice(order.total)}
+                {formatPrice(order.total, order.currency)}
               </td>
               <td className='whitespace-nowrap px-4 py-3 text-muted'>{formatDate(order.date)}</td>
               <td className='whitespace-nowrap px-4 py-3'>
                 <span
-                  className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold ${ORDER_STATUS_TONES[order.status]}`}
+                  className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold ${
+                    ORDER_STATUS_TONES[order.status] ?? NEUTRAL_CHIP
+                  }`}
                 >
                   {order.status}
                 </span>

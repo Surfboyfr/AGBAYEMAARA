@@ -14,6 +14,7 @@ import {
   TrendingUp,
 } from 'lucide-react'
 import { signIn, apiFetch } from '../../lib/api'
+import { useSeller } from '../../Context/SellerContext'
 import { recordActivity } from '../../lib/activity'
 
 // Selling points shown on the branded half of the split login screen.
@@ -28,6 +29,12 @@ const inputClass =
 
 const SellerLogin = () => {
   const navigate = useNavigate()
+  // The vendor-membership probe below doubles as the profile source: its
+  // response is the signed-in seller's real record, seeded into the portal
+  // so the dashboard greets them by name/business instead of the mock's.
+  // refreshPortal() then pulls their real catalogue/orders/stats — the
+  // provider's own mount hydration ran before this token existed.
+  const { syncProfile, refreshPortal } = useSeller()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -47,7 +54,12 @@ const SellerLogin = () => {
     setIsSubmitting(true)
     try {
       await signIn({ email, password })
-      await apiFetch('/seller/profile') // vendor-membership guard
+      // Vendor-membership guard — and the real profile to seed the portal with.
+      const remoteProfile = await apiFetch('/seller/profile')
+      syncProfile(remoteProfile)
+      // Hydrate the real catalogue/orders/stats in the background; the
+      // dashboard's skeleton covers the gap.
+      refreshPortal()
       // Tracked for /admin — only sessions that pass the vendor-membership
       // guard count as seller activity.
       recordActivity('seller', 'seller.login', `Seller signed in: ${email}`, '', { email })
