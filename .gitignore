@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Local env files — VITE_ vars live here and must not be pushed
+.env
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

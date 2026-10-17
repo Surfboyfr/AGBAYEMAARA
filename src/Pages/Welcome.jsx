@@ -3,6 +3,7 @@ import { ArrowRight, BookOpen, Compass, ShoppingBag, Store } from 'lucide-react'
 import WelcomeNavBar from '../Components/WelcomeNavBar'
 import BrandImageMarquee from '../Components/BrandImageMarquee'
 import { useLanguage } from '../Context/LanguageContext'
+import welcomeBackground from '../assets/imgFolder/welcome-background-image.jfif'
 
 // The Welcome page — the page that follows the loading screen. BootFlow
 // renders it as its own boot step (phase 'welcome'), so it mounts alone with
@@ -14,7 +15,11 @@ import { useLanguage } from '../Context/LanguageContext'
 // Design: a crisp white gallery surface (independent of the light/dark
 // theme tokens — the welcome screen is always white) with warm brand-orange
 // accents: tinted eyebrow pill, oversized editorial headline, stacked CTAs,
-// and three feature cards that lift on hover.
+// and three feature cards that lift on hover. The white surface also carries
+// a very faint (~7%) full-page brand photograph behind the content: the root
+// is `isolate` so the image sits at -z-10 — above the page's white paint,
+// below every piece of content — and `pointer-events-none`/`aria-hidden` keep
+// it decorative.
 const Welcome = ({ onGetStarted }) => {
   const { t } = useLanguage()
 
@@ -37,10 +42,22 @@ const Welcome = ({ onGetStarted }) => {
   ]
 
   return (
-    <div data-welcome='page' className='flex min-h-screen flex-col overflow-x-hidden bg-white text-neutral-900'>
+    <div
+      data-welcome='page'
+      className='relative isolate flex min-h-screen flex-col overflow-x-hidden bg-white text-neutral-900'
+    >
+      {/* ── Faint full-page backdrop photo — decorative, sits behind all
+          content (negative z-index inside the root's isolation context). ── */}
+      <img
+        src={welcomeBackground}
+        alt=''
+        aria-hidden='true'
+        className='pointer-events-none absolute inset-0 -z-10 h-full w-full select-none object-cover object-center opacity-[0.3]'
+      />
+
       <WelcomeNavBar />
 
-      <main className='relative flex flex-1 items-center justify-center overflow-hidden px-5 py-14'>
+      <main className='relative flex flex-1 items-center justify-center overflow-hidden px-5 py-14 w-full'>
         {/* ── Decorative backdrop — warm brand glow + two soft orbs + a faint
             dot grid, all pointer-free and clipped by main's overflow. ────── */}
         <div
@@ -57,10 +74,10 @@ const Welcome = ({ onGetStarted }) => {
         />
         <div
           aria-hidden='true'
-          className='pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(236,88,0,0.12)_1px,transparent_1px)] [background-size:22px_22px] mask-[radial-gradient(ellipse_at_center,black_20%,transparent_75%)]'
+          className='pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(236,88,0,0.12)_1px,transparent_1px)] bg-size-[22px_22px] mask-[radial-gradient(ellipse_at_center,black_20%,transparent_75%)]'
         />
 
-        <div className='animate-pop-in relative z-10 w-full max-w-4xl text-center'>
+        <div className='animate-pop-in relative z-10 w-full text-center'>
           <span className='inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-orange-600'>
             {t('welcome', 'eyebrow')}
           </span>
@@ -69,16 +86,17 @@ const Welcome = ({ onGetStarted }) => {
             {t('welcome', 'title')}
           </h1>
 
-          <p className='mx-auto mt-4 max-w-2xl text-balance text-lg leading-relaxed text-neutral-600 sm:text-xl'>
+          <p className='mx-auto mt-4 max-w-2xl text-balance text-lg leading-relaxed text-neutral-600 sm:text-xs sm:leading-relaxed md:text-lg md:leading-relaxed lg:text-2xl'>
             {t('welcome', 'subtitle')}
           </p>
 
-          <p className='mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-neutral-500'>
+          {/* <p className='mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-neutral-500'>
             {t('welcome', 'body')}
-          </p>
+          </p> */}
 
-          {/* Central action buttons: Get Started (shopper boot) + Become a seller (/seller/login).
-              Stacked so Get Started stays centred on the page. */}
+          {/* Central action buttons: Get Started (shopper boot) + Become a seller
+              (/seller/register — the vendor onboarding form). Stacked so Get
+              Started stays centred on the page. */}
           <div className='mt-8 flex flex-col items-center justify-center gap-3.5'>
             <div>
               <button
@@ -95,9 +113,9 @@ const Welcome = ({ onGetStarted }) => {
               </button>
             </div>
 
-            <div>
+            <div className='mb-7'>
               <Link
-                to='/seller/login'
+                to='/seller/register'
                 className='group inline-flex items-center gap-2 rounded-full border border-neutral-300 bg-white px-7 py-3 text-sm font-bold tracking-wide text-neutral-800 shadow-sm transition-all duration-200 hover:border-neutral-900 hover:text-[#ec5800] active:scale-[0.98]'
               >
                 <Store size={16} className='text-[#ec5800]' />
@@ -105,6 +123,9 @@ const Welcome = ({ onGetStarted }) => {
               </Link>
             </div>
           </div>
+
+          {/* ── Brand Images Marquee — directly under the Become a seller CTA ── */}
+          <BrandImageMarquee />
 
           <ul className='mx-auto mt-9 grid max-w-3xl gap-4 sm:grid-cols-3'>
             {features.map(({ icon: Icon, title, body }) => (
@@ -122,9 +143,6 @@ const Welcome = ({ onGetStarted }) => {
           </ul>
         </div>
       </main>
-
-      {/* ── Brand Images Marquee Component at the bottom ────────────────── */}
-      <BrandImageMarquee />
 
       <footer className='border-t border-neutral-200 bg-white px-5 py-5 text-center text-xs text-neutral-400'>
         {t('footer', 'rights')}

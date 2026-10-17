@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   ArrowLeft,
@@ -20,6 +20,11 @@ import { useLanguage } from '../Context/LanguageContext'
 import { useCurrency } from '../Context/CurrencyContext'
 import { initializeTransaction } from '../lib/payments'
 import { saveOrder, getLastOrder, clearLastOrder } from '../lib/orders'
+import {
+  advanceCartTracking,
+  CART_STAGES,
+  recordActivity,
+} from '../lib/activity'
 
 const PAYMENT_METHODS = [
   { id: 'paystack-card', icon: CreditCard, labelKey: 'cardLabel', hintKey: 'cardHint' },
@@ -206,6 +211,26 @@ const Checkout = () => {
   const setField = (key) => (e) =>
     setForm((prev) => ({ ...prev, [key]: e.target.value }))
 
+  // ── Tracked for /admin ──────────────────────────────────────────────────
+  // Landing on checkout with a full cart is the first real intent to
+  // purchase, so the pipeline advances here. The ref guard (set inside the
+  // effect, not during render) keeps the event single-fire even when
+  // StrictMode re-runs effects; the submit handler then advances the same
+  // entries through payment.
+  const checkoutTracked = useRef(false)
+  useEffect(() => {
+    if (checkoutTracked.current || cartItems.length === 0) return
+    checkoutTracked.current = true
+    const ids = cartItems.map((item) => item.id)
+    advanceCartTracking(ids, CART_STAGES.CHECKOUT_STARTED)
+    recordActivity(
+      'customer',
+      'checkout.started',
+      `Checkout started — ${ids.length} item${ids.length === 1 ? '' : 's'}`,
+      formatPrice(convertPrice(cartTotal))
+    )
+  }, [cartItems, cartTotal, convertPrice, formatPrice])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -214,6 +239,7 @@ const Checkout = () => {
     if (required.some((key) => !form[key].trim())) return
 
     setStatus('processing')
+    const ids = cartItems.map((item) => item.id)
     try {
       // Mock transaction — swap initializeTransaction for the real endpoint
       // once the Express service exists.
@@ -230,6 +256,16 @@ const Checkout = () => {
         currency: tx.data.currency,
         email: form.email,
       }
+      // Tracked for /admin — the payment channel accepted the transaction.
+      advanceCartTracking(ids, CART_STAGES.PAYMENT_INITIALIZED, {
+        reference: placedOrder.reference,
+      })
+      recordActivity(
+        'customer',
+        'payment.initialized',
+        `Payment initialized for ${placedOrder.reference}`,
+        `${placedOrder.currency} ${placedOrder.amount}`
+      )
       // Persist the full order so the receipt survives a refresh and shows up
       // in /orders. Item prices are snapshot at purchase time.
       saveOrder({
@@ -254,6 +290,11 @@ const Checkout = () => {
           image: item.image,
         })),
       })
+      // Tracked for /admin — the pipeline's paid stage. saveOrder records
+      // the order.placed feed event; this closes the per-product pipeline.
+      advanceCartTracking(ids, CART_STAGES.PAID, {
+        reference: placedOrder.reference,
+      })
       // Land on the order status page automatically — the receipt lives there
       // now, with the lifecycle stepper.
       navigate(`/orders/${placedOrder.reference}`)
@@ -261,6 +302,15 @@ const Checkout = () => {
       setStatus('success')
       clearCart()
     } catch {
+      // Tracked for /admin — payment attempt did not go through; the shopper
+      // returns to the form and the pipeline shows the stall.
+      advanceCartTracking(ids, CART_STAGES.PAYMENT_FAILED)
+      recordActivity(
+        'customer',
+        'payment.failed',
+        'Payment attempt failed',
+        formatPrice(convertPrice(cartTotal))
+      )
       setStatus('form')
     }
   }

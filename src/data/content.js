@@ -1,8 +1,8 @@
 import img1 from '../assets/imgFolder/Female/img1.jfif'
-import img2 from '../assets/imgFolder/Female/img2.jpg'
-import img3 from '../assets/imgFolder/Female/img3.jpg'
-import img5 from '../assets/imgFolder/Female/img5.jpg'
-import img6 from '../assets/imgFolder/Female/img6.jpg'
+import img2 from '../assets/imgFolder/Female/img2.jfif'
+import img3 from '../assets/imgFolder/Female/img3.jfif'
+import img5 from '../assets/imgFolder/Female/img5.jfif'
+import img6 from '../assets/imgFolder/Female/img6.jfif'
 import img12 from '../assets/imgFolder/Female/img12.jpg'
 import img13 from '../assets/imgFolder/Female/img13.jfif'
 import img14 from '../assets/imgFolder/Female/img14.jfif'
@@ -10,6 +10,7 @@ import male3 from '../assets/imgFolder/Male/male3.jfif'
 import male4 from '../assets/imgFolder/Male/male4.jfif'
 import male7 from '../assets/imgFolder/Male/male7.jfif'
 import male8 from '../assets/imgFolder/Male/male8.jfif'
+//just to add git
 
 // Content Unit entity
 // type: 'story' | 'styling' | 'milestone' | 'drop'

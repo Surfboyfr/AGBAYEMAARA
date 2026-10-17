@@ -21,7 +21,7 @@ const SellerHeader = ({ onMenuClick }) => {
   const title = TITLES[pathname] ?? 'Seller Center'
 
   return (
-    <header className='sticky top-0 z-30 border-b border-line bg-surface/85 shadow-nav backdrop-blur-md supports-[backdrop-filter]:bg-surface/70'>
+    <header className='sticky top-0 z-30 border-b border-line bg-surface/85 shadow-nav backdrop-blur-md supports-backdrop-filter:bg-surface/70'>
       <div className='flex h-16 items-center gap-3 px-4 sm:px-6 lg:px-8'>
         <button
           onClick={onMenuClick}

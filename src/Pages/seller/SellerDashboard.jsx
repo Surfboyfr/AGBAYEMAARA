@@ -9,8 +9,11 @@ import {
   formatPrice,
   getProductStatus,
   PRODUCT_STATUS_TONES,
-  sellerStats,
 } from '../../data/sellerMockData'
+
+// Unknown statuses from the backend (not in the known map) still render —
+// just with a neutral chip instead of an undefined class string.
+const NEUTRAL_CHIP = 'border-line-strong bg-raised text-muted'
 
 // Period-over-period hint text shared by the stat cards.
 const trendHint = (percent) => `${percent >= 0 ? '+' : ''}${percent.toFixed(1)}% vs last month`
@@ -40,6 +43,7 @@ const CardHeader = ({ title, subtitle, to, linkLabel = 'View all' }) => (
 // add/edit/delete on the other screens immediately.
 const SellerDashboard = () => {
   const { profile, orders, products, stats, isLoading } = useSeller()
+  const trends = stats.trends
 
   const firstName = profile.ownerName.split(' ')[0]
   const today = new Date().toLocaleDateString(undefined, {
@@ -91,24 +95,28 @@ const SellerDashboard = () => {
             icon={Package}
             label='Total Products'
             value={stats.totalProducts}
-            hint={`${trendHint(sellerStats.productsTrendPercent)} · ${stats.activeProducts} active`}
-            hintTone={sellerStats.productsTrendPercent >= 0 ? 'good' : 'warn'}
+            hint={`${trendHint(trends.productsTrendPercent)} · ${stats.activeProducts} active`}
+            hintTone={trends.productsTrendPercent >= 0 ? 'good' : 'warn'}
             tone='accent'
           />
           <SellerStatCard
             icon={ShoppingBag}
             label='Total Orders'
             value={stats.totalOrders}
-            hint={`${trendHint(sellerStats.ordersTrendPercent)} · ${stats.pendingOrders} pending`}
-            hintTone={sellerStats.ordersTrendPercent >= 0 ? 'good' : 'warn'}
+            hint={`${trendHint(trends.ordersTrendPercent)} · ${stats.pendingOrders} pending`}
+            hintTone={trends.ordersTrendPercent >= 0 ? 'good' : 'warn'}
             tone='sky'
           />
           <SellerStatCard
             icon={DollarSign}
             label='Total Revenue'
-            value={formatPrice(stats.totalRevenue)}
-            hint={`${trendHint(sellerStats.revenueTrendPercent)} · cancelled excluded`}
-            hintTone={sellerStats.revenueTrendPercent >= 0 ? 'good' : 'warn'}
+            value={formatPrice(stats.totalRevenue, stats.currency)}
+            hint={
+              stats.revenueSource === 'api'
+                ? trendHint(trends.revenueTrendPercent)
+                : `${trendHint(trends.revenueTrendPercent)} · cancelled excluded`
+            }
+            hintTone={trends.revenueTrendPercent >= 0 ? 'good' : 'warn'}
             tone='emerald'
           />
           <SellerStatCard
@@ -117,13 +125,13 @@ const SellerDashboard = () => {
             value={stats.lowStockProducts}
             hint={
               stats.lowStockProducts > 0
-                ? `${trendHint(sellerStats.lowStockTrendPercent)} · needs restocking`
+                ? `${trendHint(trends.lowStockTrendPercent)} · needs restocking`
                 : 'All products are healthy'
             }
             hintTone={
               stats.lowStockProducts === 0
                 ? 'good'
-                : sellerStats.lowStockTrendPercent <= 0
+                : trends.lowStockTrendPercent <= 0
                   ? 'good'
                   : 'warn'
             }
@@ -164,10 +172,12 @@ const SellerDashboard = () => {
                   </span>
                   <span className='text-xs text-muted'>{formatDate(order.date)}</span>
                   <span className='text-sm font-black text-strong'>
-                    {formatPrice(order.total)}
+                    {formatPrice(order.total, order.currency)}
                   </span>
                   <span
-                    className={`inline-flex shrink-0 items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold ${ORDER_STATUS_TONES[order.status]}`}
+                    className={`inline-flex shrink-0 items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold ${
+                      ORDER_STATUS_TONES[order.status] ?? NEUTRAL_CHIP
+                    }`}
                   >
                     {order.status}
                   </span>
@@ -212,7 +222,9 @@ const SellerDashboard = () => {
                     />
                     <div className='min-w-0 flex-1'>
                       <p className='truncate text-sm font-semibold text-strong'>{product.name}</p>
-                      <p className='text-xs text-muted'>{formatPrice(product.price)}</p>
+                      <p className='text-xs text-muted'>
+                        {formatPrice(product.price, product.currency)}
+                      </p>
                     </div>
                     <span
                       className={`inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold ${PRODUCT_STATUS_TONES[status]}`}

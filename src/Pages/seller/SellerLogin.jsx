@@ -6,7 +6,6 @@ import {
   ClipboardList,
   Eye,
   EyeOff,
-  Info,
   Loader2,
   Lock,
   Mail,
@@ -14,6 +13,9 @@ import {
   Store,
   TrendingUp,
 } from 'lucide-react'
+import { signIn, apiFetch } from '../../lib/api'
+import { useSeller } from '../../Context/SellerContext'
+import { recordActivity } from '../../lib/activity'
 
 // Selling points shown on the branded half of the split login screen.
 const PERKS = [
@@ -27,27 +29,56 @@ const inputClass =
 
 const SellerLogin = () => {
   const navigate = useNavigate()
+  // The vendor-membership probe below doubles as the profile source: its
+  // response is the signed-in seller's real record, seeded into the portal
+  // so the dashboard greets them by name/business instead of the mock's.
+  // refreshPortal() then pulls their real catalogue/orders/stats — the
+  // provider's own mount hydration ran before this token existed.
+  const { syncProfile, refreshPortal } = useSeller()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState('')
 
-  // ── MOCK AUTHENTICATION ──────────────────────────────────────────────────
-  // This form performs NO verification: any email/password combination is
-  // accepted and the user is simply routed to the dashboard after a short
-  // delay to imitate a request. The /seller/* pages are NOT protected.
-  //
-  // To go live, replace this handler with a real call, e.g.
-  //   const session = await api.post('/api/seller/login', { email, password })
-  // store the session/token, then navigate only on success — and add route
-  // guards + backend authorization for every /seller/* endpoint.
-  const handleSubmit = (e) => {
+  // ── REAL AUTHENTICATION ──────────────────────────────────────────────────
+  // Signs in against the backend (POST /auth/login, token stored by the api
+  // client), then probes GET /seller/profile: this portal is for vendors
+  // only, so a non-vendor session (VENDOR_MEMBERSHIP_REQUIRED) is rejected
+  // with the backend's own readable message instead of reaching the
+  // dashboard. Route guards on /seller/* enforce the session on every load.
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    if (isSubmitting) return
+    setError('')
     setIsSubmitting(true)
-    setTimeout(() => {
-      setIsSubmitting(false)
+    try {
+      await signIn({ email, password })
+      // Vendor-membership guard — and the real profile to seed the portal with.
+      const remoteProfile = await apiFetch('/seller/profile')
+      syncProfile(remoteProfile)
+      // Hydrate the real catalogue/orders/stats in the background; the
+      // dashboard's skeleton covers the gap.
+      refreshPortal()
+      // Tracked for /admin — only sessions that pass the vendor-membership
+      // guard count as seller activity.
+      recordActivity('seller', 'seller.login', `Seller signed in: ${email}`, '', { email })
       navigate('/seller/dashboard', { replace: true })
-    }, 600)
+    } catch (err) {
+      if (err?.code === 'VENDOR_MEMBERSHIP_REQUIRED') {
+        // Backend message is already human-readable.
+        setError(err.message)
+      } else if (err?.status === 401 || err?.message === 'INVALID_LOGIN_CREDENTIALS') {
+        setError('Email or password is incorrect.')
+      } else if (err?.status === 0) {
+        setError(err.message) // network — readable
+      } else if (err?.message && !/^[A-Z0-9_]+$/.test(err.message)) {
+        setError(err.message)
+      } else {
+        setError('Sign-in failed. Please try again.')
+      }
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -125,12 +156,6 @@ const SellerLogin = () => {
             Sign in to your seller account to continue.
           </p>
 
-          {/* Honest demo notice */}
-          <p className='mt-5 flex items-start gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-2.5 text-xs leading-relaxed font-medium text-amber-500'>
-            <Info size={14} className='mt-0.5 shrink-0' aria-hidden='true' />
-            <span>Demo mode — sign-in is visual only. Any email and password work; no data is verified.</span>
-          </p>
-
           <form onSubmit={handleSubmit} className='mt-6 space-y-4'>
             <div className='group'>
               <label
@@ -202,6 +227,12 @@ const SellerLogin = () => {
               </button>
             </div>
 
+            {error && (
+              <p role='alert' className='text-xs font-semibold text-red-400'>
+                {error}
+              </p>
+            )}
+
             <button
               type='submit'
               disabled={isSubmitting}
@@ -228,7 +259,7 @@ const SellerLogin = () => {
           <p className='mt-6 text-center text-sm text-muted'>
             Want to sell on Àgbáyémáarà?{' '}
             <Link
-              to='/brand-owner'
+              to='/seller/register'
               className='font-semibold text-[#ec5800] transition-colors hover:text-[#ff7a33] hover:underline'
             >
               Become a seller
@@ -237,7 +268,7 @@ const SellerLogin = () => {
 
           <p className='mt-8 flex items-center justify-center gap-1.5 text-center text-xs text-faint'>
             <Store size={13} aria-hidden='true' />
-            Frontend-only preview — real auth and seller authorization arrive with the backend.
+            Secure sign-in — sessions are verified by the Àgbáyémáarà API.
           </p>
         </div>
       </div>

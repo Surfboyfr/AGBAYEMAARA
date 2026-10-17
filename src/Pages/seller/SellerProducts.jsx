@@ -1,14 +1,25 @@
 import { useMemo, useState } from 'react'
 import { Package, Plus } from 'lucide-react'
-import ProductTable from '../../Components/seller/ProductTable'
+import ProductGrid from '../../Components/seller/ProductGrid'
 import ProductForm from '../../Components/seller/ProductForm'
 import DeleteConfirmationModal from '../../Components/seller/DeleteConfirmationModal'
 import { useSeller } from '../../Context/SellerContext'
 
-const SkeletonRows = () => (
-  <div className='space-y-3 rounded-2xl border border-line bg-surface-alt p-4' aria-hidden='true'>
+// Card-shaped placeholders matching the grid that replaces them.
+const SkeletonCards = () => (
+  <div
+    className='grid gap-4 sm:grid-cols-2 xl:grid-cols-3'
+    aria-hidden='true'
+  >
     {[...Array(6)].map((_, i) => (
-      <div key={i} className='animate-pulse h-12 w-full rounded-lg bg-raised' />
+      <div
+        key={i}
+        className='animate-pulse space-y-3 rounded-2xl border border-line bg-surface-alt p-4'
+      >
+        <div className='h-36 w-full rounded-xl bg-raised' />
+        <div className='h-4 w-2/3 rounded bg-raised' />
+        <div className='h-3 w-1/3 rounded bg-raised' />
+      </div>
     ))}
   </div>
 )
@@ -73,7 +84,7 @@ const SellerProducts = () => {
       </div>
 
       {isLoading ? (
-        <SkeletonRows />
+        <SkeletonCards />
       ) : products.length === 0 ? (
         <div className='flex flex-col items-center gap-4 rounded-3xl border border-dashed border-line bg-white/2 px-6 py-16 text-center'>
           <span className='flex h-14 w-14 items-center justify-center rounded-full bg-raised text-faint'>
@@ -99,7 +110,7 @@ const SellerProducts = () => {
           <p className='text-xs font-medium text-faint' role='status'>
             {sorted.length} product{sorted.length === 1 ? '' : 's'} in your catalog
           </p>
-          <ProductTable products={sorted} onEdit={openEdit} onDelete={setDeleting} />
+          <ProductGrid products={sorted} onEdit={openEdit} onDelete={setDeleting} />
         </>
       )}
 

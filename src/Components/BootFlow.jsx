@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { useLanguage } from '../Context/LanguageContext'
 import { hasStoredCurrency } from '../Context/CurrencyContext'
+import { signup as sessionSignup, useSession } from '../lib/session'
 import { useCurrency } from '../Context/CurrencyContext'
 import Welcome from '../Pages/Welcome'
 
@@ -41,6 +42,15 @@ const readStoredUser = () => {
 // The shopper/brand-owner choice screen no longer exists — the stored choice
 // (if any) still decides the path, so returning brand owners land on the
 // brand hub; everyone else boots straight into the shopper experience.
+// Backend auth failures arrive as ALL_CAPS codes (EMAIL_EXISTS,
+// INVALID_LOGIN_CREDENTIALS, …) — show the generic sign-up error for those
+// and keep the message only when it is already human-readable (network
+// failures from the api client, status 0).
+const humaniseAuthError = (error, t) => {
+  if (error?.status === 0) return error.message
+  return t('boot', 'signUpError')
+}
+
 const readStoredRole = () => {
   try {
     const stored = localStorage.getItem(ROLE_KEY)
@@ -65,14 +75,23 @@ const BootFlow = ({ children }) => {
   const navigate = useNavigate()
   const { t } = useLanguage()
   const { setCurrency, currencies } = useCurrency()
+  // Shared session store — the Welcome navbar's Log in / Sign up write the
+  // same profile (agbayemaara.user), so the sign-up gate below follows it.
+  const { user: sessionUser } = useSession()
   const [phase, setPhase] = useState('splash')
   const [role] = useState(readStoredRole)
-  // A stored profile means this visitor has already signed up once — they
-  // skip the sign-up form and pass straight through.
-  const [hasSignedUp, setHasSignedUp] = useState(() => readStoredUser() !== null)
+  // A stored profile means this visitor has signed up before. Sticky for
+  // the load: a profile seen at mount (or reached below) means the gate is
+  // cleared — logging out later doesn't un-pass it.
+  const [signedUpBefore, setSignedUpBefore] = useState(() => readStoredUser() !== null)
+  // In sync with the shared session store: signing up OR logging in from
+  // the Welcome navbar's AuthModal writes the same profile, so Get Started
+  // goes straight through instead of re-opening the sign-up step.
+  const hasSignedUp = signedUpBefore || sessionUser !== null
   const [showPassword, setShowPassword] = useState(false)
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [form, setForm] = useState({ name: '', email: '' })
 
   // Splash → the Welcome page, once the brand beat is over. Nothing behind
@@ -124,10 +143,13 @@ const BootFlow = ({ children }) => {
     setForm((prev) => ({ ...prev, [field]: event.target.value }))
   }
 
-  // Mock sign-up: validate the collected fields, store the profile locally,
-  // then let the visitor through. Swap this for the real auth call when the
-  // backend lands.
-  const handleSignUp = (event) => {
+  // Real sign-up: validate the collected fields locally, then register with
+  // the backend via the session store (/auth/register — falling back to
+  // /auth/login when the email already exists). The store persists the JWT
+  // and the profile (agbayemaara.user), so the boot gate works on later
+  // visits and the navbars see the signed-in session immediately. On API
+  // failure the visitor stays on the form with the error shown.
+  const handleSignUp = async (event) => {
     event.preventDefault()
     if (
       !form.name.trim() ||
@@ -137,24 +159,28 @@ const BootFlow = ({ children }) => {
       setError(t('boot', 'signUpError'))
       return
     }
+    if (isSubmitting) return
+    setError('')
+    setIsSubmitting(true)
     try {
-      localStorage.setItem(
-        USER_KEY,
-        JSON.stringify({
-          role,
-          name: form.name.trim(),
-          email: form.email.trim(),
-        })
-      )
-    } catch {
-      // Storage can be unavailable — the visit continues without a stored
-      // profile.
+      await sessionSignup({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        password,
+        // App-level brand/shopper choice stays a frontend concern; vendor
+        // onboarding happens later via POST /seller/register.
+        appRole: role,
+      })
+      if (role === 'brand') {
+        navigate('/brand-owner', { replace: true })
+      }
+      setSignedUpBefore(true)
+      setPhase('app')
+    } catch (apiError) {
+      setError(humaniseAuthError(apiError, t))
+    } finally {
+      setIsSubmitting(false)
     }
-    if (role === 'brand') {
-      navigate('/brand-owner', { replace: true })
-    }
-    setHasSignedUp(true)
-    setPhase('app')
   }
 
   if (phase === 'splash') {
@@ -348,14 +374,24 @@ const BootFlow = ({ children }) => {
 
             <button
               type='submit'
-              className='group flex w-full items-center justify-center gap-2 rounded-2xl bg-[#ec5800] py-3.5 text-sm font-bold tracking-wide text-white transition-all duration-200 hover:bg-[#d04f00] active:scale-[0.98]'
+              disabled={isSubmitting}
+              className='group flex w-full items-center justify-center gap-2 rounded-2xl bg-[#ec5800] py-3.5 text-sm font-bold tracking-wide text-white transition-all duration-200 hover:bg-[#d04f00] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70'
             >
-              {t('boot', 'signUpContinue')}
-              <ArrowRight
-                size={15}
-                aria-hidden='true'
-                className='transition-transform duration-200 group-hover:translate-x-1'
-              />
+              {isSubmitting ? (
+                <>
+                  <Loader2 size={15} aria-hidden='true' className='animate-spin' />
+                  {t('boot', 'signUpContinue')}
+                </>
+              ) : (
+                <>
+                  {t('boot', 'signUpContinue')}
+                  <ArrowRight
+                    size={15}
+                    aria-hidden='true'
+                    className='transition-transform duration-200 group-hover:translate-x-1'
+                  />
+                </>
+              )}
             </button>
           </form>
         </div>

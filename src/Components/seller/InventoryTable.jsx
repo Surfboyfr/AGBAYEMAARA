@@ -21,7 +21,7 @@ const Th = ({ children, className = '' }) => (
 // so search + filters stay page concerns.
 const InventoryTable = ({ products, onEdit, onDelete }) => (
   <div className='overflow-x-auto rounded-2xl border border-line bg-surface-alt'>
-    <table className='w-full min-w-[860px] text-sm'>
+    <table className='w-full min-w-215 text-sm'>
       <thead className='border-b border-line bg-raised/50'>
         <tr>
           <Th>Image</Th>
@@ -44,12 +44,12 @@ const InventoryTable = ({ products, onEdit, onDelete }) => (
               <td className='px-4 py-3'>
                 <ProductImage src={product.image} alt={product.name} />
               </td>
-              <td className='max-w-[240px] px-4 py-3'>
+              <td className='max-w-60 px-4 py-3'>
                 <p className='truncate font-semibold text-strong'>{product.name}</p>
               </td>
               <td className='whitespace-nowrap px-4 py-3 text-muted'>{product.category}</td>
               <td className='whitespace-nowrap px-4 py-3 font-bold text-strong'>
-                {formatPrice(product.price)}
+                {formatPrice(product.price, product.currency)}
               </td>
               <td className='whitespace-nowrap px-4 py-3'>
                 <span

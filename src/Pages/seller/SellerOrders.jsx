@@ -14,9 +14,10 @@ const SkeletonRows = () => (
   </div>
 )
 
-// Orders screen: read-only table of mock orders with a status filter and
-// search. Order state is shared through SellerContext — when the backend
-// lands this becomes GET /api/seller/orders.
+// Orders screen: table of the vendor's orders with a status filter and
+// search. Order state is shared through SellerContext — hydrated from the
+// real GET /seller/orders when the session has a token (the seeded mock
+// list only shows in offline/demo mode).
 const SellerOrders = () => {
   const { orders, isLoading } = useSeller()
   const [search, setSearch] = useState('')

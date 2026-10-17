@@ -1,37 +1,43 @@
-// ── Seller portal mock data ──────────────────────────────────────────────────
-// Frontend-only stand-in for the future seller API. Each export mirrors the
-// payload shape the backend will eventually return, so swapping mock data for
-// real fetches happens in ONE place (src/Context/SellerContext.jsx):
+// ── Seller portal data ───────────────────────────────────────────────────────
+// The live V1 backend is the source of truth for the seller portal; the
+// seeded products/orders/stats below are the OFFLINE FALLBACK used only when
+// those fetches are unavailable (no session, mocked verify runs, network
+// failure). Hydration + the backend→portal mappers live in ONE place
+// (src/Context/SellerContext.jsx):
 //
-//   GET    /api/seller/stats     → sellerStats
-//   GET    /api/seller/products  → sellerProducts
-//   GET    /api/seller/orders    → sellerOrders
-//   GET    /api/seller/profile   → sellerProfile
+//   GET    /api/seller/stats     → stats (totals + trends)
+//   GET    /api/seller/products  → products
+//   GET    /api/seller/orders    → orders
+//   GET    /api/seller/profile   → profile
 //
 // Shared seller constants (statuses, categories) and tiny format helpers also
 // live here so every screen stays in sync with the data it renders.
 
 import img1 from '../assets/imgFolder/Female/img1.jfif'
-import img2 from '../assets/imgFolder/Female/img2.jpg'
-import img3 from '../assets/imgFolder/Female/img3.jpg'
-import img5 from '../assets/imgFolder/Female/img5.jpg'
-import img6 from '../assets/imgFolder/Female/img6.jpg'
+import img2 from '../assets/imgFolder/Female/img2.jfif'
+import img3 from '../assets/imgFolder/Female/img3.jfif'
+import img5 from '../assets/imgFolder/Female/img5.jfif'
+import img6 from '../assets/imgFolder/Female/img6.jfif'
 import img12 from '../assets/imgFolder/Female/img12.jpg'
 import img13 from '../assets/imgFolder/Female/img13.jfif'
 import male1 from '../assets/imgFolder/Male/male1.jfif'
 import male3 from '../assets/imgFolder/Male/male3.jfif'
 import male4 from '../assets/imgFolder/Male/male4.jfif'
 import male9 from '../assets/imgFolder/Male/male9.jfif'
-import img4 from '../assets/imgFolder/Male/img4.jpg'
+import img4 from '../assets/imgFolder/Male/img4.jfif'
 import brandAvatar from '../assets/brand1.jfif'
 
 // Stock at or below this (but above zero) renders as "Low Stock".
 export const LOW_STOCK_THRESHOLD = 10
 
+// 'Clothes' matches the backend catalogue's own vocabulary (GET
+// /seller/products returns categories like ['Clothes']); the rest are the
+// storefront's department split used by locally added demo products.
 export const SELLER_CATEGORIES = [
   'Women',
   'Men',
   'Unisex',
+  'Clothes',
   'Shoes',
   'Bags',
   'Jewelries',
@@ -77,12 +83,17 @@ export const ORDER_STATUS_TONES = {
   [ORDER_STATUS.CANCELLED]: 'border-red-500/30 bg-red-500/10 text-red-500',
 }
 
-// Money/date formatting for seller screens (USD matches the storefront
-// catalog's price convention).
-export const formatPrice = (value) =>
-  new Intl.NumberFormat('en-US', {
+// The live vendor catalogue prices in Naira — en-NG renders the ₦ symbol
+// (en-US would spell it out as "NGN 95,000.00").
+const CURRENCY_LOCALES = { NGN: 'en-NG' }
+
+// Money/date formatting for seller screens. Products, orders and stats carry
+// their own ISO currency once hydrated from the backend; the USD default
+// keeps mock seeds and locally added demo products displaying as before.
+export const formatPrice = (value, currency = 'USD') =>
+  new Intl.NumberFormat(CURRENCY_LOCALES[currency] ?? 'en-US', {
     style: 'currency',
-    currency: 'USD',
+    currency,
     minimumFractionDigits: 2,
   }).format(Number(value) || 0)
 

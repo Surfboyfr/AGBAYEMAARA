@@ -157,12 +157,23 @@ export const saveOrder = (order) => {
   const orders = [order, ...getOrders().filter((o) => o.reference !== order.reference)]
   write(ORDERS_KEY, orders)
   write(LAST_ORDER_KEY, order)
-  // Tracked for /admin — the shopper section's headline event.
+  // Tracked for /admin — the shopper section's headline event. `meta` carries
+  // the structured payload the admin console renders without parsing labels.
   recordActivity(
     'customer',
     'order.placed',
     `Order ${order.reference} placed`,
-    `${order.currency ?? 'USD'} ${Number(order.total) || 0}`
+    `${order.currency ?? 'USD'} ${Number(order.total) || 0}`,
+    {
+      reference: order.reference,
+      total: Number(order.total) || 0,
+      currency: order.currency ?? 'USD',
+      email: order.email ?? '',
+      items: (order.items ?? []).map((item) => ({
+        name: item.name,
+        quantity: Number(item.quantity) || 1,
+      })),
+    }
   )
   return order
 }

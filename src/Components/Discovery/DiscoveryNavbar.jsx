@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { User, ShoppingBag, Menu, X } from 'lucide-react'
 import { useCart } from '../../Context/CartContext'
 import { useLanguage } from '../../Context/LanguageContext'
+import { useSession } from '../../lib/session'
 import LanguageSwitcher from '../LanguageSwitcher'
 import ThemeToggle from '../ThemeToggle'
 import AuthModal from '../AuthModal'
@@ -15,6 +16,10 @@ import AuthModal from '../AuthModal'
 const DiscoveryNavbar = () => {
   const { t } = useLanguage()
   const { cartCount, setIsCartOpen } = useCart()
+  // Signed-in visitors (real session: profile + token, see lib/session.js)
+  // get a name chip + Log out instead of the Sign in action.
+  const { user, isLoggedIn, logout } = useSession()
+  const firstName = (user?.name || user?.email || '').trim().split(/\s+/)[0]
   const [authOpen, setAuthOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -43,7 +48,7 @@ const DiscoveryNavbar = () => {
   return (
     <>
       {/* Glass bar: blur + soft shadow instead of a hard outline */}
-      <nav className='sticky top-0 z-30 w-full border-b border-transparent bg-surface/85 shadow-nav backdrop-blur-md supports-[backdrop-filter]:bg-surface/70'>
+      <nav className='sticky top-0 z-30 w-full border-b border-transparent bg-surface/85 shadow-nav backdrop-blur-md supports-backdrop-filter:bg-surface/70'>
         <div className='mx-auto flex h-16 max-w-7xl items-center justify-between px-5'>
           <Link
             to='/'
@@ -88,12 +93,34 @@ const DiscoveryNavbar = () => {
               )}
             </button>
 
-            <button
-              onClick={() => setAuthOpen(true)}
-              className='hidden rounded-full bg-strong px-5 py-2 text-sm font-bold tracking-wide text-surface transition-all duration-200 hover:bg-strong/90 active:scale-95 md:block'
-            >
-              {t('auth', 'signInAction')}
-            </button>
+            {isLoggedIn ? (
+              <div className='hidden items-center gap-2 md:flex'>
+                <span
+                  aria-hidden='true'
+                  className='flex h-9 w-9 items-center justify-center rounded-full bg-strong text-sm font-bold text-surface'
+                >
+                  {(firstName || '?').charAt(0).toUpperCase()}
+                </span>
+                {firstName && (
+                  <span className='max-w-32 truncate text-sm font-semibold text-strong'>
+                    {firstName}
+                  </span>
+                )}
+                <button
+                  onClick={logout}
+                  className='rounded-full border border-line px-4 py-2 text-sm font-bold tracking-wide text-muted transition-all duration-200 hover:border-line-strong hover:text-strong active:scale-95'
+                >
+                  {t('auth', 'logOut')}
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setAuthOpen(true)}
+                className='hidden rounded-full bg-strong px-5 py-2 text-sm font-bold tracking-wide text-surface transition-all duration-200 hover:bg-strong/90 active:scale-95 md:block'
+              >
+                {t('auth', 'signInAction')}
+              </button>
+            )}
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -136,13 +163,23 @@ const DiscoveryNavbar = () => {
               <ShoppingBag size={15} />
               {t('auth', 'openCart')}
             </button>
-            <button
-              onClick={() => { setAuthOpen(true); setMobileMenuOpen(false) }}
-              className='flex items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-muted transition-all hover:bg-raised hover:text-strong'
-            >
-              <User size={15} />
-              {t('nav', 'signIn')}
-            </button>
+            {isLoggedIn ? (
+              <button
+                onClick={() => { logout(); setMobileMenuOpen(false) }}
+                className='flex items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-muted transition-all hover:bg-raised hover:text-strong'
+              >
+                <User size={15} />
+                {t('auth', 'logOut')}
+              </button>
+            ) : (
+              <button
+                onClick={() => { setAuthOpen(true); setMobileMenuOpen(false) }}
+                className='flex items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-muted transition-all hover:bg-raised hover:text-strong'
+              >
+                <User size={15} />
+                {t('nav', 'signIn')}
+              </button>
+            )}
           </div>
         </div>
       </nav>

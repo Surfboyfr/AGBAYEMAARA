@@ -1,7 +1,7 @@
 import { RefreshCw, Compass } from 'lucide-react'
 import { useLanguage } from '../../Context/LanguageContext'
 
-// Skeleton card placeholders shown while the feed "loads".
+// Skeleton card placeholders shown while the feed "loads"..
 export const DiscoverySkeletonCard = ({ tall = false }) => (
   <div
     className={`animate-pulse overflow-hidden rounded-2xl border border-line bg-surface-alt ${
@@ -22,7 +22,7 @@ export const DiscoverySkeletonCard = ({ tall = false }) => (
 export const DiscoverySkeletonFeed = () => (
   <div className="space-y-5" role="status" aria-label="Loading feed">
     <DiscoverySkeletonCard tall />
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
       <DiscoverySkeletonCard />
       <DiscoverySkeletonCard />
       <DiscoverySkeletonCard />

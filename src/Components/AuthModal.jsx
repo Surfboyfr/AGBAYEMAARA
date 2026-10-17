@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
-import { User, X, Eye, EyeOff, ArrowRight, Mail, Lock } from 'lucide-react'
+import { User, X, Eye, EyeOff, ArrowRight, Loader2, Mail, Lock } from 'lucide-react'
 import { useLanguage } from '../Context/LanguageContext'
+import { useSession } from '../lib/session'
 
 const AuthModal = ({ isOpen, onClose, mode: modeProp, onModeChange }) => {
   // Uncontrolled callers (the app navbars) keep the modal's own state; a
@@ -16,8 +17,11 @@ const AuthModal = ({ isOpen, onClose, mode: modeProp, onModeChange }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState('')
   const overlayRef = useRef(null)
   const { t } = useLanguage()
+  const { login, signup } = useSession()
 
   // Close on Escape
   useEffect(() => {
@@ -40,9 +44,41 @@ const AuthModal = ({ isOpen, onClose, mode: modeProp, onModeChange }) => {
     if (e.target === overlayRef.current) onClose()
   }
 
-  const handleSubmit = (e) => {
+  // Real authentication: Sign in → POST /auth/login, Create account →
+  // POST /auth/register (fallback login on existing email). The session is
+  // persisted by the session store, so the navbar swaps the auth buttons for
+  // the signed-in chip everywhere. On failure the modal stays open with the
+  // error shown.
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Auth logic goes here
+    if (isSubmitting) return
+    if (mode === 'signup' && password.length < 8) {
+      setError(t('auth', 'passwordTooShort'))
+      return
+    }
+    setError('')
+    setIsSubmitting(true)
+    try {
+      if (mode === 'signup') {
+        await signup({ name: name.trim(), email: email.trim(), password })
+      } else {
+        await login({ email: email.trim(), password })
+      }
+      setName('')
+      setEmail('')
+      setPassword('')
+      onClose()
+    } catch (err) {
+      if (err?.status === 401 || err?.message === 'INVALID_LOGIN_CREDENTIALS') {
+        setError(t('auth', 'invalidCredentials'))
+      } else if (err?.status === 0) {
+        setError(err.message) // network — readable
+      } else {
+        setError(t('auth', 'authErrorGeneric'))
+      }
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -98,7 +134,7 @@ const AuthModal = ({ isOpen, onClose, mode: modeProp, onModeChange }) => {
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'signup' && (
               <div className="group">
-                <label className="block text-muted text-xs font-semibold uppercase tracking-wider mb-2">
+                <label htmlFor='auth-name' className="block text-muted text-xs font-semibold uppercase tracking-wider mb-2">
                   {t('auth', 'fullName')}
                 </label>
                 <div className="relative">
@@ -107,6 +143,7 @@ const AuthModal = ({ isOpen, onClose, mode: modeProp, onModeChange }) => {
                     className="absolute left-3.5 top-1/2 -translate-y-1/2 text-faint group-focus-within:text-muted transition-colors"
                   />
                   <input
+                    id='auth-name'
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -119,7 +156,7 @@ const AuthModal = ({ isOpen, onClose, mode: modeProp, onModeChange }) => {
             )}
 
             <div className="group">
-              <label className="block text-muted text-xs font-semibold uppercase tracking-wider mb-2">
+              <label htmlFor='auth-email' className="block text-muted text-xs font-semibold uppercase tracking-wider mb-2">
                 {t('auth', 'email')}
               </label>
               <div className="relative">
@@ -128,6 +165,7 @@ const AuthModal = ({ isOpen, onClose, mode: modeProp, onModeChange }) => {
                   className="absolute left-3.5 top-1/2 -translate-y-1/2 text-faint group-focus-within:text-muted transition-colors"
                 />
                 <input
+                  id='auth-email'
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -139,7 +177,7 @@ const AuthModal = ({ isOpen, onClose, mode: modeProp, onModeChange }) => {
             </div>
 
             <div className="group">
-              <label className="block text-muted text-xs font-semibold uppercase tracking-wider mb-2">
+              <label htmlFor='auth-password' className="block text-muted text-xs font-semibold uppercase tracking-wider mb-2">
                 {t('auth', 'password')}
               </label>
               <div className="relative">
@@ -148,6 +186,7 @@ const AuthModal = ({ isOpen, onClose, mode: modeProp, onModeChange }) => {
                   className="absolute left-3.5 top-1/2 -translate-y-1/2 text-faint group-focus-within:text-muted transition-colors"
                 />
                 <input
+                  id='auth-password'
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -173,12 +212,25 @@ const AuthModal = ({ isOpen, onClose, mode: modeProp, onModeChange }) => {
               </div>
             )}
 
+            {error && (
+              <p role='alert' className='text-xs font-semibold text-red-400'>
+                {error}
+              </p>
+            )}
+
             <button
               type="submit"
-              className="w-full mt-2 bg-[#ec5800] text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 hover:bg-[#d04f00] active:scale-[0.98] transition-all duration-200 text-sm tracking-wide group"
+              disabled={isSubmitting}
+              className="w-full mt-2 bg-[#ec5800] text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 hover:bg-[#d04f00] active:scale-[0.98] transition-all duration-200 text-sm tracking-wide group disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {mode === 'signin' ? t('auth', 'signInButton') : t('auth', 'createAccountButton')}
-              <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform duration-200" />
+              {isSubmitting ? (
+                <Loader2 size={15} className='animate-spin' aria-hidden='true' />
+              ) : (
+                <>
+                  {mode === 'signin' ? t('auth', 'signInButton') : t('auth', 'createAccountButton')}
+                  <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform duration-200" />
+                </>
+              )}
             </button>
           </form>
 
