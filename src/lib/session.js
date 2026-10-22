@@ -69,18 +69,28 @@ export const login = async ({ email, password }) => {
 // Registers via POST /auth/register (falls back to login on existing email)
 // and persists the profile. `appRole` keeps the frontend shopper/brand split;
 // the backend role is always 'buyer' — vendor onboarding is /seller/register.
-export const signup = async ({ name, email, password, appRole = 'shopper' }) => {
+export const signup = async ({
+  name,
+  email,
+  password,
+  appRole = 'shopper',
+  phoneNumber,
+  phone,
+}) => {
   const session = await registerOrLogin({
     email,
     password,
     displayName: name,
+    name,
     role: 'buyer',
+    phoneNumber: phoneNumber || phone,
   })
   const profile = {
     role: appRole,
     id: session?.user?.id ?? null,
     name: session?.user?.displayName || name,
     email: session?.user?.email || email,
+    phoneNumber: session?.user?.phoneNumber || phoneNumber || phone || '',
   }
   writeUser(profile)
   setState({ user: profile })

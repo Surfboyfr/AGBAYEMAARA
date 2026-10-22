@@ -137,7 +137,12 @@ const SellerRegister = () => {
     // to the token, so the rest of the app knows who is signed in.
     if (!hasAccount) {
       try {
-        await signup({ name: name.trim(), email: email.trim(), password })
+        await signup({
+          name: name.trim(),
+          email: email.trim(),
+          password,
+          phoneNumber: contactPhone.trim(),
+        })
         setHasAccount(true)
       } catch (err) {
         if (err?.status === 401 || err?.message === 'INVALID_LOGIN_CREDENTIALS') {
