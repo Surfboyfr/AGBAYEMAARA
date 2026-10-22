@@ -11,7 +11,7 @@
 // Plain module + useSyncExternalStore — no Context provider needed, and any
 // component can react to login/logout.
 import { useSyncExternalStore } from 'react'
-import { getToken, registerOrLogin, signIn, signOut } from './api'
+import { getToken, registerOrLogin, signIn, signOut, signUp } from './api'
 import { recordActivity } from './activity'
 
 const USER_KEY = 'agbayemaara.user'
@@ -66,7 +66,7 @@ export const login = async ({ email, password }) => {
   return session
 }
 
-// Registers via POST /auth/register (falls back to login on existing email)
+// Registers via POST /auth/register (optionally falls back to login on existing email)
 // and persists the profile. `appRole` keeps the frontend shopper/brand split;
 // the backend role is always 'buyer' — vendor onboarding is /seller/register.
 export const signup = async ({
@@ -76,15 +76,25 @@ export const signup = async ({
   appRole = 'shopper',
   phoneNumber,
   phone,
+  allowLoginFallback = true,
 }) => {
-  const session = await registerOrLogin({
-    email,
-    password,
-    displayName: name,
-    name,
-    role: 'buyer',
-    phoneNumber: phoneNumber || phone,
-  })
+  const session = allowLoginFallback
+    ? await registerOrLogin({
+        email,
+        password,
+        displayName: name,
+        name,
+        role: 'buyer',
+        phoneNumber: phoneNumber || phone,
+      })
+    : await signUp({
+        email,
+        password,
+        displayName: name,
+        name,
+        role: 'buyer',
+        phoneNumber: phoneNumber || phone,
+      })
   const profile = {
     role: appRole,
     id: session?.user?.id ?? null,

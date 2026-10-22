@@ -159,6 +159,27 @@ export const apiFetch = async (
 
 // ── Auth endpoints ──────────────────────────────────────────────────────────
 
+// Normalizes phone numbers to standard E.164 with country code
+export const normalizePhone = (phone) => {
+  if (!phone || typeof phone !== 'string') return '+2348000000000'
+  const trimmed = phone.trim()
+  if (!trimmed) return '+2348000000000'
+  const cleaned = trimmed.replace(/[\s\-()]/g, '')
+  if (/^0\d{10}$/.test(cleaned)) {
+    return '+234' + cleaned.slice(1)
+  }
+  if (/^234\d{10}$/.test(cleaned)) {
+    return '+' + cleaned
+  }
+  if (cleaned.startsWith('+')) {
+    return cleaned
+  }
+  if (/^\d{10}$/.test(cleaned)) {
+    return '+234' + cleaned
+  }
+  return cleaned
+}
+
 // Registers an account and stores the returned tokens.
 // Backend duplicate handling: if the email is taken (ALREADY_EXISTS-style
 // error), callers may fall back to signIn with the same credentials.
@@ -174,7 +195,7 @@ export const signUp = async ({
   phone,
 }) => {
   const resolvedDisplayName = (displayName || name || '').trim() || 'Àgbáyémáarà Member'
-  const resolvedPhone = (phoneNumber || phone || '').trim() || '+2348000000000'
+  const resolvedPhone = normalizePhone(phoneNumber || phone)
 
   const data = await apiFetch('/auth/register', {
     method: 'POST',

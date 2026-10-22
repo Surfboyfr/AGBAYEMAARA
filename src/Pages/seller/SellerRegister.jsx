@@ -34,9 +34,17 @@ const inputClass =
 const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
 
 // Turns an ApiError into something a person can act on; backend messages are
-// readable, codes like INVALID_LOGIN_CREDENTIALS are not.
+// readable, codes like INVALID_LOGIN_CREDENTIALS or EMAIL_EXISTS are translated.
 const readable = (err, fallback) => {
+  if (!err) return fallback
   if (err?.status === 0) return err.message // network — already readable
+  if (
+    err?.status === 409 ||
+    /ALREADY|EXISTS|TAKEN|DUPLICATE/i.test(err?.code ?? '') ||
+    /already|exists|taken|duplicate/i.test(err?.message ?? '')
+  ) {
+    return 'This email is already registered. Please sign in or use a different email.'
+  }
   if (err?.message && !/^[A-Z0-9_]+$/.test(err.message)) return err.message
   return fallback
 }
@@ -142,10 +150,19 @@ const SellerRegister = () => {
           email: email.trim(),
           password,
           phoneNumber: contactPhone.trim(),
+          allowLoginFallback: false,
         })
         setHasAccount(true)
       } catch (err) {
-        if (err?.status === 401 || err?.message === 'INVALID_LOGIN_CREDENTIALS') {
+        if (
+          err?.status === 409 ||
+          /ALREADY|EXISTS|TAKEN|DUPLICATE/i.test(err?.code ?? '') ||
+          /already|exists|taken|duplicate/i.test(err?.message ?? '')
+        ) {
+          setError(
+            'This email is already registered. Please sign in with your password, or use a different email.',
+          )
+        } else if (err?.status === 401 || err?.message === 'INVALID_LOGIN_CREDENTIALS') {
           setError(
             'That email is already registered with a different password — try your existing password.',
           )
