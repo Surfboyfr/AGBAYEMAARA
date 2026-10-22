@@ -234,9 +234,8 @@ export const registerOrLogin = async ({
     // users with the same credentials still pass the gate.
     const duplicate =
       error.status === 409 ||
-      error.status === 400 ||
       /ALREADY|EXISTS|TAKEN|DUPLICATE/i.test(error.code ?? '') ||
-      /already|exists|taken|duplicate/i.test(error.message)
+      /already|exists|taken|duplicate/i.test(error.message ?? '')
     if (!duplicate) throw error
     return signIn({ email, password })
   }
